@@ -7,7 +7,7 @@ This is our to-do list, please tell us what you're working on by putting your na
 - Email -
 - PaymentInformationRequestEmail -
 - ReportGenerator - 
-- Hotel - Nathan
+- ~~Hotel~~ - Alec
 - Calendar - 
 - ReservationDB - 
 
