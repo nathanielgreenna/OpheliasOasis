@@ -26,7 +26,7 @@ namespace OpheliasOasis
 
 
 
-        Reservation(String resType, String cusName, int cusCC, ReservationDate sDate, ReservationDate eDate) 
+        public Reservation(String resType, String cusName, int cusCC, ReservationDate sDate, ReservationDate eDate) 
         {
             reservationType = resType;
             customerName = cusName;
@@ -34,93 +34,93 @@ namespace OpheliasOasis
             startDate = sDate;
             endDate = eDate;
         }
-        String getReservationType() 
+        public String getReservationType() 
         {
             return reservationType;
         }
-        void setReservationType(String type) 
+        public void setReservationType(String type) 
         {
             reservationType = type;
         }
-        String getCustomerName() 
+        public String getCustomerName() 
         {
             return customerName;
         }
-        void setCustomerName(String name) 
+        public void setCustomerName(String name) 
         {
             customerName = name;
         }
-        int getCustomerCreditCard()
+        public int getCustomerCreditCard()
         {
             return customerCreditCard;
         }
-        void setCustomerCreditCard(int card)
+        public void setCustomerCreditCard(int card)
         {
             customerCreditCard = card;
         }
-        String getCustomerEmail() 
+        public String getCustomerEmail() 
         {
             return customerEmail;
         }
-        void setCustomerEmail(String email) 
+        public void setCustomerEmail(String email) 
         {
             customerEmail = email;
         }
-        int getRoomNumber() 
+        public int getRoomNumber() 
         {
             return roomNumber;
         }
 
         //don't know if we should be able to set rooms
 
-        ReservationDate getStartDate() 
+        public ReservationDate getStartDate() 
         {
             return startDate;
         }
 
         //don't know if we should be able to directly set startDate
 
-        ReservationDate getEndDate()
+        public ReservationDate getEndDate()
         {
             return endDate;
         }
 
         //don't know if we should be able to directly set endDate
 
-        int getTotalPrice() 
+        public int getTotalPrice() 
         {
             return totalPrice;
         }
 
         //don't know if we should be able to directly set price
 
-        String getReservationStatus()
+        public String getReservationStatus()
         {
             return reservationStatus;
         }
-        void setReservationStatus(String status)
+        public void setReservationStatus(String status)
         {
             reservationStatus = status;
         }
 
 
 
-        void cancelReservation() 
+        public void cancelReservation() 
         {
             reservationStatus = "Cancelled";
         }
 
-        void checkIn()
+        public void checkIn()
         {
             reservationStatus = "Checked In";
         }
 
-        void checkOut()
+        public void checkOut()
         {
             reservationStatus = "Checked Out";
         }
 
-        void changeReservation(ReservationDate sDate, ReservationDate eDate)
+        public void changeReservation(ReservationDate sDate, ReservationDate eDate)
         {
             startDate = sDate;
             endDate = eDate;
