@@ -3,7 +3,8 @@
  * TODO: Should more or less be done. subject to changes
  * Changelog:
  * 4/4/2022: created/getters and setters coded by Nathaniel
- * 4/19/2022: check in/ check out unnecessary with new changes
+ * 4/19/2022: check in/ check out unnecessary with new changes - Nathaniel
+ * 4/20/2022: added public to methods - Nathaniel
 */
 
 using System;
@@ -19,14 +20,14 @@ namespace OpheliasOasis
         private int customerCreditCard;
         private String customerEmail;
         private int roomNumber;
-        private ReservationDate startDate;
-        private ReservationDate endDate;
+        private DateTime startDate;
+        private DateTime endDate;
         private int totalPrice;
         private String reservationStatus;
 
 
 
-        public Reservation(String resType, String cusName, int cusCC, ReservationDate sDate, ReservationDate eDate) 
+        public Reservation(String resType, String cusName, int cusCC, DateTime sDate, DateTime eDate) 
         {
             reservationType = resType;
             customerName = cusName;
@@ -73,14 +74,14 @@ namespace OpheliasOasis
 
         //don't know if we should be able to set rooms
 
-        public ReservationDate getStartDate() 
+        public DateTime getStartDate() 
         {
             return startDate;
         }
 
         //don't know if we should be able to directly set startDate
 
-        public ReservationDate getEndDate()
+        public DateTime getEndDate()
         {
             return endDate;
         }
@@ -120,7 +121,7 @@ namespace OpheliasOasis
             reservationStatus = "Checked Out";
         }
 
-        public void changeReservation(ReservationDate sDate, ReservationDate eDate)
+        public void changeReservation(DateTime sDate, DateTime eDate)
         {
             startDate = sDate;
             endDate = eDate;

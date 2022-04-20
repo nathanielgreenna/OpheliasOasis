@@ -1,4 +1,14 @@
-﻿using System;
+﻿/*
+ * Hotel
+ * 
+ * retrieveDate requires that your DateTime has a time of 00:00:00. If it doesn't, this will return null. Otherwise, it will always return a ReservationDate, even if it isn't previously created.
+ * 
+ * TODO: 
+ * Changelog:
+ * 4/20/2022: created/initially coded by Nathan
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
