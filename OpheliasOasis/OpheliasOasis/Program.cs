@@ -8,16 +8,15 @@ namespace OpheliasOasis
     {
         static void Main(string[] args)
         {
-            Calendar c = new Calendar();
-            DateTime t = DateTime.Today;
-            ReservationDate r = c.retrieveDate(t);
-            r.increaseOccupancy();
-            r.increaseOccupancy();
-            DateTime t2 = t.AddDays(1);
-            r = c.retrieveDate(t2);
-            Console.WriteLine(r.getOccupancy());
-            r = c.retrieveDate(t);
-            Console.WriteLine(r.getOccupancy());
+            ReservationDB rdb = new ReservationDB();
+            Reservation r = new Reservation("90 day", "Bjorkan Ulleholm", 55555555, DateTime.Today, DateTime.Today);
+
+            rdb.addReservation(r);
+            r = rdb.getReservation("Bjorkan Ulleholm")[0];
+            r.setCustomerCreditCard(99);
+            r = rdb.getReservation(DateTime.Today)[0];
+
+            Console.WriteLine(r.getCustomerCreditCard());
 
         }
     }

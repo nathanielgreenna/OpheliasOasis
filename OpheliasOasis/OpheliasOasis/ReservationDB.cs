@@ -46,23 +46,32 @@ namespace OpheliasOasis
 
         public void addReservation(Reservation res) 
         {
-            List<Reservation> byNameList;
-            List<Reservation> byDateList;
             try
             {
-                byNameList = reservationByName[res.getCustomerName()];
-                byDateList = reservationByDate[res.getStartDate().getDate()];
-                byNameList.Add(res);
-                byDateList.Add(res);
+                reservationByDate[res.getStartDate()].Add(res);
             }
             catch (KeyNotFoundException)
             {
-                reservationByName.Add(res.getCustomerName(),new List<Reservation>());
-                reservationByDate.Add(res.getStartDate().getDate(), new List<Reservation>());
-                reservationByName[res.getCustomerName()].Add(res);
-                reservationByDate[res.getStartDate().getDate()].Add(res);
+                reservationByDate.Add(res.getStartDate(), new List<Reservation>());
+                reservationByDate[res.getStartDate()].Add(res);
             }
+
+            try
+            {
+                reservationByName[res.getCustomerName()].Add(res);
+            }
+            catch (KeyNotFoundException)
+            {
+                reservationByName.Add(res.getCustomerName(), new List<Reservation>());
+                reservationByName[res.getCustomerName()].Add(res);
+            }
+
+
+
+
+
         }
+
 
 
 

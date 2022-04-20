@@ -20,14 +20,14 @@ namespace OpheliasOasis
         private int customerCreditCard;
         private String customerEmail;
         private int roomNumber;
-        private ReservationDate startDate;
-        private ReservationDate endDate;
+        private DateTime startDate;
+        private DateTime endDate;
         private int totalPrice;
         private String reservationStatus;
 
 
 
-        public Reservation(String resType, String cusName, int cusCC, ReservationDate sDate, ReservationDate eDate) 
+        public Reservation(String resType, String cusName, int cusCC, DateTime sDate, DateTime eDate) 
         {
             reservationType = resType;
             customerName = cusName;
@@ -74,14 +74,14 @@ namespace OpheliasOasis
 
         //don't know if we should be able to set rooms
 
-        public ReservationDate getStartDate() 
+        public DateTime getStartDate() 
         {
             return startDate;
         }
 
         //don't know if we should be able to directly set startDate
 
-        public ReservationDate getEndDate()
+        public DateTime getEndDate()
         {
             return endDate;
         }
@@ -121,7 +121,7 @@ namespace OpheliasOasis
             reservationStatus = "Checked Out";
         }
 
-        public void changeReservation(ReservationDate sDate, ReservationDate eDate)
+        public void changeReservation(DateTime sDate, DateTime eDate)
         {
             startDate = sDate;
             endDate = eDate;
