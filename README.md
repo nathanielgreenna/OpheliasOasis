@@ -4,9 +4,10 @@ This is our to-do list, please tell us what you're working on by putting your na
 - Main
 - ~~Reservation~~ - Nathan
 - ~~ReservationDate~~ - Nathan
-- Email -
-- PaymentInformationRequestEmail -
-- ReportGenerator - 
+- Email - Alex
+- PaymentInformationRequestEmail - Alex
+- ReportGenerator - Alec
 - ~~Hotel~~ - Alec
 - ~~Calendar~~ - Nathan
 - ~~ReservationDB~~ - Nathan
+- XML stuff - Nathan
