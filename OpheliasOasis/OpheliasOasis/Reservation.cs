@@ -3,7 +3,8 @@
  * TODO: Should more or less be done. subject to changes
  * Changelog:
  * 4/4/2022: created/getters and setters coded by Nathaniel
- * 4/19/2022: check in/ check out unnecessary with new changes
+ * 4/19/2022: check in/ check out unnecessary with new changes - Nathaniel
+ * 4/20/2022: added public to methods - Nathaniel
 */
 
 using System;

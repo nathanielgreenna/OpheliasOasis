@@ -3,6 +3,7 @@
  * TODO: 
  * Changelog:
  * 4/18/2022: created/initially coded by Alec
+ * 4/20/2022: added public to methods - Nathaniel
 */
 
 using System;
