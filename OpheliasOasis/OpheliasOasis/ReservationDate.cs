@@ -22,33 +22,33 @@ namespace OpheliasOasis
         private int basePrice;
         private int occupancy = 0;
 
-        ReservationDate(DateTime newDate) 
+        public ReservationDate(DateTime newDate) 
         {
             date = newDate;
         }
-        DateTime getDate() 
+        public DateTime getDate() 
         {
             return (date);
         }
 
 
-        int getBasePrice() 
+        public int getBasePrice() 
         {
             return (basePrice);
         }
-        void setBasePrice(int newPrice)
+        public void setBasePrice(int newPrice)
         {
             basePrice = newPrice;
         }
-        void increaseOccupancy() 
+        public void increaseOccupancy() 
         {
             occupancy++;
         }
-        void decreaseOccupancy()
+        public void decreaseOccupancy()
         {
             occupancy--;
         }
-        int getOccupancy()
+        public int getOccupancy()
         {
             return (occupancy);
         }
