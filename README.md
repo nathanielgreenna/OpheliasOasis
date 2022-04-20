@@ -8,10 +8,5 @@ This is our to-do list, please tell us what you're working on by putting your na
 - PaymentInformationRequestEmail -
 - ReportGenerator - 
 - ~~Hotel~~ - Alec
-- Calendar - 
-- ReservationDB - 
-
-With the two done right now, I'll be implementing Hotel and then we can start formally dividing the project up.
-
-
-
+- ~~Calendar~~ - Nathan
+- ReservationDB - Nathan
