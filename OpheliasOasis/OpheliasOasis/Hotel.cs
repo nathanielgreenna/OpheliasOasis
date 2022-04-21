@@ -3,6 +3,7 @@
  * TODO: 
  * Changelog:
  * 4/18/2022: created/initially coded by Alec
+ * 4/20/2022: added public to methods - Nathaniel
 */
 
 using System;
@@ -23,19 +24,19 @@ namespace OpheliasOasis
             roomsOccupied = 0;
         }
 
-        List<bool> getRooms()
+        public List<bool> getRooms()
         {
             return this.rooms;
         }
-        void setRooms(List<bool> rooms)
+        public void setRooms(List<bool> rooms)
         {
             this.rooms = rooms;
         }
-        int getRoomsOccupied()
+        public int getRoomsOccupied()
         {
             return this.roomsOccupied;
         }
-        int assignRoom()
+        public int assignRoom()
         {
             for (int i = 0; i < this.rooms.Count; i++)
             {
@@ -48,7 +49,7 @@ namespace OpheliasOasis
             }
             return -1;
         }
-        void clearRoom(int roomNo)
+        public void clearRoom(int roomNo)
         {
             int i = roomNo - 1;
             if (i >= 0)

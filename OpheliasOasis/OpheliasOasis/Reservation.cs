@@ -3,6 +3,9 @@
  * TODO: Should more or less be done. subject to changes
  * Changelog:
  * 4/4/2022: created/getters and setters coded by Nathaniel
+ * 4/19/2022: check in/ check out unnecessary with new changes - Nathaniel
+ * 4/20/2022: added public to methods - Nathaniel
+ * 4/20/2022: Changed reservationType to type ReservationType - Alex
 */
 
 using System;
@@ -13,86 +16,117 @@ namespace OpheliasOasis
 {
     class Reservation
     {
-        private String reservationType;
+        private ReservationType reservationType;
         private String customerName;
         private int customerCreditCard;
         private String customerEmail;
         private int roomNumber;
-        private ReservationDate startDate;
-        private ReservationDate endDate;
+        private DateTime startDate;
+        private DateTime endDate;
         private int totalPrice;
         private String reservationStatus;
 
-        String getReservationType() 
+
+
+        public Reservation(ReservationType resType, String cusName, int cusCC, DateTime sDate, DateTime eDate) 
+        {
+            reservationType = resType;
+            customerName = cusName;
+            customerCreditCard = cusCC;
+            startDate = sDate;
+            endDate = eDate;
+        }
+        public ReservationType getReservationType() 
         {
             return reservationType;
         }
-        void setReservationType(String type) 
+        public void setReservationType(ReservationType type) 
         {
             reservationType = type;
         }
-        String getCustomerName() 
+        public String getCustomerName() 
         {
             return customerName;
         }
-        void setCustomerName(String name) 
+        public void setCustomerName(String name) 
         {
             customerName = name;
         }
-        int getCustomerCreditCard()
+        public int getCustomerCreditCard()
         {
             return customerCreditCard;
         }
-        void setCustomerCreditCard(int card)
+        public void setCustomerCreditCard(int card)
         {
             customerCreditCard = card;
         }
-        String getCustomerEmail() 
+        public String getCustomerEmail() 
         {
             return customerEmail;
         }
-        void setCustomerEmail(String email) 
+        public void setCustomerEmail(String email) 
         {
             customerEmail = email;
         }
-        int getRoomNumber() 
+        public int getRoomNumber() 
         {
             return roomNumber;
         }
 
         //don't know if we should be able to set rooms
 
-        ReservationDate getStartDate() 
+        public DateTime getStartDate() 
         {
             return startDate;
         }
 
         //don't know if we should be able to directly set startDate
 
-        ReservationDate getEndDate()
+        public DateTime getEndDate()
         {
             return endDate;
         }
 
         //don't know if we should be able to directly set endDate
 
-        int getTotalPrice() 
+        public int getTotalPrice() 
         {
             return totalPrice;
         }
 
         //don't know if we should be able to directly set price
 
-        String getReservationStatus()
+        public String getReservationStatus()
         {
             return reservationStatus;
         }
-        void setReservationStatus(String status)
+        public void setReservationStatus(String status)
         {
             reservationStatus = status;
         }
 
 
+
+        public void cancelReservation() 
+        {
+            reservationStatus = "Cancelled";
+        }
+
+        public void checkIn()
+        {
+            reservationStatus = "Checked In";
+        }
+
+        public void checkOut()
+        {
+            reservationStatus = "Checked Out";
+        }
+
+        public void changeReservation(DateTime sDate, DateTime eDate)
+        {
+            startDate = sDate;
+            endDate = eDate;
+        }
 
 
 

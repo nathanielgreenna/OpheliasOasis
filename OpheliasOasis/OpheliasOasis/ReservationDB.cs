@@ -59,7 +59,6 @@ namespace OpheliasOasis
             return reservations;
         }
 
-
         public void addReservation(Reservation res) 
         {
             try
