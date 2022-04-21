@@ -9,7 +9,7 @@ namespace OpheliasOasis
         static void Main(string[] args)
         {
             ReservationDB rdb = new ReservationDB();
-            Reservation r = new Reservation("90 day", "Bjorkan Ulleholm", 55555555, DateTime.Today, DateTime.Today);
+            Reservation r = new Reservation(ReservationType.SixtyDay, "Bjorkan Ulleholm", 55555555, DateTime.Today, DateTime.Today);
 
             rdb.addReservation(r);
             r = rdb.getReservation("Bjorkan Ulleholm")[0];
