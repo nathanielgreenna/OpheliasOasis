@@ -36,7 +36,7 @@ namespace OpheliasOasis
                 }
             }
 
-            string file = path + today.ToShortDateString() + @"\DailyArrivalsReport";
+            string file = path + today.ToShortDateString() + @"\DailyArrivalsReport.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)
@@ -65,7 +65,7 @@ namespace OpheliasOasis
                 }
             }
 
-            string file = path + today.ToShortDateString() + @"\DailyOccupancyReport";
+            string file = path + today.ToShortDateString() + @"\DailyOccupancyReport.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)
@@ -117,7 +117,7 @@ namespace OpheliasOasis
             double occupancyRate = totalOccupancy / 30;
             output.Add("Average Expected Occupancy Rate from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": " + occupancyRate.ToString("F1"));
 
-            string file = path + startDate.ToShortDateString() + @"\ExpectedOccupancyReport";
+            string file = path + startDate.ToShortDateString() + @"\ExpectedOccupancyReport.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)
@@ -150,7 +150,7 @@ namespace OpheliasOasis
             output.Add("Total Income from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + totalIncome);
             output.Add("Average Income from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + averageIncome.ToString("F2"));
 
-            string file = path + startDate.ToShortDateString() + @"\ExpectedIncomeReport";
+            string file = path + startDate.ToShortDateString() + @"\ExpectedIncomeReport.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)
@@ -187,7 +187,7 @@ namespace OpheliasOasis
             output.Add("Total Discount from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + totalDiscount);
             output.Add("Average Discount from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + averageDicount.ToString("F2"));
 
-            string file = path + startDate.ToShortDateString() + @"\IncentiveReport";
+            string file = path + startDate.ToShortDateString() + @"\IncentiveReport.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)
