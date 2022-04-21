@@ -5,7 +5,7 @@
  * 4/4/2022: created/getters and setters coded by Nathaniel
  * 4/19/2022: check in/ check out unnecessary with new changes - Nathaniel
  * 4/20/2022: added public to methods - Nathaniel
- * 4/20/2022: Changed reservationType to type ReservationType
+ * 4/20/2022: Changed reservationType to type ReservationType - Alex
 */
 
 using System;

@@ -3,8 +3,6 @@
  * 
  * Description: An extension of IEmail designed to generate and store the information for a payment request email.
  * 
- * To do: Change 60-day detection to recognize the enumeration
- * 
  * Changelog:
  * 4/20/2022: Implemented getters for recipients, header text, body text, and attachments & added error checking - Alex
  */
