@@ -19,7 +19,7 @@ This is our to-do list, please tell us what you're working on by putting your na
 - ~~ReservationDate~~ - Nathan
 - ~~Email~~ - Alex
 - ~~PaymentInformationRequestEmail~~ - Alex
-- ReportGenerator - Alec
+- ~~ReportGenerator~~ - Alec
 - ~~Hotel~~ - Alec
 - ~~Calendar~~ - Nathan
 - ~~ReservationDB~~ - Nathan
