@@ -5,6 +5,7 @@
  * 4/4/2022: created/getters and setters coded by Nathaniel
  * 4/19/2022: check in/ check out unnecessary with new changes - Nathaniel
  * 4/20/2022: added public to methods - Nathaniel
+ * 4/20/2022: Changed reservationType to type ReservationType
 */
 
 using System;
@@ -15,7 +16,7 @@ namespace OpheliasOasis
 {
     class Reservation
     {
-        private String reservationType;
+        private ReservationType reservationType;
         private String customerName;
         private int customerCreditCard;
         private String customerEmail;
@@ -27,7 +28,7 @@ namespace OpheliasOasis
 
 
 
-        public Reservation(String resType, String cusName, int cusCC, DateTime sDate, DateTime eDate) 
+        public Reservation(ReservationType resType, String cusName, int cusCC, DateTime sDate, DateTime eDate) 
         {
             reservationType = resType;
             customerName = cusName;
@@ -35,11 +36,11 @@ namespace OpheliasOasis
             startDate = sDate;
             endDate = eDate;
         }
-        public String getReservationType() 
+        public ReservationType getReservationType() 
         {
             return reservationType;
         }
-        public void setReservationType(String type) 
+        public void setReservationType(ReservationType type) 
         {
             reservationType = type;
         }
