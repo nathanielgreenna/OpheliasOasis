@@ -51,7 +51,22 @@ namespace OpheliasOasis
         }
 
 
-
+        public List<Reservation> getActiveReservations(DateTime date)
+        {
+            List<Reservation> reservations = new List<Reservation>();
+            Dictionary<DateTime, List<Reservation>>.ValueCollection resColl = reservationByDate.Values;
+            foreach (List<Reservation> resCollVal in resColl)
+            {
+                foreach (Reservation reservation in resCollVal)
+                {
+                    if (date.CompareTo(reservation.getStartDate()) > 0 || date.CompareTo(reservation.getEndDate()) <= 0)
+                    {
+                        reservations.Add(reservation);
+                    }
+                }
+            }
+            return reservations;
+        }
 
         public void addReservation(Reservation res) 
         {
