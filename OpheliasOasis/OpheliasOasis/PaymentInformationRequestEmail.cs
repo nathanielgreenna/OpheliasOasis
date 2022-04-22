@@ -25,7 +25,6 @@ namespace OpheliasOasis
         /// <param name="reservation">The 60-day reservation for the request.</param>
         public PaymentInformationRequestEmail(Reservation reservation)
         {
-
             String emailName = reservation == null ? "" : reservation.getCustomerName() + "'s PaymentInformationRequestEmail";
 
             if (reservation == null)
