@@ -24,7 +24,14 @@ namespace OpheliasOasis
 
         public Hotel() 
         { 
-            rooms = new List<bool>(45);
+            rooms = new List<bool>
+            {
+                false, false, false, false, false, false, false, false, false,
+                false, false, false, false, false, false, false, false, false,
+                false, false, false, false, false, false, false, false, false,
+                false, false, false, false, false, false, false, false, false,
+                false, false, false, false, false, false, false, false, false,
+            };
             roomsOccupied = 0;
         }
 
