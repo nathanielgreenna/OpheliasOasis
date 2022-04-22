@@ -15,7 +15,7 @@ namespace OpheliasOasis
 	/// <summary>
 	/// An enum representing the type of reservation.
 	/// </summary>
-	enum ReservationType
+	public enum ReservationType
 	{
 		/// <summary>
 		/// A prepaid reservation made 90 days in advance.

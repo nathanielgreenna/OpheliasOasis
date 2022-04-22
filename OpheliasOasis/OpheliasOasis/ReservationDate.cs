@@ -12,16 +12,25 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace OpheliasOasis
 {
-    
 
-    class ReservationDate
+    [DataContract(Name = "ResDate", Namespace = "OpheliasOasis")]
+    public class ReservationDate
     {
+        [DataMember(Name = "Date")]
         private DateTime date;
+        [DataMember(Name = "ResPrice")]
         private int basePrice;
+        [DataMember(Name = "Occ")]
         private int occupancy = 0;
+
+
+        public ReservationDate()
+        {
+        }
 
         public ReservationDate(DateTime newDate) 
         {
