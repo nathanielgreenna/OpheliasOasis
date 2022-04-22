@@ -11,10 +11,10 @@ This is our to-do list, please tell us what you're working on by putting your na
     - Reports
     - Emails
     - Backups
-  - Reservations
-    - Create
-    - Modify
-    - Cancel
+  - Reservations - Alex
+    - Create - Alex
+    - Modify - Alex
+    - Cancel - Alex
 - ~~Reservation~~ - Nathan
 - ~~ReservationDate~~ - Nathan
 - ~~Email~~ - Alex
