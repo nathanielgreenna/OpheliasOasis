@@ -23,4 +23,4 @@ This is our to-do list, please tell us what you're working on by putting your na
 - ~~Hotel~~ - Alec
 - ~~Calendar~~ - Nathan
 - ~~ReservationDB~~ - Nathan
-- XML stuff - Nathan
+- ~~XML stuff~~ - Nathan
