@@ -8,6 +8,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 
 namespace OpheliasOasis
 {
@@ -41,10 +42,13 @@ namespace OpheliasOasis
             r.setCustomerCreditCard(99);
             Console.WriteLine(rdb2.getReservation(DateTime.Today)[0].getCustomerCreditCard());
 
+            ProcessPage p = new ProcessPage("Random process", "Perform a random process", new List<Action>{ Console.WriteLine, Console.WriteLine , Console.WriteLine });
+            MenuPage m = new MenuPage("Reservation Menu", "Place, update, or cancel a reservation", new List<Page> { p });
+
             while(true)
             {
                 System.Threading.Thread.Sleep(2000);
-                ReservationMenu();
+                m.Open();
             }
 
         }
@@ -120,7 +124,7 @@ namespace OpheliasOasis
                 // Perform step
                 switch (step)
                 {
-                    case 1: date = RequestReservationStartDate(); break;
+                    case 1: date = RequestReservationStartDate(date); break;
                 }
 
                 // Navigate to the next user-selected step
@@ -198,7 +202,7 @@ namespace OpheliasOasis
         /// <summary>
         /// 
         /// </summary>
-        static DateTime RequestReservationStartDate()
+        static DateTime RequestReservationStartDate(DateTime? defaultt)
         {
             return DateTime.Today;
         }
