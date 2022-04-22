@@ -11,7 +11,7 @@ using System;
 
 namespace OpheliasOasis
 {
-	enum ReservationType
+	public enum ReservationType
 	{
 		Prepaid,
 		SixtyDay,

@@ -11,14 +11,21 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace OpheliasOasis
 {
-    class Calendar
+    [DataContract(Name = "Cal", Namespace = "OpheliasOasis")]
+    public class Calendar
     {
+        [DataMember(Name = "calDates")]
         private Dictionary<DateTime, ReservationDate> dates = new Dictionary<DateTime, ReservationDate>();
 
-
+        
+        public Calendar() 
+        { 
+        }
+        
         public ReservationDate retrieveDate(DateTime date) 
         {
             DateTime today = DateTime.Today;

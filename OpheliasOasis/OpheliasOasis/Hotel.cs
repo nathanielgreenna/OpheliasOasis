@@ -10,12 +10,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Runtime.Serialization;
 
 namespace OpheliasOasis
 {
-    class Hotel
+    [DataContract(Name = "Hotel", Namespace = "OpheliasOasis")]
+    public class Hotel
     {
+        [DataMember(Name = "Rooms")]
         private List<bool> rooms;
+        [DataMember(Name = "RoomsOcc")]
         private int roomsOccupied;
 
         public Hotel() 

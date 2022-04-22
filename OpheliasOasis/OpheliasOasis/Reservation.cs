@@ -11,23 +11,36 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace OpheliasOasis
 {
-    class Reservation
+    [DataContract(Name = "Res", Namespace = "OpheliasOasis")]
+    public class Reservation
     {
+        [DataMember(Name = "resType")]
         private ReservationType reservationType;
+        [DataMember(Name = "resName")]
         private String customerName;
+        [DataMember(Name = "resCC")]
         private int customerCreditCard;
+        [DataMember(Name = "resEmail")]
         private String customerEmail;
+        [DataMember(Name = "roomNo")]
         private int roomNumber;
+        [DataMember(Name = "startDate")]
         private DateTime startDate;
+        [DataMember(Name = "endDate")]
         private DateTime endDate;
+        [DataMember(Name = "resPrice")]
         private int totalPrice;
+        [DataMember(Name = "resStatus")]
         private String reservationStatus;
 
 
-
+        public Reservation()
+        {
+        }
         public Reservation(ReservationType resType, String cusName, int cusCC, DateTime sDate, DateTime eDate) 
         {
             reservationType = resType;

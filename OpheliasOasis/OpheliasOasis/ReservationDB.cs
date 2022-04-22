@@ -9,13 +9,22 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace OpheliasOasis
 {
-    class ReservationDB
+    [DataContract(Name = "ResDB", Namespace = "OpheliasOasis")]
+    public class ReservationDB
     {
+        [DataMember(Name = "resByName")]
         private Dictionary<String, List<Reservation>> reservationByName = new Dictionary<String, List<Reservation>>();
         private Dictionary<DateTime, List<Reservation>> reservationByDate = new Dictionary<DateTime, List<Reservation>>();
+
+        public ReservationDB()
+        {
+        }
+
+
 
         public List<Reservation> getReservation(DateTime date) 
         {
@@ -70,6 +79,44 @@ namespace OpheliasOasis
 
 
 
+        }
+
+        public void reorganize()
+        {
+            if (reservationByDate != null) 
+            {
+                return;
+            }
+
+            reservationByDate = new Dictionary<DateTime, List<Reservation>>();
+            Dictionary<String, List<Reservation>>.ValueCollection lists = reservationByName.Values;
+
+
+            foreach (List<Reservation> transferResList in lists)
+            {
+                foreach(Reservation transferRes in transferResList)
+                {
+                    try
+                    {
+                        reservationByDate[transferRes.getStartDate()].Add(transferRes);
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        reservationByDate.Add(transferRes.getStartDate(), new List<Reservation>());
+                        reservationByDate[transferRes.getStartDate()].Add(transferRes);
+                    }
+
+
+
+                }
+
+
+
+            }
+        
+        
+        
+        
         }
 
 
