@@ -35,8 +35,6 @@ namespace OpheliasOasis
 
 
             // level 1 of tree
-            ProcessPage checkIn = new ProcessPage("Check In", "Check In", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
-            ProcessPage checkOut = new ProcessPage("Check Out", "Check Out", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
             ProcessPage dates = new ProcessPage("Dates", "Dates", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
             ProcessPage reportsEmailsBackups = new ProcessPage("Reports, Emails, and Backups", "Reports, Emails, and Backups", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
             //MenuPage reservations = new MenuPage("Reservation Menu", "Place, update, or cancel a reservation", new List<Page> { ReservationPageHandler.p, ReservationPageHandler.u, ReservationPageHandler.c });

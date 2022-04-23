@@ -31,6 +31,8 @@ namespace OpheliasOasis
         [DataMember(Name = "startDate")]
         private DateTime startDate;
         [DataMember(Name = "endDate")]
+        private DateTime paymentDate;
+        [DataMember(Name = "paymentDate")]
         private DateTime endDate;
         [DataMember(Name = "resPrice")]
         private int totalPrice;
@@ -85,8 +87,10 @@ namespace OpheliasOasis
         {
             return roomNumber;
         }
-
-        //don't know if we should be able to set rooms
+        public void setRoomNumber(int roomNo)
+        {
+            roomNumber = roomNo;
+        }
 
         public DateTime getStartDate() 
         {
@@ -96,6 +100,16 @@ namespace OpheliasOasis
         public void setStartDate(DateTime t)
         {
             startDate = t;
+        }
+
+        public void setPaymentDate(DateTime t)
+        {
+            paymentDate = t;
+        }
+
+        public DateTime getPaymentDate()
+        {
+            return paymentDate;
         }
 
         public DateTime getEndDate()
