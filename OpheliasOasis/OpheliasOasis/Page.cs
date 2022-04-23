@@ -18,14 +18,14 @@ namespace OpheliasOasis
     /// </summary>
 	public abstract class Page
 	{
-        private readonly string title;
-        private readonly string description;
+        private readonly String title;
+        private readonly String description;
 
         /// <summary>
         /// Create a new page with the specified title.
         /// </summary>
         /// <param name="title">The title of the new page.</param>
-        public Page(string title, string description)
+        public Page(String title, String description)
 		{
             this.title = title;
             this.description = description;
@@ -40,7 +40,7 @@ namespace OpheliasOasis
         /// Get the description of the page. Used for page headers and menu options.
         /// </summary>
         /// <returns>A string containing the description of the page.</returns>
-        public string GetDescription()
+        public String GetDescription()
         {
             return description;
         }
@@ -49,7 +49,7 @@ namespace OpheliasOasis
         /// Get the title of the page. Used for page headers and menu options.
         /// </summary>
         /// <returns>A string containing the title of the page.</returns>
-        public string GetTitle()
+        public String GetTitle()
         {
             return title;
         }
