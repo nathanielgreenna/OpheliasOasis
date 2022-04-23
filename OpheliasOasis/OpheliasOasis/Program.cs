@@ -23,32 +23,33 @@ namespace OpheliasOasis
 
         static void Main(string[] args)
         {
-            ReservationDB rdb = new ReservationDB();
-            Reservation r = new Reservation(ReservationType.SixtyDay, "Bjorkan Ulleholm", 55555555, DateTime.Today, DateTime.Today);
-            rdb.addReservation(r);
-            Hotel g = new Hotel();
-            g.assignRoom();
-            Calendar l = new Calendar();
-            l.retrieveDate(DateTime.Today);
-            XMLreader.XMLout(rdb, g, l);
-
-            ReservationDB rdb2 = new ReservationDB();
+            //Ophelia's is in AU, so make culture AU
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-AU");
+            ReservationPageHandler.setReservationDB(new ReservationDB());
 
 
-            XMLformat totalXML = XMLreader.ResDBin(DateTime.Today);
-            rdb2 = totalXML.R;
+            //level 2 of tree
+            ProcessPage p = new ProcessPage("Place", "Place", ReservationPageHandler.addRes, ReservationPageHandler.addResFunctions, ReservationPageHandler.addRestoDB);
+            ProcessPage u = new ProcessPage("Update", "Update", new List<String> { "Input Name" }, new List<Func<String, Boolean>> { Placeholder }, null);
+            ProcessPage c = new ProcessPage("Cancel", "Cancel", new List<String> { "Input Name" }, new List<Func<String, Boolean>> { Placeholder }, null);
 
-            r = rdb2.getReservation("Bjorkan Ulleholm")[0];
-            r.setCustomerCreditCard(99);
-            Console.WriteLine(rdb2.getReservation(DateTime.Today)[0].getCustomerCreditCard());
 
-            ProcessPage p = new ProcessPage("Random process", "Perform a random process", new List<Action>{ Console.WriteLine, Console.WriteLine , Console.WriteLine });
-            MenuPage m = new MenuPage("Reservation Menu", "Place, update, or cancel a reservation", new List<Page> { p });
+
+
+            // level 1 of tree
+            ProcessPage checkIn = new ProcessPage("Check In", "Check In", new List<String> { "Input Name" }, new List<Func<String, Boolean>> { Placeholder }, null);
+            ProcessPage checkOut = new ProcessPage("Check Out", "Check Out", new List<String> { "Input Name" }, new List<Func<String, Boolean>> { Placeholder }, null);
+            ProcessPage dates = new ProcessPage("Dates", "Dates", new List<String> { "Input Name" }, new List<Func<String, Boolean>> { Placeholder }, null);
+            ProcessPage reportsEmailsBackups = new ProcessPage("Reports, Emails, and Backups", "Reports, Emails, and Backups", new List<String> { "Input Name" }, new List<Func<String, Boolean>> { Placeholder }, null);
+            MenuPage reservations = new MenuPage("Reservation Menu", "Choose an option below", new List<Page> { p, u, c });
+
+            //Home. this is top of the tree
+            MenuPage home = new MenuPage("Home Menu", "Choose an option below", new List<Page> { checkIn, checkOut, dates, reportsEmailsBackups, reservations });
 
             while(true)
             {
                 System.Threading.Thread.Sleep(2000);
-                m.Open();
+                home.Open();
             }
 
         }
@@ -56,7 +57,7 @@ namespace OpheliasOasis
         /// <summary>
         /// Display the menu for adding, creating, or removing reservations.
         /// </summary>
-        static void ReservationMenu()
+        /*static void ReservationMenu()
         {
             while (true)
             {
@@ -87,18 +88,18 @@ namespace OpheliasOasis
                 // Navigate to selected process
                 switch (selection)
                 {
-                    case 1: PlaceReservation(); break;
-                    case 2: UpdateReservation(); break;
-                    case 3: CancelReservation(); break;
+                    //case 1: PlaceReservation(); break;
+                   // case 2: UpdateReservation(); break;
+                   // case 3: CancelReservation(); break;
                     case 4: return;
                 }
             }
-        }
+        } */
 
         /// <summary>
         /// Walk the user through placing a reservation.
         /// </summary>
-        static void PlaceReservation()
+        /*static void PlaceReservation()
         {
             // Store step variables
             int step = 1;
@@ -158,22 +159,24 @@ namespace OpheliasOasis
                         break;
                 }
             }
-        }
+        } */
 
         /// <summary>
         /// Walk the user through updating a reservation.
         /// </summary>
-        static void UpdateReservation()
+        static Boolean Placeholder(String inStr)
         {
-            Console.WriteLine("Modify");
+            Console.WriteLine("Place successfully held!");
+            return true;
         }
 
         /// <summary>
         /// Walk the user through cancelling a reservation.
         /// </summary>
-        static void CancelReservation()
+        static Boolean CancelReservation(String inStr)
         {
             Console.WriteLine("Cancel");
+            return true;
         }
 
         /// <summary>
@@ -192,10 +195,9 @@ namespace OpheliasOasis
         /// </summary>
         static void DisplayStepNavigationHint()
         {
-            Console.WriteLine("Reminder - enter the following between steps:");
+            Console.WriteLine("Special input commands:");
             Console.WriteLine("\tB: Move back a step");
-            Console.WriteLine("\tR: Repeat the current step");
-            Console.WriteLine("\tC (default): Continue to the next step.");
+            Console.WriteLine("\tQ: Quit this screen");
             Console.WriteLine();
         }
 

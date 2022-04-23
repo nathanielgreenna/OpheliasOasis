@@ -39,7 +39,7 @@ namespace OpheliasOasis
                 Console.WriteLine("Please select one of the following options:");
                 for (int i = 0; i < pages.Count; i++)
                 {
-                    Console.WriteLine("\t" + (i + 1) + ": " + pages[i].getDescription());
+                    Console.WriteLine("\t" + (i + 1) + ": " + pages[i].getTitle());
                 }
                 Console.WriteLine("\t" + exitOption + ": Exit menu");
                 Console.WriteLine();
@@ -47,7 +47,7 @@ namespace OpheliasOasis
                 
 
                 Console.Write("Please enter your selection (1-" + exitOption + "): ");
-                selectionText = Console.ReadLine();
+                selectionText = Console.ReadKey().KeyChar.ToString();
 
                 // If necessary, repeatedly request a selection until a valid number is provided
                 while (!int.TryParse(selectionText, out selection) || selection > exitOption || selection < 1)
