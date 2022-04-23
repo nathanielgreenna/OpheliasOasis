@@ -10,11 +10,12 @@ namespace OpheliasOasis
     [DataContract(Name = "XMLStr", Namespace = "OpheliasOasis")]
     public struct XMLformat
     {
-        public XMLformat(ReservationDB db, Hotel hot, Calendar calend) 
+        public XMLformat(ReservationDB db, Hotel hot, Calendar calend, String managerPass) 
         {
             R = db;
             H = hot;
             C = calend;
+            M = managerPass;
         }
 
         [DataMember(Name = "XMLStrRDB")]
@@ -23,6 +24,8 @@ namespace OpheliasOasis
         public Hotel H { get; set;  }
         [DataMember(Name = "XMLStrC")]
         public Calendar C { get; set; }
+        [DataMember(Name = "XMLStrMP")]
+        public String M { get; set; }
 
     }
 
@@ -31,7 +34,7 @@ namespace OpheliasOasis
 
     static class XMLreader
     {
-        static public void XMLout(ReservationDB ResDB, Hotel hotel, Calendar cal) 
+        static public void XMLout(ReservationDB ResDB, Hotel hotel, Calendar cal, String ManPass) 
         {
             if (File.Exists(@".\" + DateTime.Today.ToString("D"))) 
             {
@@ -43,14 +46,19 @@ namespace OpheliasOasis
 
             XmlDictionaryWriter writer = XmlDictionaryWriter.CreateTextWriter(fs);
             DataContractSerializer ser = new DataContractSerializer(typeof(XMLformat));
-            ser.WriteObject(writer, new XMLformat(ResDB, hotel, cal));
+            ser.WriteObject(writer, new XMLformat(ResDB, hotel, cal, ManPass));
             writer.Close();
             fs.Close();
         }
 
 
-        static public XMLformat ResDBin(DateTime day)
+        static public XMLformat XMLin(DateTime day)
         {
+            if (! File.Exists(@".\" + day.ToString("D")))
+            {
+                throw new FileNotFoundException();
+            }
+
             FileStream fs = new FileStream(@".\" + day.ToString("D"), FileMode.OpenOrCreate);
             XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
 

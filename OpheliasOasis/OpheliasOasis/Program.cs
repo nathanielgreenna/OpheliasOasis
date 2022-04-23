@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace OpheliasOasis
 {
@@ -18,14 +19,19 @@ namespace OpheliasOasis
     class Program
     {
         private static readonly int MAX_OCCUPANCY = 45;
-        private static readonly ReservationDB reservationDB;
-        private static readonly Calendar calendar = new Calendar();
+        private static ReservationDB reservationDB;
+        private static Calendar calendar;
+        private static Hotel hotel;
+        private static String managerPassword;
 
         static void Main(string[] args)
         {
             //Ophelia's is in AU, so make culture AU
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-AU");
             ReservationPageHandler.Init(new ReservationDB(), calendar);
+
+            StartupScreen();
+            return;
 
 
             //level 2 of tree
@@ -198,11 +204,138 @@ namespace OpheliasOasis
         }
 
         /// <summary>
-        /// 
+        /// Startup code
         /// </summary>
-        static DateTime RequestReservationStartDate(DateTime? defaultt)
+        static void StartupScreen()
         {
-            return DateTime.Today;
+            Console.WriteLine("    .    _    +     .  ______   .          .  ");
+            Console.WriteLine(" (      /|\\      .    |      \\      .   +   ");
+            Console.WriteLine("     . |||||     _    | |   | | ||         .  ");
+            Console.WriteLine(".      |||||    | |  _| | | | |_||    .       ");
+            Console.WriteLine("   /\\  ||||| .  | | |   | |      |       .   ");
+            Console.WriteLine("__||||_|||||____| |_|_____________\\__________");
+            Console.WriteLine(". |||| |||||  /\\   _____      _____  .   .   ");
+            Console.WriteLine("  |||| ||||| ||||   .   .  .         ________ ");
+            Console.WriteLine(" . \\|`-'|||| ||||    __________       .    . ");
+            Console.WriteLine("    \\__ |||| |||| Ophelia's Oasis  .    .    ");
+            Console.WriteLine(" __    ||||`-'|||  .       .    __________    ");
+            Console.WriteLine(".    . |||| ___/  ___________             .   ");
+            Console.WriteLine("   . _ ||||| . _               .   _________  ");
+            Console.WriteLine("_   ___|||||__  _    .   . _____   .         _");
+            Console.WriteLine("     _ `---'    .    ..   _   .   .  ____    .");
+            Console.WriteLine("Loading most recent backup...");
+
+            XMLformat g;
+            DateTime t = DateTime.Today;
+            for (int i = 0; i < 100; i++) 
+            {
+                try 
+                {
+                    g = XMLreader.XMLin(t);
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.Write("Loaded Most Recent Backup From" + t.ToString("D"));
+                    reservationDB = g.R;
+                    calendar = g.C;
+                    hotel = g.H;
+                    managerPassword = g.M;
+                    System.Threading.Thread.Sleep(2000);
+                    return;
+
+                }
+                catch(FileNotFoundException)
+                {
+                    t = t.AddDays(-1);
+                }
+
+            }
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.WriteLine("Backup not found within the last 100 days.");
+            String inp;
+            Console.Write("Type SETUP if this is the first time opening the application, or enter a date in DD/MM/YYYY format to attempt to load: ");
+
+            while (true)
+            { 
+                inp = Console.ReadLine();
+                switch (inp) 
+                {
+                    case "SETUP":
+                        reservationDB = new ReservationDB();
+                        hotel = new Hotel();
+                        calendar = new Calendar();
+                        Console.WriteLine("Welcome to the application!");
+                        System.Threading.Thread.Sleep(2000);
+                        SetManagerPassword();
+                        return;
+                    default:
+                        if (DateTime.TryParse(inp, out t))
+                        {
+                            if (File.Exists(@".\" + t.ToString("D")))
+                            {
+                                g = XMLreader.XMLin(t);
+                                reservationDB = g.R;
+                                hotel = g.H;
+                                calendar = g.C;
+                                managerPassword = g.M;
+                                Console.WriteLine("File found! Loading...");
+                                System.Threading.Thread.Sleep(2000);
+                                return;
+                            }
+                            else
+                            {
+                                Console.Write("\nNo archive found for  \"" + inp + "\". ");
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            Console.Write("\n\"" + inp + "\" Isn't a valid date. ");
+                            break;
+                        }
+                }
+                Console.Write("Try again: ");
+
+            }
+
+            
+
+
+
+
+
+
         }
+
+
+        static void SetManagerPassword()
+        {
+            String candidatePassword = "";
+            String confirmPassword = "";
+            while (candidatePassword.Length < 5) 
+            {
+                Console.Write("Enter your new manager password. Must be at least 5 characters: ");
+                candidatePassword = Console.ReadLine();
+            }
+            while (confirmPassword != candidatePassword)
+            {
+                Console.Write("Confirm manager password: ");
+                confirmPassword = Console.ReadLine();
+            }
+            managerPassword = candidatePassword;
+            Console.WriteLine("Manager password set! This can be changed later in the Records menu.");
+            System.Threading.Thread.Sleep(4000);
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
