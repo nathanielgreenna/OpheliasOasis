@@ -52,8 +52,8 @@ namespace OpheliasOasis
         {
             // Store current step and input
             int step = 1;
-            String uInput;
-            String procOutput;
+            string uInput;
+            string procOutput;
 
             // Display page information
             DisplayHeader();
@@ -77,14 +77,14 @@ namespace OpheliasOasis
                         }
                         else
                         {
-                            Console.Write("Exit without saving? All progress will be lost. (y/N):");
+                            Console.Write("Exit without saving? All progress will be lost. (y/N): ");
                             if (Console.ReadLine().ToUpper() == "Y") return;
                         }
                         break;
 
                     // Quit
                     case "Q":
-                        Console.Write("Exit without saving? All progress will be lost. (y/N):");
+                        Console.Write("Exit without saving? All progress will be lost. (y/N): ");
                         if (Console.ReadLine().ToUpper() == "Y") return;
                         break;
 
@@ -99,7 +99,7 @@ namespace OpheliasOasis
                             }
                             else
                             {
-                                Console.Write("Save and exit? (Y/n):");
+                                Console.Write("Save and exit? (Y/n): ");
 
                                 if (Console.ReadLine().ToUpper() != "N")
                                 {
