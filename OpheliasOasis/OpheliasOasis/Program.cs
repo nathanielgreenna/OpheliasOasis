@@ -29,22 +29,22 @@ namespace OpheliasOasis
 
 
             //level 2 of tree
-            ProcessPage p = new ProcessPage("Place", "Place", ReservationPageHandler.addRes, ReservationPageHandler.addResFunctions, ReservationPageHandler.addRestoDB);
-            ProcessPage u = new ProcessPage("Update", "Update", new List<String> { "Input Name" }, new List<Func<String, Boolean>> { Placeholder }, null);
-            ProcessPage c = new ProcessPage("Cancel", "Cancel", new List<String> { "Input Name" }, new List<Func<String, Boolean>> { Placeholder }, null);
+            ProcessPage p = new ProcessPage("Place Reservation", "Place a new reservation", ReservationPageHandler.addResPrompts, ReservationPageHandler.addResFunctions, ReservationPageHandler.addRestoDB);
+            ProcessPage u = new ProcessPage("Update Reservation", "Update an existing reservation", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
+            ProcessPage c = new ProcessPage("Cancel Reservation", "Cancel an existing reservation", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
 
 
 
 
             // level 1 of tree
-            ProcessPage checkIn = new ProcessPage("Check In", "Check In", new List<String> { "Input Name" }, new List<Func<String, Boolean>> { Placeholder }, null);
-            ProcessPage checkOut = new ProcessPage("Check Out", "Check Out", new List<String> { "Input Name" }, new List<Func<String, Boolean>> { Placeholder }, null);
-            ProcessPage dates = new ProcessPage("Dates", "Dates", new List<String> { "Input Name" }, new List<Func<String, Boolean>> { Placeholder }, null);
-            ProcessPage reportsEmailsBackups = new ProcessPage("Reports, Emails, and Backups", "Reports, Emails, and Backups", new List<String> { "Input Name" }, new List<Func<String, Boolean>> { Placeholder }, null);
-            MenuPage reservations = new MenuPage("Reservation Menu", "Choose an option below", new List<Page> { p, u, c });
+            ProcessPage checkIn = new ProcessPage("Check In", "Check In", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
+            ProcessPage checkOut = new ProcessPage("Check Out", "Check Out", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
+            ProcessPage dates = new ProcessPage("Dates", "Dates", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
+            ProcessPage reportsEmailsBackups = new ProcessPage("Reports, Emails, and Backups", "Reports, Emails, and Backups", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
+            MenuPage reservations = new MenuPage("Reservation Menu", "Place, update, or cancel a reservation", new List<Page> { p, u, c });
 
             //Home. this is top of the tree
-            MenuPage home = new MenuPage("Home Menu", "Choose an option below", new List<Page> { checkIn, checkOut, dates, reportsEmailsBackups, reservations });
+            MenuPage home = new MenuPage("Home Menu", "Ophelia's Oasis Home Menu", new List<Page> { checkIn, checkOut, dates, reportsEmailsBackups, reservations });
 
             while(true)
             {
@@ -164,19 +164,19 @@ namespace OpheliasOasis
         /// <summary>
         /// Walk the user through updating a reservation.
         /// </summary>
-        static Boolean Placeholder(String inStr)
+        static String Placeholder(String inStr)
         {
             Console.WriteLine("Place successfully held!");
-            return true;
+            return "";
         }
 
         /// <summary>
         /// Walk the user through cancelling a reservation.
         /// </summary>
-        static Boolean CancelReservation(String inStr)
+        static String CancelReservation(String inStr)
         {
             Console.WriteLine("Cancel");
-            return true;
+            return "";
         }
 
         /// <summary>

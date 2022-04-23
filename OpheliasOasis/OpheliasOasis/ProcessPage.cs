@@ -5,6 +5,8 @@
  * 
  * Changelog:
  * 4/22/2022: Initial code - Alex
+ * 4/22/2022: Changed navigation options to Quit and Back, changes constructor to accept stepDescs and an endStep - Nathan
+ * 4/23/2022: Updated documentation. Changed stepDescs to prompts and endStep to saveChanges. Changed exit prompts and default indicators - Alex
  */
 
 using System;
@@ -12,17 +14,35 @@ using System.Collections.Generic;
 
 namespace OpheliasOasis
 {
+    /// <summary>
+    /// A class to provide a page that walks the user through a process. Allows for forward and backward navigation.
+    /// It accepts a list of functions. Each fuction accepts the input from the propmt and returns an error message.
+    /// If the error message is blank, it is assumed
+    /// </summary>
 	public class ProcessPage : Page
 	{
-		private readonly List<Func<String, Boolean>> steps;
-        private readonly List<String> stepDescs;
-        private readonly Action endstep;
+        private readonly List<String> prompts;
+        private readonly List<Func<String, String>> steps;
+        private readonly Action saveChanges;
 
-        public ProcessPage(string title, string description, List<String> stepDescs,List<Func<String, Boolean>> steps, Action endstep) : base(title, description)
+        /// <summary>
+        /// Create a new process page using the steps provided.
+        /// </summary>
+        /// <param name="title">A String containing the page title.</param>
+        /// <param name="description">A String containing the page description.</param>
+        /// <param name="prompts">A list of Strings, each containing a prompt for the respective step.</param>
+        /// <param name="steps">A list of functions, each accepting an input String and returning an error message.</param>
+        /// <param name="saveChanges">A function that runs before exiting.</param>
+        public ProcessPage(String title, String description, List<String> prompts, List<Func<String, String>> steps, Action saveChanges) : base(title, description)
 		{
+            // Validate input
+            if (prompts.Count > steps.Count) throw new ArgumentException("ProcessPage \"" + title + "\" has too many prompts");
+            else if (prompts.Count < steps.Count) throw new ArgumentException("ProcessPage \"" + title + "\" has too few prompts");
+
+            // Store input
+            this.prompts = prompts;
 			this.steps = steps;
-            this.stepDescs = stepDescs;
-            this.endstep = endstep;
+            this.saveChanges = saveChanges;
 		}
 
         /// <summary>
@@ -30,9 +50,10 @@ namespace OpheliasOasis
         /// </summary>
         public override void Open()
         {
-            String uInput;
-            // Store step variables
+            // Store current step and input
             int step = 1;
+            String uInput;
+            String procOutput;
 
             // Display page information
             DisplayHeader();
@@ -41,17 +62,14 @@ namespace OpheliasOasis
             // Loop through the steps - allows user to move backwards and forwards through the process
             while (step <= steps.Count)
             {
-                // Keep user informed of progress
-                Console.Write("Step " + step + " of " + steps.Count + ": ");
-
-                // Perform step
-
-                // Navigate to the next user-selected step
-                Console.Write( stepDescs[step-1]);
+                // Aquire user input
+                Console.Write("[Step " + step + " of " + steps.Count + "] " + prompts[step - 1] + ": ");
                 uInput = Console.ReadLine();
 
+                // Handle user input
                 switch (uInput.ToUpper())
                 {
+                    // Back
                     case "B":
                         if (step > 1)
                         {
@@ -59,17 +77,21 @@ namespace OpheliasOasis
                         }
                         else
                         {
-                            Console.Write("Are you sure you want to exit this menu? (Y/n):");
-                            if (Console.ReadLine().ToUpper() != "N") return;
+                            Console.Write("Exit without saving? All progress will be lost. (y/N):");
+                            if (Console.ReadLine().ToUpper() == "Y") return;
                         }
                         break;
+
+                    // Quit
                     case "Q":
-                        Console.Write("Confirm quit (Y/n):");
+                        Console.Write("Exit without saving? All progress will be lost. (y/N):");
                         if (Console.ReadLine().ToUpper() == "Y") return;
                         break;
 
+                    // Read in response and move on to the next step
                     default:
-                        if (steps[step - 1].Invoke(uInput))
+                        procOutput = steps[step - 1].Invoke(uInput);
+                        if (String.IsNullOrEmpty(procOutput))
                         {
                             if (step < steps.Count)
                             {
@@ -77,29 +99,24 @@ namespace OpheliasOasis
                             }
                             else
                             {
-                                Console.Write("Confirm (Y/n):");
+                                Console.Write("Save and exit? (Y/n):");
 
                                 if (Console.ReadLine().ToUpper() != "N")
                                 {
-                                    if(endstep != null)
+                                    if(saveChanges != null)
                                     {
-                                        endstep.Invoke();
+                                        saveChanges.Invoke();
                                     }
                                     
                                     return;
                                 }
                             }
-                            
                         }
                         else 
                         {
-                            Console.WriteLine("Invalid input. Try again.");
+                            Console.WriteLine("Error: " + procOutput + ". Please try again.");
                         }
                         break;
-
-
-
-
                 }
             }
         }
