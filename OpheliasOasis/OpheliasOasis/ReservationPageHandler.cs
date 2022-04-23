@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * ReservationPageHandler
+ * 
+ * Description: A class to store methods and pages related to Reservations.
+ * 
+ * Changelog:
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,42 +14,106 @@ namespace OpheliasOasis
 {
     public static class ReservationPageHandler
     {
-        private static Reservation d;
-        private static ReservationDB ResDB;
-
+        private static Calendar cal;
+        private static ReservationDB rdb;
+        private static Reservation tempRes;
+        /*
+        public static ProcessPage p;
+        public static ProcessPage u;
+        public static ProcessPage c;
 
         public static List<String> addResPrompts = new List<String> { "Input Reservation Type (1 = Conventional, 2 = Incentive, 3 = Sixty Day, 4 = Prepaid)", "Input Customer Name","Input Credit (<Enter> to skip for 60-day)","Input Email (<Enter> to skip if not 60-day)","Input Start Date (DD/MM/YYYY)", "Input End Date (DD/MM/YYYY)" };
         public static List<Func<String, String>> addResFunctions = new List<Func<String, String>> { inputResType, addResName, addResCC, addResEmail, addResStartDate, addResEndDate };
+        */
+        // Reservation submenu
+        public static MenuPage resMenu;
 
+        // Menu options
+        public static ProcessPage placeRes;
+        public static ProcessPage updateRes;
+        public static ProcessPage cancelRes;
 
-
-
-        public static void setReservationDB(ReservationDB db)
+        public static void Init(ReservationDB db, Calendar cl)
         {
-            ResDB = db;
+            // Initialize references
+            rdb = db;
+            cal = cl;
+
+            // Initialize menu
+            resMenu = new MenuPage("Reservations", "Reservations submenu (place, update, or cancel a reservation)", new List<Page> { placeRes, updateRes, cancelRes });
+
+            // Initialize menu options
+            placeRes = new ProcessPage("Place Reservation", "Place a new reservation", new List<String> { "Test" }, new List<Func<String, String>> { Test }, Test);
+            updateRes = new ProcessPage("Update Reservation", "Update an existing reservation", new List<String> { "Test" }, new List<Func<String, String>> { Test }, Test);
+            cancelRes = new ProcessPage("Cancel Reservation", "Cancel an existing reservation", new List<String> { "Test" }, new List<Func<String, String>> { Test }, Test);
+            /*
+            p = new ProcessPage("Place Reservation", "Place a new reservation", ReservationPageHandler.addResPrompts, ReservationPageHandler.addResFunctions, ReservationPageHandler.addRestoDB);
+            u = new ProcessPage("Update Reservation", "Update an existing reservation", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
+            c = new ProcessPage("Cancel Reservation", "Cancel an existing reservation", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
+            */
+    }
+
+        /// <summary>
+        /// A utility method to parse the input string looking for a valid reservation date.
+        /// </summary>
+        /// <param name="input">A string containing the input.</param>
+        /// <param name="date">An out DateTime in which to read the valid date, if it exists.</param>
+        /// <returns>A string containing the reason why the input is not valid, if applicable. Empty otherwise.</returns>
+        static String GetValidDate(String input, out DateTime date)
+        {
+            if (!DateTime.TryParse(input, out date)) return "Start date \"" + input + "\" is not a valid date";
+            if (date < DateTime.Today) return date.ToShortDateString() + " is before today";
+            if (cal.retrieveDate(date).IsFull()) return "Hotel is full on " + date.ToShortDateString();
+            return "";
         }
 
-        static String inputResType(String inStr)
+        /// <summary>
+        /// Start a new reservation on the date specified in the user's response to the prompt.
+        /// </summary>
+        /// <param name="input">A string containing the user's reponse to the prompt.</param>
+        /// <returns></returns>
+        static String InputNewReservationDate(String input)
         {
-            d = new Reservation();
-            switch (inStr)
+            DateTime date;
+            String dateError = GetValidDate(input, out date);
+
+            if (!String.IsNullOrEmpty(dateError)) return dateError;
+
+            tempRes = new Reservation();
+            tempRes.setStartDate(date);
+            return "";
+        }
+
+        /// <summary>
+        /// Start a new reservation of the type specified in the user's response to the prompt.
+        /// </summary>
+        /// <param name="input">A string containing the user's reponse to the prompt.</param>
+        /// <returns></returns>
+        static String InputNewReservationType(String input)
+        {
+            switch (input)
             {
                 case "1":
-                    d.setReservationType(ReservationType.Conventional);
+                    tempRes.setReservationType(ReservationType.Conventional);
                     return "";
                 case "2":
-                    d.setReservationType(ReservationType.Incentive);
+                    tempRes.setReservationType(ReservationType.Incentive);
                     return "";
                 case "3":
-                    d.setReservationType(ReservationType.SixtyDay);
+                    tempRes.setReservationType(ReservationType.SixtyDay);
                     return "";
                 case "4":
-                    d.setReservationType(ReservationType.Prepaid);
+                    tempRes.setReservationType(ReservationType.Prepaid);
                     return "";
                 default:
-                    return "\"" + inStr + "\" is not a valid reservation type";
+                    return "\"" + input + "\" is not a valid reservation type";
             }
         }
+
+        //
+        // vv OLD METHODS vv
+        //
+
         static String addResName(String inStr)
         {
             if (inStr == null || inStr == "")
@@ -121,7 +193,20 @@ namespace OpheliasOasis
             return ("No, stop that.");
         }
 
+        static String Placeholder(String inStr)
+        {
+            Console.WriteLine("Place successfully held!");
+            return "";
+        }
 
+        private static String Test(String input)
+        {
+            return "";
+        }
 
+        private static String Test()
+        {
+            return "";
+        }
     }
 }
