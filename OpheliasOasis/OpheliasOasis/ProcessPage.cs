@@ -23,7 +23,7 @@ namespace OpheliasOasis
 	{
         private readonly List<String> prompts;
         private readonly List<Func<String, String>> steps;
-        private readonly Action saveChanges;
+        private readonly Func<String> saveChanges;
 
         /// <summary>
         /// Create a new process page using the steps provided.
@@ -33,7 +33,7 @@ namespace OpheliasOasis
         /// <param name="prompts">A list of Strings, each containing a prompt for the respective step.</param>
         /// <param name="steps">A list of functions, each accepting an input String and returning an error message.</param>
         /// <param name="saveChanges">A function that runs before exiting.</param>
-        public ProcessPage(String title, String description, List<String> prompts, List<Func<String, String>> steps, Action saveChanges) : base(title, description)
+        public ProcessPage(String title, String description, List<String> prompts, List<Func<String, String>> steps, Func<String> saveChanges) : base(title, description)
 		{
             // Validate input
             if (prompts.Count > steps.Count) throw new ArgumentException("ProcessPage \"" + title + "\" has too many prompts");
@@ -105,7 +105,16 @@ namespace OpheliasOasis
                                 {
                                     if(saveChanges != null)
                                     {
-                                        saveChanges.Invoke();
+                                        procOutput = saveChanges.Invoke();
+                                        if (String.IsNullOrEmpty(procOutput))
+                                        {
+                                            return;
+                                        }
+                                        else {
+                                            Console.WriteLine("Error: " + procOutput + ". Please try again.");
+                                            break;
+                                        }
+                                        
                                     }
                                     
                                     return;

@@ -115,9 +115,10 @@ namespace OpheliasOasis
             return "\"" + inStr + "\" is not a  date after \"" + d.getStartDate().ToString() + "\"";
         }
 
-        public static void addRestoDB() 
+        public static String addRestoDB() 
         {
             ResDB.addReservation(d);
+            return ("No, stop that.");
         }
 
 
