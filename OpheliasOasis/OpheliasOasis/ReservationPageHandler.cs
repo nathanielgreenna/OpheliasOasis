@@ -10,8 +10,8 @@ namespace OpheliasOasis
         private static ReservationDB ResDB;
 
 
-        public static List<String> addRes = new List<String> { "Input Reservation Type (1 = Conventional, 2 = Incentive, 3 = Sixty Day, 4 = Prepaid):", "Input Customer Name:","Input Credit (<Enter> to skip for 60-day):","Input Email (<Enter> to skip if not 60-day):","Input Start Date (DD/MM/YYYY): ", "Input End Date (DD/MM/YYYY): " };
-        public static List<Func<String, Boolean>> addResFunctions = new List<Func<String, Boolean>> { inputResType, addResName, addResCC, addResEmail, addResStartDate, addResEndDate };
+        public static List<String> addResPrompts = new List<String> { "Input Reservation Type (1 = Conventional, 2 = Incentive, 3 = Sixty Day, 4 = Prepaid)", "Input Customer Name","Input Credit (<Enter> to skip for 60-day)","Input Email (<Enter> to skip if not 60-day)","Input Start Date (DD/MM/YYYY)", "Input End Date (DD/MM/YYYY)" };
+        public static List<Func<String, String>> addResFunctions = new List<Func<String, String>> { inputResType, addResName, addResCC, addResEmail, addResStartDate, addResEndDate };
 
 
 
@@ -21,43 +21,43 @@ namespace OpheliasOasis
             ResDB = db;
         }
 
-        static Boolean inputResType(String inStr)
+        static String inputResType(String inStr)
         {
             d = new Reservation();
             switch (inStr)
             {
                 case "1":
                     d.setReservationType(ReservationType.Conventional);
-                    return true;
+                    return "";
                 case "2":
                     d.setReservationType(ReservationType.Incentive);
-                    return true;
+                    return "";
                 case "3":
                     d.setReservationType(ReservationType.SixtyDay);
-                    return true;
+                    return "";
                 case "4":
                     d.setReservationType(ReservationType.Prepaid);
-                    return true;
+                    return "";
                 default:
-                    return false;
+                    return "\"" + inStr + "\" is not a valid reservation type";
             }
         }
-        static Boolean addResName(String inStr)
+        static String addResName(String inStr)
         {
             if (inStr == null || inStr == "")
             {
-                return false;
+                return "A name must be provided";
             }
             d.setCustomerName(inStr);
-            return true;
+            return "";
         }
 
-        static Boolean addResCC(String inStr)
+        static String addResCC(String inStr)
         {
             int intCC;
             if (inStr == "" && d.getReservationType() != ReservationType.SixtyDay)
             {
-                return false;
+                return "Credit card information is not optional";
             }
             else if (inStr == "")
             {
@@ -69,26 +69,26 @@ namespace OpheliasOasis
             }
             else
             {
-                return false;
+                return "Credit card information must be blank (not provided) or a 9-digit number";
             }
 
-            return true;
+            return "";
 
         }
 
-        static Boolean addResEmail(String inStr)
+        static String addResEmail(String inStr)
         {
             if (inStr == "" && d.getCustomerCreditCard() == 0 && d.getReservationType() == ReservationType.SixtyDay)
             {
-                return false;
+                return "Since no credit card information is on file for this 60-day reservation, and email is required";
             }
             else
             {
                 d.setCustomerEmail(inStr);
-                return true;
+                return "";
             }
         }
-        static Boolean addResStartDate(String inStr)
+        static String addResStartDate(String inStr) // TODO make sure we check to make sure the gotel isnt full
         {
             DateTime t;
             if (DateTime.TryParse(inStr, out t)) 
@@ -96,12 +96,12 @@ namespace OpheliasOasis
                 if (t > DateTime.Today)
                 {
                     d.setStartDate(t);
-                    return true;
+                    return "";
                 }
             }
-            return false;
+            return "\"" + inStr + "\" is not a future date";
          }
-        static Boolean addResEndDate(String inStr)
+        static String addResEndDate(String inStr)//TODO we may want this to be a "how long is your stay". Also check to make sure the hotel isnt full on each of these days
         {
             DateTime t;
             if (DateTime.TryParse(inStr, out t))
@@ -109,10 +109,10 @@ namespace OpheliasOasis
                 if (t > d.getStartDate())
                 {
                     d.setEndDate(t);
-                    return true;
+                    return "";
                 }
             }
-            return false;
+            return "\"" + inStr + "\" is not a  date after \"" + d.getStartDate().ToString() + "\"";
         }
 
         public static void addRestoDB() 

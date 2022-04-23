@@ -5,6 +5,7 @@
  * 
  * Changelog:
  * 4/22/2022: Initial code - Alex
+ * 4/22/2022: Added GetTitle
  */
 
 using System;
@@ -39,7 +40,7 @@ namespace OpheliasOasis
         /// Get the description of the page. Used for page headers and menu options.
         /// </summary>
         /// <returns>A string containing the description of the page.</returns>
-        public string getDescription()
+        public string GetDescription()
         {
             return description;
         }
@@ -47,15 +48,11 @@ namespace OpheliasOasis
         /// <summary>
         /// Get the title of the page. Used for page headers and menu options.
         /// </summary>
-        /// <returns>A string containing the description of the page.</returns>
-        public string getTitle()
+        /// <returns>A string containing the title of the page.</returns>
+        public string GetTitle()
         {
             return title;
         }
-
-
-
-
 
         /// <summary>
         /// Clear the screen and display a header for the current page.
