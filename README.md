@@ -4,8 +4,8 @@ This is our to-do list, please tell us what you're working on by putting your na
 - Main
   - Welcome - Nathan
   - ~~Home~~ - Nathan
-  - Check in - Alec
-  - Check out - Alec
+  - ~~Check in~~ - Alec
+  - ~~Check out~~ - Alec
   - Records
     - Reports - Nathan
     - Emails
