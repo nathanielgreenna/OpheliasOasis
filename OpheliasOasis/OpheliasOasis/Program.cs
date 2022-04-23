@@ -25,13 +25,11 @@ namespace OpheliasOasis
         {
             //Ophelia's is in AU, so make culture AU
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-AU");
-            ReservationPageHandler.setReservationDB(new ReservationDB());
+            ReservationPageHandler.Init(new ReservationDB(), calendar);
 
 
             //level 2 of tree
-            ProcessPage p = new ProcessPage("Place Reservation", "Place a new reservation", ReservationPageHandler.addResPrompts, ReservationPageHandler.addResFunctions, ReservationPageHandler.addRestoDB);
-            ProcessPage u = new ProcessPage("Update Reservation", "Update an existing reservation", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
-            ProcessPage c = new ProcessPage("Cancel Reservation", "Cancel an existing reservation", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
+            
 
 
 
@@ -41,15 +39,15 @@ namespace OpheliasOasis
             ProcessPage checkOut = new ProcessPage("Check Out", "Check Out", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
             ProcessPage dates = new ProcessPage("Dates", "Dates", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
             ProcessPage reportsEmailsBackups = new ProcessPage("Reports, Emails, and Backups", "Reports, Emails, and Backups", new List<String> { "Input Name" }, new List<Func<String, String>> { Placeholder }, null);
-            MenuPage reservations = new MenuPage("Reservation Menu", "Place, update, or cancel a reservation", new List<Page> { p, u, c });
+            //MenuPage reservations = new MenuPage("Reservation Menu", "Place, update, or cancel a reservation", new List<Page> { ReservationPageHandler.p, ReservationPageHandler.u, ReservationPageHandler.c });
 
             //Home. this is top of the tree
-            MenuPage home = new MenuPage("Home Menu", "Ophelia's Oasis Home Menu", new List<Page> { checkIn, checkOut, dates, reportsEmailsBackups, reservations });
+            //MenuPage home = new MenuPage("Home Menu", "Ophelia's Oasis Home Menu", new List<Page> { checkIn, checkOut, dates, reportsEmailsBackups, reservations });
 
             while(true)
             {
                 System.Threading.Thread.Sleep(2000);
-                home.Open();
+                ReservationPageHandler.resMenu.Open();
             }
 
         }
