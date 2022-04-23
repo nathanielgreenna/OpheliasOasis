@@ -45,6 +45,19 @@ namespace OpheliasOasis
         }
 
         /// <summary>
+        /// Get the title of the page. Used for page headers and menu options.
+        /// </summary>
+        /// <returns>A string containing the description of the page.</returns>
+        public string getTitle()
+        {
+            return title;
+        }
+
+
+
+
+
+        /// <summary>
         /// Clear the screen and display a header for the current page.
         /// </summary>
         public void DisplayHeader()

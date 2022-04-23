@@ -93,21 +93,30 @@ namespace OpheliasOasis
             return startDate;
         }
 
-        //don't know if we should be able to directly set startDate
+        public void setStartDate(DateTime t)
+        {
+            startDate = t;
+        }
 
         public DateTime getEndDate()
         {
             return endDate;
         }
 
-        //don't know if we should be able to directly set endDate
+        public void setEndDate(DateTime t)
+        {
+            endDate = t;
+        }
 
         public int getTotalPrice() 
         {
             return totalPrice;
         }
 
-        //don't know if we should be able to directly set price
+        public void setTotalPrice(int price)
+        {
+            totalPrice = price;
+        }
 
         public String getReservationStatus()
         {

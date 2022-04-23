@@ -14,11 +14,15 @@ namespace OpheliasOasis
 {
 	public class ProcessPage : Page
 	{
-		private readonly List<Action> steps;
+		private readonly List<Func<String, Boolean>> steps;
+        private readonly List<String> stepDescs;
+        private readonly Action endstep;
 
-        public ProcessPage(string title, string description, List<Action> steps) : base(title, description)
+        public ProcessPage(string title, string description, List<String> stepDescs,List<Func<String, Boolean>> steps, Action endstep) : base(title, description)
 		{
 			this.steps = steps;
+            this.stepDescs = stepDescs;
+            this.endstep = endstep;
 		}
 
         /// <summary>
@@ -26,7 +30,7 @@ namespace OpheliasOasis
         /// </summary>
         public override void Open()
         {
-
+            String uInput;
             // Store step variables
             int step = 1;
 
@@ -41,12 +45,12 @@ namespace OpheliasOasis
                 Console.Write("Step " + step + " of " + steps.Count + ": ");
 
                 // Perform step
-                steps[step - 1].Invoke();
 
                 // Navigate to the next user-selected step
-                Console.Write("Continute? (Enter B, R, C):");
+                Console.Write( stepDescs[step-1]);
+                uInput = Console.ReadLine();
 
-                switch (Console.ReadLine().ToUpper())
+                switch (uInput.ToUpper())
                 {
                     case "B":
                         if (step > 1)
@@ -59,19 +63,43 @@ namespace OpheliasOasis
                             if (Console.ReadLine().ToUpper() != "N") return;
                         }
                         break;
-                    case "R":
+                    case "Q":
+                        Console.Write("Confirm quit (Y/n):");
+                        if (Console.ReadLine().ToUpper() == "Y") return;
                         break;
+
                     default:
-                        if (step < steps.Count)
+                        if (steps[step - 1].Invoke(uInput))
                         {
-                            step++;
+                            if (step < steps.Count)
+                            {
+                                step++;
+                            }
+                            else
+                            {
+                                Console.Write("Confirm (Y/n):");
+
+                                if (Console.ReadLine().ToUpper() != "N")
+                                {
+                                    if(endstep != null)
+                                    {
+                                        endstep.Invoke();
+                                    }
+                                    
+                                    return;
+                                }
+                            }
+                            
                         }
-                        else
+                        else 
                         {
-                            Console.Write("Are you sure you want to exit this menu? (Y/n):");
-                            if (Console.ReadLine().ToUpper() != "N") return;
+                            Console.WriteLine("Invalid input. Try again.");
                         }
                         break;
+
+
+
+
                 }
             }
         }
@@ -81,10 +109,9 @@ namespace OpheliasOasis
         /// </summary>
         private static void DisplayStepNavigationHint()
         {
-            Console.WriteLine("Reminder - enter the following between steps:");
+            Console.WriteLine("Special input commands:");
             Console.WriteLine("\tB: Move back a step");
-            Console.WriteLine("\tR: Repeat the current step");
-            Console.WriteLine("\tC (default): Continue to the next step.");
+            Console.WriteLine("\tQ: Quit this screen");
             Console.WriteLine();
         }
     }
