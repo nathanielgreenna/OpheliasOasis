@@ -39,7 +39,7 @@ namespace OpheliasOasis
                 Console.WriteLine("Please select one of the following options:");
                 for (int i = 0; i < pages.Count; i++)
                 {
-                    Console.WriteLine("\t" + (i + 1) + ": " + pages[i].getTitle());
+                    Console.WriteLine("\t" + (i + 1) + ": " + pages[i].GetTitle());
                 }
                 Console.WriteLine("\t" + exitOption + ": Exit menu");
                 Console.WriteLine();
