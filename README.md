@@ -2,13 +2,12 @@
 This is our to-do list, please tell us what you're working on by putting your name next to it,  or mark complete by striking it through:
 
 - Main
-  - Welcome
-  - Home
-  - Help
+  - Welcome - Nathan
+  - ~~Home~~ - Nathan
   - Check in
   - Check out
   - Records
-    - Reports
+    - Reports - Nathan
     - Emails
     - Backups
   - Reservations - Alex
@@ -24,3 +23,8 @@ This is our to-do list, please tell us what you're working on by putting your na
 - ~~Calendar~~ - Nathan
 - ~~ReservationDB~~ - Nathan
 - ~~XML stuff~~ - Nathan
+
+
+
+
+
