@@ -5,7 +5,8 @@
  * 
  * Changelog:
  * 4/22/2022: Initial code - Alex
- * 4/22/2022: Added GetTitle
+ * 4/22/2022: Added GetTitle - Nathan
+ * 4/23/2022: Changed strings to work with $ - Alex
  */
 
 using System;
@@ -60,7 +61,8 @@ namespace OpheliasOasis
         public void DisplayHeader()
         {
             Console.Clear();
-            Console.WriteLine("====================| " + title.ToUpper() + " |====================");
+            Console.WriteLine();
+            Console.WriteLine($"====================| {title.ToUpper()} |====================");
             Console.WriteLine(description);
             Console.WriteLine();
         }

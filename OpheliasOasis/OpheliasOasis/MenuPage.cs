@@ -5,6 +5,7 @@
  * 
  * Changelog:
  * 4/22/2022: Initial code - Alex
+ * 4/23/2022: Changed strings to work with $
  */
 
 using System;
@@ -48,17 +49,17 @@ namespace OpheliasOasis
                 Console.WriteLine("\t0: Exit menu");
                 for (int i = 0; i < pages.Count; i++)
                 {
-                    Console.WriteLine("\t" + (i + 1) + ": " + pages[i].GetTitle());
+                    Console.WriteLine($"\t{(i + 1)}: {pages[i].GetTitle()}");
                 }
                 Console.WriteLine();
 
-                Console.Write("Please enter your selection (0 - " + pages.Count + "): ");
+                Console.Write($"Please enter your selection (0 - {pages.Count}): ");
                 selectionText = Console.ReadLine();
 
                 // If necessary, repeatedly request a selection until a valid number is provided
                 while (!int.TryParse(selectionText, out selection) || selection > pages.Count || selection < 0)
                 {
-                    Console.Write("Selection \"" + selectionText + "\" is not valid. Please enter your selection (0 - " + pages.Count + "): ");
+                    Console.Write($"Selection \"{selectionText}\" is not valid. Please enter your selection (0 - {pages.Count}): ");
                     selectionText = Console.ReadLine();
                 }
 

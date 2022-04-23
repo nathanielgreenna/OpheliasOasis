@@ -25,7 +25,7 @@ namespace OpheliasOasis
         /// <param name="reservation">The 60-day reservation for the request.</param>
         public PaymentInformationRequestEmail(Reservation reservation)
         {
-            String emailName = reservation == null ? "" : reservation.getCustomerName() + "'s PaymentInformationRequestEmail";
+            String emailName = reservation == null ? "" : $"{reservation.getCustomerName()}'s PaymentInformationRequestEmail";
 
             if (reservation == null)
             {
@@ -33,9 +33,9 @@ namespace OpheliasOasis
             }
             else if (reservation.getReservationType() != ReservationType.SixtyDay)
             {
-                throw new ArgumentException(emailName + ": Reservation type must be 60-day, not " + reservation.getReservationType(), "reservation");
+                throw new ArgumentException($"{emailName}: Reservation type must be 60-day, not {reservation.getReservationType()}", "reservation");
             }
-            else if (reservation.getCustomerCreditCard() != 0)
+            else if (reservation.getCustomerCreditCard() != "")
             {
                 throw new ArgumentException(emailName + ": Credit card information has already been supplied", "reservation");
             }
@@ -60,12 +60,12 @@ namespace OpheliasOasis
 
 		string IEmail.GetBodyText()
 		{
-			return "Dear " + reservation.getCustomerName() + ",\n" +
-				"Our records indicate that you placed a 60-days-advance reservation but have not provided your payment " +
-				"information. You must provide this information by " + reservation.getStartDate().AddDays(-45).ToString("M/d/yyyy") + ", 45 days before your " +
-				"reservation starts. Please call us, and an employee will facilitate this process.\n" +
-				"Thank you for choosing Ophelia’s Oasis,\n" +
-				"The Ophelia’s Oasis staff team";
+			return $"Dear {reservation.getCustomerName()},\n" +
+				$"Our records indicate that you placed a 60-days-advance reservation but have not provided your payment " +
+				$"information. You must provide this information by {reservation.getStartDate().AddDays(-45).ToString("M/d/yyyy")}, 45 days before your " +
+				$"reservation starts. Please call us, and an employee will facilitate this process.\n" +
+				$"Thank you for choosing Ophelia’s Oasis,\n" +
+				$"The Ophelia’s Oasis staff team";
 		}
 
 		List<string> IEmail.GetAttachments()

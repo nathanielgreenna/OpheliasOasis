@@ -6,6 +6,7 @@
  * 4/19/2022: check in/ check out unnecessary with new changes - Nathaniel
  * 4/20/2022: added public to methods - Nathaniel
  * 4/20/2022: Changed reservationType to type ReservationType - Alex
+ * 4/23/2022: Changed customerCreditCard to string - Alex
 */
 
 using System;
@@ -23,7 +24,7 @@ namespace OpheliasOasis
         [DataMember(Name = "resName")]
         private String customerName;
         [DataMember(Name = "resCC")]
-        private int customerCreditCard;
+        private String customerCreditCard;
         [DataMember(Name = "resEmail")]
         private String customerEmail;
         [DataMember(Name = "roomNo")]
@@ -41,7 +42,7 @@ namespace OpheliasOasis
         public Reservation()
         {
         }
-        public Reservation(ReservationType resType, String cusName, int cusCC, DateTime sDate, DateTime eDate) 
+        public Reservation(ReservationType resType, String cusName, String cusCC, DateTime sDate, DateTime eDate) 
         {
             reservationType = resType;
             customerName = cusName;
@@ -65,11 +66,11 @@ namespace OpheliasOasis
         {
             customerName = name;
         }
-        public int getCustomerCreditCard()
+        public String getCustomerCreditCard()
         {
             return customerCreditCard;
         }
-        public void setCustomerCreditCard(int card)
+        public void setCustomerCreditCard(String card)
         {
             customerCreditCard = card;
         }
