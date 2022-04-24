@@ -31,7 +31,7 @@ namespace OpheliasOasis
 
             StartupScreen();
             ReservationPageHandler.Init(new ReservationDB(), calendar);
-            RecordsPageHandler.Init(reservationDB, calendar, managerPassword);
+            RecordsPageHandler.Init(reservationDB, calendar, hotel ,managerPassword);
 
             //level 2 of tree
 
@@ -117,6 +117,13 @@ namespace OpheliasOasis
             Console.WriteLine("     _ `---'    .    ..   _   .   .  ____    .");
             Console.WriteLine("Loading most recent backup...");
 
+
+            Directory.CreateDirectory("C:\\OpheliasOasis");
+            Directory.CreateDirectory("C:\\OpheliasOasis\\Archive");
+            Directory.CreateDirectory("C:\\OpheliasOasis\\Reports");
+            Directory.CreateDirectory("C:\\OpheliasOasis\\EmailCCStubs");
+
+
             XMLformat g;
             DateTime t = DateTime.Today;
             for (int i = 0; i < 100; i++) 
@@ -125,7 +132,7 @@ namespace OpheliasOasis
                 {
                     g = XMLreader.XMLin(t);
                     Console.SetCursorPosition(0, Console.CursorTop - 1);
-                    Console.Write("Loaded Most Recent Backup From" + t.ToString("D"));
+                    Console.Write("Loaded Most Recent Backup From " + t.ToString("D"));
                     reservationDB = g.R;
                     calendar = g.C;
                     hotel = g.H;
