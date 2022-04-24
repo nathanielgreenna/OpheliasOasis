@@ -33,12 +33,11 @@ namespace OpheliasOasis
         /// <param name="steps">A list of functions, each accepting an input String and returning an error message.</param>
         /// <param name="saveChanges">A function that runs before exiting.</param>
         public ProcessPage(String title, String description, List<Tuple<Func<String, String>, String>> steps, Func<String> saveChanges) : base(title, description)
-		{
-
+        {
             // Store input
-			this.steps = steps;
+            this.steps = steps;
             this.saveChanges = saveChanges;
-		}
+        }
 
         /// <summary>
         /// Run through the steps provided when the object was intantiated
@@ -59,7 +58,6 @@ namespace OpheliasOasis
             {
                 // Aquire user input
                 Console.Write($"[Step {step} of {steps.Count}] {steps[step - 1].Item2}: ");
-                uInput = Console.ReadLine();
 
                 // Handle user input
                 switch (uInput.ToUpper())
