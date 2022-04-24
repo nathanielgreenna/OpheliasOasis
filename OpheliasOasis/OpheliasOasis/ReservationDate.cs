@@ -24,7 +24,7 @@ namespace OpheliasOasis
         [DataMember(Name = "Date")]
         private DateTime date;
         [DataMember(Name = "ResPrice")]
-        private int basePrice;
+        private double basePrice;
         [DataMember(Name = "Occ")]
         private int occupancy = 0;
 
@@ -43,11 +43,11 @@ namespace OpheliasOasis
         }
 
 
-        public int getBasePrice() 
+        public double getBasePrice() 
         {
             return (basePrice);
         }
-        public void setBasePrice(int newPrice)
+        public void setBasePrice(double newPrice)
         {
             basePrice = newPrice;
         }

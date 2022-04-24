@@ -6,7 +6,7 @@
  * 4/19/2022: check in/ check out unnecessary with new changes - Nathaniel
  * 4/20/2022: added public to methods - Nathaniel
  * 4/20/2022: Changed reservationType to type ReservationType - Alex
- * 4/23/2022: Changed customerCreditCard to string - Alex
+ * 4/23/2022: Changed customerCreditCard to string and price to double - Alex
 */
 
 using System;
@@ -34,7 +34,7 @@ namespace OpheliasOasis
         [DataMember(Name = "endDate")]
         private DateTime endDate;
         [DataMember(Name = "resPrice")]
-        private int totalPrice;
+        private double totalPrice;
         [DataMember(Name = "resStatus")]
         private String reservationStatus;
 
@@ -109,12 +109,12 @@ namespace OpheliasOasis
             endDate = t;
         }
 
-        public int getTotalPrice() 
+        public double getTotalPrice() 
         {
             return totalPrice;
         }
 
-        public void setTotalPrice(int price)
+        public void setTotalPrice(double price)
         {
             totalPrice = price;
         }
