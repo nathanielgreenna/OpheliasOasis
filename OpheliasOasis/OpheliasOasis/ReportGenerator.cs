@@ -15,7 +15,7 @@ namespace OpheliasOasis
     class ReportGenerator
     {
 
-        private string path = @"C:\Reports\";
+        private string path = "C:\\OpheliasOasis\\Reports\\";
 
         public void generateDailyArrivalsReport(ReservationDB reservationDB)
         {
@@ -36,7 +36,7 @@ namespace OpheliasOasis
                 }
             }
 
-            string file = path + today.ToShortDateString() + @"\DailyArrivalsReport.txt";
+            string file = path + today.ToString("m") + "DailyArrivalsReport.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)
@@ -65,7 +65,7 @@ namespace OpheliasOasis
                 }
             }
 
-            string file = path + today.ToShortDateString() + @"\DailyOccupancyReport.txt";
+            string file = path + today.ToString("m") + "DailyOccupancyReport.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)
@@ -110,14 +110,14 @@ namespace OpheliasOasis
                 output.Add(date.ToShortDateString() + ": Prepaid: " + prepaid + ", 60-Day: " + sixtyDay + ", Conventional: " + conventianal +
                     ", Incentive: " + incentive + ", Total Occupancy: " + occupancy);
                 totalOccupancy += occupancy;
-                date.AddDays(1);
+                date = date.AddDays(1);
             }
             DateTime startDate = DateTime.Today;
             DateTime endDate = DateTime.Today.AddDays(30);
             double occupancyRate = totalOccupancy / 30;
             output.Add("Average Expected Occupancy Rate from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": " + occupancyRate.ToString("F1"));
 
-            string file = path + startDate.ToShortDateString() + @"\ExpectedOccupancyReport.txt";
+            string file = path + DateTime.Today.ToString("m") + "ExpectedOccupancyReport.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)
@@ -142,7 +142,7 @@ namespace OpheliasOasis
                 }
                 totalIncome += income;
                 output.Add(date.ToShortDateString() + ": $" + income);
-                date.AddDays(1);
+                date = date.AddDays(1);
             }
             DateTime startDate = DateTime.Today;
             DateTime endDate = DateTime.Today.AddDays(30);
@@ -150,7 +150,7 @@ namespace OpheliasOasis
             output.Add("Total Income from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + totalIncome);
             output.Add("Average Income from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + averageIncome.ToString("F2"));
 
-            string file = path + startDate.ToShortDateString() + @"\ExpectedIncomeReport.txt";
+            string file = path + DateTime.Today.ToString("m") + "ExpectedIncomeReport.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)
@@ -179,7 +179,7 @@ namespace OpheliasOasis
                 }
                 totalDiscount += discount;
                 output.Add(date.ToShortDateString() + ": $" + discount);
-                date.AddDays(1);
+                date = date.AddDays(1);
             }
             DateTime startDate = DateTime.Today;
             DateTime endDate = DateTime.Today.AddDays(30);
@@ -187,7 +187,7 @@ namespace OpheliasOasis
             output.Add("Total Discount from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + totalDiscount);
             output.Add("Average Discount from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + averageDicount.ToString("F2"));
 
-            string file = path + startDate.ToShortDateString() + @"\IncentiveReport.txt";
+            string file = path + DateTime.Today.ToString("m") + "IncentiveReport.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)

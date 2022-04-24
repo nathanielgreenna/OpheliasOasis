@@ -51,6 +51,32 @@ namespace OpheliasOasis
         }
 
 
+        public void incrementOverSpan(DateTime start, DateTime end) 
+        { 
+            if(start > end) { throw new ArgumentException("Start is after beginning"); }
+            DateTime day = start;
+
+            while(day != end.AddDays(1)) 
+            {
+                retrieveDate(day).increaseOccupancy();
+                day = day.AddDays(1);
+            }
+
+        }
+
+        public void decrementOverSpan(DateTime start, DateTime end)
+        {
+            if (start > end) { throw new ArgumentException("Start is after beginning"); }
+            DateTime day = start;
+
+            while (day != end.AddDays(1))
+            {
+                retrieveDate(day).decreaseOccupancy();
+                day = day.AddDays(1);
+            }
+
+        }
+
 
 
 

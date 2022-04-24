@@ -15,7 +15,7 @@ namespace OpheliasOasis
     /// <summary>
     /// Create and store the information associated with an email requesting payment information for 60-day reservations.
     /// </summary>
-    class PaymentInformationRequestEmail : IEmail
+   public class PaymentInformationRequestEmail : IEmail
     {
         private readonly Reservation reservation;
 

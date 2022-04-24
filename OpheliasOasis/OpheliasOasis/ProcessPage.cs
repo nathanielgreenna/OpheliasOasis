@@ -59,7 +59,6 @@ namespace OpheliasOasis
                 // Aquire user input
                 Console.Write($"[Step {step} of {steps.Count}] {steps[step - 1].Item2}: ");
                 uInput = Console.ReadLine();
-
                 // Handle user input
                 switch (uInput.ToUpper())
                 {
