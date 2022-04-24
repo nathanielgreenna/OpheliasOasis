@@ -2,14 +2,14 @@
 This is our to-do list, please tell us what you're working on by putting your name next to it,  or mark complete by striking it through:
 
 - Main
-  - Welcome - Nathan
+  - ~~Welcome~~ - Nathan
   - ~~Home~~ - Nathan
-  - Check in - Alec
-  - Check out - Alec
+  - ~~Check in~~ - Alec
+  - ~~Check out~~ - Alec
   - Records
     - Reports - Nathan
-    - Emails
-    - Backups
+    - Emails - Nathan
+    - Backups - Nathan
   - Reservations - Alex
     - Create - Alex
     - Modify - Alex
