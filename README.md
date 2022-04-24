@@ -6,10 +6,13 @@ This is our to-do list, please tell us what you're working on by putting your na
   - ~~Home~~ - Nathan
   - ~~Check in~~ - Alec
   - ~~Check out~~ - Alec
-  - Records
+  - Dates - Nathan
+  - ~~Records~~
+    - Change Manager Password - Nathan
     - Reports - Nathan
     - Emails - Nathan
     - Backups - Nathan
+    - Charge No-Shows - Alec
   - Reservations - Alex
     - Create - Alex
     - Modify - Alex

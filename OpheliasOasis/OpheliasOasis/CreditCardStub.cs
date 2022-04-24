@@ -19,7 +19,6 @@ namespace OpheliasOasis
     public static class CreditCardStub
     {
         private static string path = "C:\\OpheliasOasis\\Charges\\";
-        private static double penalty = 55.55;
 
         // summary
         // Charges a customer's credit card for their reservation.
@@ -44,7 +43,7 @@ namespace OpheliasOasis
         public static void chargeNoShowPenalty(Reservation res)
         {
             DateTime today = DateTime.Today;
-            String output = "No-Show penalty of $" + penalty + " charged to " + res.getCustomerName() + " on " + today.ToShortDateString() + ".";
+            String output = "No-Show penalty of $" + res.getFirstDayPrice() + " charged to " + res.getCustomerName() + " on " + today.ToShortDateString() + ".";
             String file = path + today.ToShortDateString() + @"\" + res.getCustomerName() + "Penalty.txt";
             using (StreamWriter sw = File.CreateText(file))
             {

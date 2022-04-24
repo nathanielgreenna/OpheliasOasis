@@ -45,6 +45,9 @@ namespace OpheliasOasis
         /// <summary>
         /// Reservation has been cancelled.
         /// </summary>
-        Cancelled
+        Cancelled,
+
+
+        Standard
     }
 }

@@ -39,6 +39,8 @@ namespace OpheliasOasis
         private DateTime endDate;
         [DataMember(Name = "resPrice")]
         private double totalPrice;
+        [DataMember(Name = "resPriceFirstDay")]
+        private double firstDayPrice;
         [DataMember(Name = "resStatus")]
         private ReservationStatus reservationStatus;
 
@@ -152,6 +154,19 @@ namespace OpheliasOasis
         {
             totalPrice = price;
         }
+
+        public double getFirstDayPrice()
+        {
+            return firstDayPrice;
+        }
+
+        public void setFirstDayPrice(double price)
+        {
+            firstDayPrice = price;
+        }
+
+
+
 
         public ReservationStatus getReservationStatus()
         {
