@@ -28,10 +28,10 @@ namespace OpheliasOasis
         {
             //Ophelia's is in AU, so make culture AU
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-AU");
-            ReservationPageHandler.Init(new ReservationDB(), calendar);
+            ReservationPageHandler.Init(new ReservationDB(), new Calendar());
 
-            StartupScreen();
-            return;
+            //StartupScreen();
+            //return;
 
 
             //level 2 of tree

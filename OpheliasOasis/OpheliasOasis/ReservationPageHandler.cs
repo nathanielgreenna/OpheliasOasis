@@ -16,7 +16,9 @@ namespace OpheliasOasis
     {
         private static Calendar cal;
         private static ReservationDB rdb;
-        private static Reservation tempRes;
+        private static Reservation newResTemp;
+        private static Reservation? oldResTemp = null;
+        private static List<Reservation> tempReses;
         /*
         public static ProcessPage p;
         public static ProcessPage u;
@@ -56,8 +58,14 @@ namespace OpheliasOasis
                     InputName,
                     InputCreditCard,
                     InputEmail
+                }, SaveTempToDB);
+
+            updateRes = new ProcessPage("Update Reservation", "Update an existing reservation",
+                new List<String> {
+                },
+                new List<Func<String, String>> {
                 }, Test);
-            updateRes = new ProcessPage("Update Reservation", "Update an existing reservation", new List<String> { "Test" }, new List<Func<String, String>> { Test }, Test);
+
             cancelRes = new ProcessPage("Cancel Reservation", "Cancel an existing reservation", new List<String> { "Test" }, new List<Func<String, String>> { Test }, Test);
 
             // Initialize menu
@@ -69,24 +77,72 @@ namespace OpheliasOasis
             */
         }
 
+        /// <summary>
+        /// Search for reservations under the name specified in the user's response to the prompt.
+        /// </summary>
+        /// <param name="input">A string containing the user's reponse to the prompt.</param>
+        /// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
+        static String InputSearchName(String input)
+        {
+            if (!input.Contains(" ")) return "First and last name required";
+
+            tempReses = rdb.getReservation(input);
+
+            if (tempReses.Count < 1) return $"No reservations under the name \"{input}\"";
+
+            Console.WriteLine($"The reservations for {input} are as follows:");
+            for (int i = 0; i < tempReses.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}: {tempReses[i].getStartDate().ToShortDateString()} to {tempReses[i].getEndDate().ToShortDateString()} ({tempReses[i].getReservationStatus()})");
+            }
+
+            return "";
+        }
+
+        /// <summary>
+        /// Select the reservation based on the user's response to the prompt.
+        /// </summary>
+        /// <param name="input">A string containing the user's reponse to the prompt.</param>
+        /// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
+        static String InputResSelection(String input)
+        {
+            int selection;
+            if (!int.TryParse(input, out selection) || selection > tempReses.Count || selection < 1)
+            {
+                return $"\"{input}\" is not between 1 and {tempReses.Count}";
+            }
+
+            oldResTemp = tempReses[selection];
+
+            return "";
+        }
 
         /// <summary>
         /// Start a new reservation on the date specified in the user's response to the prompt.
         /// </summary>
         /// <param name="input">A string containing the user's reponse to the prompt.</param>
-        /// <returns></returns>
+        /// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
         static String InputStartDate(String input)
         {
             DateTime startDate;
+
+            // Intialize new reservation
+            newResTemp = new Reservation();
+
+            // Import start date from original, when required/possible
+            if (String.IsNullOrEmpty(input) && oldResTemp != null)
+            {
+                newResTemp.setStartDate(oldResTemp.getStartDate());
+                return "";
+            }
 
             // Validate date
             if (!DateTime.TryParse(input, out startDate)) return $"\"{input}\" is not a valid date";
             if (startDate < DateTime.Today) return $"{startDate.ToShortDateString()} is before today ({DateTime.Today.ToShortDateString()})";
             if (cal.retrieveDate(startDate).IsFull()) return $"Hotel is full on {startDate.ToShortDateString()}";
 
-            // Start reservation
-            tempRes = new Reservation();
-            tempRes.setStartDate(startDate);
+            // Save start date
+            newResTemp.setStartDate(startDate);
             return "";
         }
 
@@ -94,21 +150,29 @@ namespace OpheliasOasis
         /// Set the start date of the new reservation to the date specified in the user's response to the prompt.
         /// </summary>
         /// <param name="input">A string containing the user's reponse to the prompt.</param>
-        /// <returns></returns>
+        /// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
         static String InputEndDate(String input)
         {
             DateTime endDate;
+
+            // Extrapolate end date from original, when required/possible
+            if (String.IsNullOrEmpty(input) && oldResTemp != null)
+            {
+                // By default, keep the reservation the same length
+                newResTemp.setEndDate(oldResTemp.getEndDate().AddDays((newResTemp.getStartDate() - oldResTemp.getStartDate()).TotalDays));
+                return "";
+            }
 
             // Check availibility
             Console.Write("Confirming availibility... ");
 
             // Validate end date
             if (!DateTime.TryParse(input, out endDate)) return $"\"{input}\" is not a valid date";
-            if (endDate < tempRes.getStartDate()) return $"{endDate.ToShortDateString()} is before start date ({tempRes.getStartDate().ToShortDateString()})";
+            if (endDate < newResTemp.getStartDate()) return $"{endDate.ToShortDateString()} is before start date ({newResTemp.getStartDate().ToShortDateString()})";
             if (cal.retrieveDate(endDate).IsFull()) return $"Hotel is full on {endDate.ToShortDateString()}";
 
             // Ensure space is availible on all intermediate days
-            for (DateTime d = tempRes.getStartDate(); d < endDate; d = d.AddDays(1))
+            for (DateTime d = newResTemp.getStartDate(); d < endDate; d = d.AddDays(1))
             {
                 if (cal.retrieveDate(d).IsFull()) return $"Hotel is full on {d.ToShortDateString()}";
             }
@@ -117,7 +181,7 @@ namespace OpheliasOasis
             Console.WriteLine("Availibility confirmed.");
 
             // Save end date
-            tempRes.setEndDate(endDate);
+            newResTemp.setEndDate(endDate);
             return "";
         }
 
@@ -125,11 +189,11 @@ namespace OpheliasOasis
         /// Set the reservation type from the user's response to the prompt.
         /// </summary>
         /// <param name="input">A string containing the user's reponse to the prompt.</param>
-        /// <returns></returns>
+        /// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
         static String InputType(String input)
         {
             ReservationType type = ReservationType.Conventional;
-            int daysAdvance = (int) (tempRes.getStartDate() - DateTime.Today).TotalDays;
+            int daysAdvance = (int) (newResTemp.getStartDate() - DateTime.Today).TotalDays;
             double discount = 0;
 
             // Validate selection
@@ -147,8 +211,8 @@ namespace OpheliasOasis
                     // Reject days with too large an occupancy
                     int totalOccupancy = 0;
                     double totalOccupancyPercent;
-                    for (DateTime d = tempRes.getStartDate(); d <= tempRes.getEndDate(); d = d.AddDays(1)) totalOccupancy += cal.retrieveDate(d).getOccupancy();
-                    totalOccupancyPercent = (double) totalOccupancy / (1.0 + (tempRes.getEndDate() - tempRes.getStartDate()).TotalDays);
+                    for (DateTime d = newResTemp.getStartDate(); d <= newResTemp.getEndDate(); d = d.AddDays(1)) totalOccupancy += cal.retrieveDate(d).getOccupancy();
+                    totalOccupancyPercent = (double) totalOccupancy / (1.0 + (newResTemp.getEndDate() - newResTemp.getStartDate()).TotalDays);
                     if (totalOccupancyPercent > 0.6) return $"Incentive reservations are only allowed when the avergage occupancy is under 60% (currently {100*totalOccupancy}%)";
 
                     // Accept otherwise
@@ -173,16 +237,16 @@ namespace OpheliasOasis
             // Calculate the price
             Console.Write("Calculating price... ");
             double cost = 0;
-            for (DateTime d = tempRes.getStartDate(); d <= tempRes.getEndDate(); d = d.AddDays(1)) cost += cal.retrieveDate(d).getBasePrice();
+            for (DateTime d = newResTemp.getStartDate(); d <= newResTemp.getEndDate(); d = d.AddDays(1)) cost += cal.retrieveDate(d).getBasePrice();
             cost *= (1.0 - discount);
-            tempRes.setTotalPrice(cost);
+            newResTemp.setTotalPrice(cost);
 
             // Display the price
             if (discount > 0) Console.Write($"Applied {discount:P} discount. ");
             Console.WriteLine($"Calculated final price: {cost:C2}.");
 
             // Set the type if no issues are encountered
-            tempRes.setReservationType(type);
+            newResTemp.setReservationType(type);
             return "";
         }
 
@@ -190,18 +254,18 @@ namespace OpheliasOasis
         /// Set the name for the reservation to the name specified in the user's response to the prompt.
         /// </summary>
         /// <param name="input">A string containing the user's reponse to the prompt.</param>
-        /// <returns></returns>
+        /// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
         static String InputName(String input)
         {
             // Check for missing first or last name
             if (!input.Contains(" "))
             {
                 // Return error if name is required
-                if (String.IsNullOrEmpty(input) && !String.IsNullOrEmpty(tempRes.getCustomerName())) return "";
+                if (String.IsNullOrEmpty(input) && !String.IsNullOrEmpty(newResTemp.getCustomerName())) return "";
                 else return "First and last name required";
             }
 
-            tempRes.setCustomerName(input);
+            newResTemp.setCustomerName(input);
             return "";
         }
 
@@ -209,14 +273,14 @@ namespace OpheliasOasis
         /// Set the customer credit card information for reservation from the user's response to the prompt.
         /// </summary>
         /// <param name="input">A string containing the user's reponse to the prompt.</param>
-        /// <returns></returns>
+        /// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
         static String InputCreditCard(String input)
         {
             // Check for 4 sets of 4 digits
             string[] sets = input.Split(" ");
 
             // Return if none is provided and non is required
-            if (tempRes.getReservationType() == ReservationType.SixtyDay || (sets.Length == 0 && tempRes.getCustomerCreditCard() != "")) return "";
+            if (newResTemp.getReservationType() == ReservationType.SixtyDay || (sets.Length == 0 && newResTemp.getCustomerCreditCard() != "")) return "";
 
             // Otherwise, return an error if the number isnt 4 sets of 4 numbers
             if (sets.Length != 4) return "Format must be XXXX XXXX XXXX XXXX";
@@ -231,8 +295,10 @@ namespace OpheliasOasis
                 }
             }
 
+            // If payment is required immediately
+
             // Save the credit card information if everything checks out
-            tempRes.setCustomerCreditCard(input);
+            newResTemp.setCustomerCreditCard(input);
             return "";
         }
 
@@ -240,18 +306,28 @@ namespace OpheliasOasis
         /// Set the customer email for reservation from the user's response to the prompt.
         /// </summary>
         /// <param name="input">A string containing the user's reponse to the prompt.</param>
-        /// <returns></returns>
+        /// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
         static String InputEmail(String input)
         {
             // Check for blatantly bogus email
             if (!input.Contains("@") || !input.Contains("."))
             {
                 // Return error message if email is required
-                if (String.IsNullOrEmpty(input) && (tempRes.getReservationType() != ReservationType.SixtyDay || !String.IsNullOrEmpty(tempRes.getCustomerCreditCard()))) return "";
+                if (String.IsNullOrEmpty(input) && (newResTemp.getReservationType() != ReservationType.SixtyDay || !String.IsNullOrEmpty(newResTemp.getCustomerCreditCard()))) return "";
                 else return $"\"{input}\" is not a vald email address";
             }
 
-            tempRes.setCustomerEmail(input);
+            newResTemp.setCustomerEmail(input);
+            return "";
+        }
+
+        /// <summary>
+        /// Save the temporary reservation to the database.
+        /// </summary>
+        /// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
+        static String SaveTempToDB()
+        {
+            rdb.addReservation(newResTemp);
             return "";
         }
 
