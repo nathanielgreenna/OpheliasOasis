@@ -5,6 +5,7 @@
  * 
  * Changelog:
  * 4/23/2022: Initial commit - Alex
+ * 4/24/2022: Added interface to reservationDB - Alex
  */
 
 using System;
@@ -56,19 +57,22 @@ namespace OpheliasOasis
 			Tuple.Create<Func<String, String>, String>(InputName, "Enter guest name (you may press <enter> to skip if already provided)");
 
 		private readonly static Tuple<Func<String, String>, String> updatedGuestNameRequest =
-			Tuple.Create<Func<String, String>, String>(InputName, "Enter guest name (press <enter> to skip)");
+			Tuple.Create<Func<String, String>, String>(InputName, "Enter new guest name (or press <enter> to skip)");
 
 		private readonly static Tuple<Func<String, String>, String> newCreditCardRequest =
 			Tuple.Create<Func<String, String>, String>(InputCreditCard, "Enter credit card number (you may press <enter> to skip if already provided or for 60-days reservations)");
 
 		private readonly static Tuple<Func<String, String>, String> updatedCreditCardRequest =
-			Tuple.Create<Func<String, String>, String>(InputCreditCard, "Enter credit card number (press <enter> to skip)");
+			Tuple.Create<Func<String, String>, String>(InputCreditCard, "Enter new credit card number (or press <enter> to skip)");
 
 		private readonly static Tuple<Func<String, String>, String> newEmailRequest =
 			Tuple.Create<Func<String, String>, String>(InputEmail, "Enter email address (you may press <enter> to skip unless you skipped Step 5 and the information has not been provided)");
 
 		private readonly static Tuple<Func<String, String>, String> updatedEmailRequest =
-			Tuple.Create<Func<String, String>, String>(InputEmail, "Enter email adddress (press <enter> to skip)");
+			Tuple.Create<Func<String, String>, String>(InputEmail, "Enter email new adddress (or press <enter> to skip)");
+
+		private readonly static Tuple<Func<String, String>, String> cancelrequest =
+			Tuple.Create<Func<String, String>, String>(InputCancellationConfirmation, "Cancel reservation? (Y/n)");
 
 		/// <summary>
 		/// Load the pages and store references to the variables they need.
@@ -85,22 +89,22 @@ namespace OpheliasOasis
 			placeRes = new ProcessPage("Place Reservation", "Place a new reservation",
 				new List<Tuple<Func<String, String>, String>> {
 					newStartDateRequest, newEndDateRequest, reservationTypeRequest, newGuestNameRequest, newCreditCardRequest, newEmailRequest
-				}, AddBufferToDB);
+				}, PlaceReservation);
 
 			changeRes = new ProcessPage("Change Reservation", "Change the dates and type of an existing reservation",
 				new List<Tuple<Func<String, String>, String>> {
 					guestNameSearchRequest, selectionSearchRequest, updatedStartDateRequest, updatedEndDateRequest, reservationTypeRequest, newCreditCardRequest, newEmailRequest
-				}, ReplaceReferenceWithBuffer);
+				}, ChangeReservation);
 
 			changeGuestInfo = new ProcessPage("Change Guest Information", "Change the guest information for an existing reservation",
 				new List<Tuple<Func<String, String>, String>> {
 					guestNameSearchRequest, selectionSearchRequest, updatedGuestNameRequest, updatedCreditCardRequest, updatedEmailRequest
-				}, CopyBufferToReference);
+				}, ChangeReservation);
 
 			cancelRes = new ProcessPage("Cancel Reservation", "Cancel an existing reservation",
 				new List<Tuple<Func<String, String>, String>> {
-					Tuple.Create<Func<String, String>, String>(InputStartDate, "Enter the start date (determines the reservation types availble)")
-				}, CopyBufferToReference);
+					guestNameSearchRequest, selectionSearchRequest, cancelrequest
+				}, ChangeReservation);
 
 			// Initialize menu
 			resMenu = new MenuPage("Reservations", "Reservations submenu (place, update, or cancel a reservation)", new List<Page> { placeRes, changeRes, changeGuestInfo, cancelRes });
@@ -125,7 +129,7 @@ namespace OpheliasOasis
 			// Check for empty search results
 			if (searchResults == null || searchResults.Count < 1)
 			{
-				return $"No reservations under the name \"{input}\"";//REMOVE AFTER MERGE
+				return $"No reservations under the name \"{input}\"";
 			}
 
 			// Display search results
@@ -133,7 +137,7 @@ namespace OpheliasOasis
 
 			for (int i = 0; i < searchResults.Count; i++)
 			{
-				Console.WriteLine($"{i + 1}: {searchResults[i].getStartDate().ToShortDateString()} to {searchResults[i].getEndDate().ToShortDateString()} ({searchResults[i].getReservationStatus()})");
+				Console.WriteLine($"\t{i + 1}: {searchResults[i].getReservationType()} Reservation from {searchResults[i].getStartDate().ToShortDateString()} to {searchResults[i].getEndDate().ToShortDateString()} ({searchResults[i].getReservationStatus()})");
 			}
 
 			// Move on to next step
@@ -156,7 +160,8 @@ namespace OpheliasOasis
 			}
 
 			// Store and continue
-			referenceRes = bufferRes = searchResults[selection - 1];
+			referenceRes = searchResults[selection - 1];
+			bufferRes = referenceRes.Clone();
 			return "";
 		}
 
@@ -170,15 +175,15 @@ namespace OpheliasOasis
 			// Validate start date
 			DateTime startDate;
 			if (!DateTime.TryParse(input, out startDate))
-            {
+			{
 				return $"\"{input}\" is not a valid date";
 			}
 			if (startDate < DateTime.Today)
-            {
+			{
 				return $"{startDate.ToShortDateString()} is before today ({DateTime.Today.ToShortDateString()})";
 			}
 			if (cal.retrieveDate(startDate).IsFull())
-            {
+			{
 				return $"Hotel is full on {startDate.ToShortDateString()}";
 			}
 
@@ -198,23 +203,19 @@ namespace OpheliasOasis
 			// Validate end date
 			DateTime endDate;
 			if (!DateTime.TryParse(input, out endDate))
-            {
+			{
 				return $"\"{input}\" is not a valid date";
 			}
 			if (endDate < bufferRes.getStartDate())
-            {
+			{
 				return $"{endDate.ToShortDateString()} is before start date ({bufferRes.getStartDate().ToShortDateString()})";
-			}
-			if (cal.retrieveDate(endDate).IsFull())
-            {
-				return $"Hotel is full on {endDate.ToShortDateString()}";
 			}
 
 			// Check availibility
 			Console.Write("Confirming availibility... ");
 
 			// Ensure space is availible on all intermediate days
-			for (DateTime d = bufferRes.getStartDate(); d < endDate; d = d.AddDays(1))
+			for (DateTime d = bufferRes.getStartDate(); d <= endDate; d = d.AddDays(1))
 			{
 				if (cal.retrieveDate(d).IsFull()) return $"Hotel is full on {d.ToShortDateString()}";
 			}
@@ -256,13 +257,13 @@ namespace OpheliasOasis
 					int totalOccupancy = 0;
 					double totalOccupancyPercent;
 					for (DateTime d = bufferRes.getStartDate(); d <= bufferRes.getEndDate(); d = d.AddDays(1))
-                    {
+					{
 						totalOccupancy += cal.retrieveDate(d).getOccupancy();
 					}
 					totalOccupancyPercent = (double)totalOccupancy / (1.0 + (bufferRes.getEndDate() - bufferRes.getStartDate()).TotalDays);
 					if (totalOccupancyPercent > 0.6)
-                    {
-						return $"Incentive reservations are only allowed when the avergage occupancy is under 60% (currently {100 * totalOccupancy}%)";
+					{
+						return $"Incentive reservations are only allowed when the avergage occupancy is under 60% (currently {totalOccupancy:P})";
 					}
 
 					// Accept otherwise
@@ -274,7 +275,7 @@ namespace OpheliasOasis
 
 					// Reject if not enough advance notice is provided
 					if (daysAdvance < 60)
-                    {
+					{
 						return $"60 days advance reservations can only be made 60 days in advance, not {daysAdvance} days";
 					}
 
@@ -287,7 +288,7 @@ namespace OpheliasOasis
 
 					// Reject if not enough advance notice is provided
 					if (daysAdvance < 90)
-                    {
+					{
 						return $"Prepaid reservations can only be made 90 days in advance, not {daysAdvance} days";
 					}
 
@@ -296,14 +297,14 @@ namespace OpheliasOasis
 					break;
 
 				// Invalid selection
-				default: return $"{input} is not between 1 and 4";
+				default: return $"\"{input}\" is not between 1 and 4";
 			}
 
 			// Calculate the base 
 			Console.Write("Calculating price... ");
 			double cost = 0;
 			for (DateTime d = bufferRes.getStartDate(); d <= bufferRes.getEndDate(); d = d.AddDays(1))
-            {
+			{
 				cost += cal.retrieveDate(d).getBasePrice();
 			}
 
@@ -313,7 +314,7 @@ namespace OpheliasOasis
 
 			// Display the price
 			if (discount > 0)
-            {
+			{
 				Console.Write($"Applied {discount:P} discount. ");
 			}
 			Console.WriteLine($"Calculated final price: {cost:C2}.");
@@ -332,7 +333,7 @@ namespace OpheliasOasis
 		{
 			// Parse input
 			if (String.IsNullOrEmpty(input) && !String.IsNullOrEmpty(bufferRes.getCustomerName()))
-            {
+			{
 				// Skip if requested and allowed
 				return "";
 			}
@@ -358,14 +359,14 @@ namespace OpheliasOasis
 			string[] sets = input.Split(" ");
 
 			// Skip if requested and allowed
-			if (sets.Length == 0 && (bufferRes.getReservationType() == ReservationType.SixtyDay || bufferRes.getCustomerCreditCard() != ""))
-            {
+			if (String.IsNullOrEmpty(input) && (bufferRes.getReservationType() == ReservationType.SixtyDay || !String.IsNullOrEmpty(bufferRes.getCustomerCreditCard())))
+			{
 				return "";
 			}
 
 			// Catch imporper spacing
 			if (sets.Length != 4)
-            {
+			{
 				return "Format must be XXXX XXXX XXXX XXXX";
 			}
 
@@ -373,14 +374,14 @@ namespace OpheliasOasis
 			for (int i = 0; i < 4; i++)
 			{
 				if (sets[i].Length != 4)
-                {
+				{
 					return "Format must be XXXX XXXX XXXX XXXX";
 				}
 
 				for (int j = 0; j < 4; j++)
 				{
 					if (!Char.IsDigit(sets[i][j]))
-                    {
+					{
 						return $"\"{sets[i][j]}\" is not a number";
 					}
 				}
@@ -400,8 +401,7 @@ namespace OpheliasOasis
 		{
 			// Parse input
 			if (String.IsNullOrEmpty(input) && (bufferRes.getReservationType() != ReservationType.SixtyDay || !String.IsNullOrEmpty(bufferRes.getCustomerCreditCard())))
-      {
-
+			{
 				// Skip if requested and allowed
 				return "";
 			}
@@ -417,32 +417,53 @@ namespace OpheliasOasis
 		}
 
 		/// <summary>
+		/// Cancel a reservation.
+		/// </summary>
+		/// <param name="input">A string containing the user's reponse to the prompt.</param>
+		/// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
+		static String InputCancellationConfirmation(String input)
+        {
+			if (input == "N")
+            {
+				return "Press \"Q\" to quit or \"B\" to select a different reservation";
+            }
+			else
+            {
+				bufferRes.setReservationStatus(ReservationStatus.Cancelled);
+				return "";
+            }
+        }
+
+		/// <summary>
 		/// Save changes to a new reservation by adding the buffer to the database.
 		/// </summary>
 		/// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
-		static String AddBufferToDB()
+		static String PlaceReservation()
 		{
+			if (String.IsNullOrEmpty(bufferRes.getCustomerCreditCard()) || bufferRes.getReservationType() == ReservationType.Conventional || bufferRes.getReservationType() == ReservationType.Incentive)
+            {
+				// Otherwise, set to placed
+				bufferRes.setReservationStatus(ReservationStatus.Placed);
+            }
+			else
+            {
+				// Make payments for prepaid and 60days with credit card information provided
+				CreditCardStub.chargeCreditCard(bufferRes);
+				bufferRes.setReservationStatus(ReservationStatus.Paid);
+			}
 			rdb.addReservation(bufferRes);
 			bufferRes = null;
 			return "";
 		}
 
 		/// <summary>
-		/// Save minor changes to an existing reservation by copying changes from the buffer to the reservation in the database.
+		/// Save changes to an existing reservation by swapping the original with the copy containing the changes.
 		/// </summary>
 		/// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
-		static String CopyBufferToReference()
+		static String ChangeReservation()
 		{
-			bufferRes = referenceRes = null;
-			return "";
-		}
-
-		/// <summary>
-		/// Save major changes to an existing reservation by replacing the reference copy with the buffer copy.
-		/// </summary>
-		/// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
-		static String ReplaceReferenceWithBuffer()
-		{
+			// Handle returns?
+			rdb.replaceReservation(referenceRes, bufferRes);
 			bufferRes = referenceRes = null;
 			return "";
 		}
