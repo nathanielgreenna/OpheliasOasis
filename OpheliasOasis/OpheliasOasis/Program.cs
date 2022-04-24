@@ -16,7 +16,7 @@ namespace OpheliasOasis
     /// <summary>
     /// The controlling class for Ophelia's Oasis Reservation System
     /// </summary>
-    class Program
+    public class Program
     {
         private static readonly int MAX_OCCUPANCY = 45;
         private static ReservationDB reservationDB;
@@ -226,7 +226,10 @@ namespace OpheliasOasis
         }
 
 
-
+        public static void setPassword(String newpass) 
+        {
+            managerPassword = newpass;
+        }
 
 
 
