@@ -4,7 +4,7 @@
  * Changelog:
  * 4/4/2022: created/initially coded by Nathaniel
  * 4/20/2022: added public to methods - Nathaniel
- * 4/22/2022: Added isFull method - Alex
+ * 4/22/2022: Added IsFull method - Alex
 */
 
 
@@ -24,7 +24,7 @@ namespace OpheliasOasis
         [DataMember(Name = "Date")]
         private DateTime date;
         [DataMember(Name = "ResPrice")]
-        private int basePrice;
+        private double basePrice;
         [DataMember(Name = "Occ")]
         private int occupancy = 0;
 
@@ -43,11 +43,11 @@ namespace OpheliasOasis
         }
 
 
-        public int getBasePrice() 
+        public double getBasePrice() 
         {
             return (basePrice);
         }
-        public void setBasePrice(int newPrice)
+        public void setBasePrice(double newPrice)
         {
             basePrice = newPrice;
         }

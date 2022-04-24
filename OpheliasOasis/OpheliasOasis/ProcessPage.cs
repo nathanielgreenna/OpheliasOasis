@@ -6,7 +6,7 @@
  * Changelog:
  * 4/22/2022: Initial code - Alex
  * 4/22/2022: Changed navigation options to Quit and Back, changes constructor to accept stepDescs and an endStep - Nathan
- * 4/23/2022: Updated documentation. Changed stepDescs to prompts and endStep to saveChanges. Changed exit prompts and default indicators - Alex
+ * 4/23/2022: Updated documentation. Changed stepDescs to prompts and endStep to saveChanges. Changed exit prompts and default indicators. Changed string to work with $. - Alex
  */
 
 using System;
@@ -36,8 +36,8 @@ namespace OpheliasOasis
         public ProcessPage(String title, String description, List<String> prompts, List<Func<String, String>> steps, Func<String> saveChanges) : base(title, description)
 		{
             // Validate input
-            if (prompts.Count > steps.Count) throw new ArgumentException("ProcessPage \"" + title + "\" has too many prompts");
-            else if (prompts.Count < steps.Count) throw new ArgumentException("ProcessPage \"" + title + "\" has too few prompts");
+            if (prompts.Count > steps.Count) throw new ArgumentException($"ProcessPage \"{title}\" has too many prompts");
+            else if (prompts.Count < steps.Count) throw new ArgumentException($"ProcessPage \"{title}\" has too few prompts");
 
             // Store input
             this.prompts = prompts;
@@ -63,7 +63,7 @@ namespace OpheliasOasis
             while (step <= steps.Count)
             {
                 // Aquire user input
-                Console.Write("[Step " + step + " of " + steps.Count + "] " + prompts[step - 1] + ": ");
+                Console.Write($"[Step {step} of {steps.Count}] {prompts[step - 1]}: ");
                 uInput = Console.ReadLine();
 
                 // Handle user input
@@ -111,7 +111,7 @@ namespace OpheliasOasis
                                             return;
                                         }
                                         else {
-                                            Console.WriteLine("Error: " + procOutput + ". Please try again.");
+                                            Console.WriteLine($"Error: {procOutput}. Please try again.");
                                             break;
                                         }
                                         
@@ -123,7 +123,7 @@ namespace OpheliasOasis
                         }
                         else 
                         {
-                            Console.WriteLine("Error: " + procOutput + ". Please try again.");
+                            Console.WriteLine($"Error: {procOutput}. Please try again.");
                         }
                         break;
                 }

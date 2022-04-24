@@ -130,12 +130,12 @@ namespace OpheliasOasis
         public void generateExpectedRoomIncomeReport(ReservationDB reservationDB)
         {
             List<String> output = new List<String>();
-            int totalIncome = 0;
+            double totalIncome = 0;
             DateTime date = DateTime.Today;
             for (int i = 0; i < 30; i++)
             {
                 List<Reservation> reservations = reservationDB.getActiveReservations(date);
-                int income = 0;
+                double income = 0;
                 foreach (Reservation reservation in reservations)
                 {
                     income += reservation.getTotalPrice();
@@ -163,13 +163,13 @@ namespace OpheliasOasis
         public void generateIncentiveReport(ReservationDB reservationDB, Calendar calendar)
         {
             List<String> output = new List<String>();
-            int totalDiscount = 0;
+            double totalDiscount = 0;
             DateTime date = DateTime.Today;
             for (int i = 0; i < 30; i++)
             {
                 List<Reservation> reservations = reservationDB.getActiveReservations(date);
-                int baseRate = calendar.retrieveDate(date).getBasePrice();
-                int discount = 0;
+                double baseRate = calendar.retrieveDate(date).getBasePrice();
+                double discount = 0;
                 foreach (Reservation reservation in reservations)
                 {
                     if (reservation.getReservationType().Equals(ReservationType.Incentive))
