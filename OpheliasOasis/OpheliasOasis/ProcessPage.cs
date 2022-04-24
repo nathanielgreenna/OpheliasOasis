@@ -21,8 +21,7 @@ namespace OpheliasOasis
     /// </summary>
 	public class ProcessPage : Page
 	{
-        private readonly List<String> prompts;
-        private readonly List<Func<String, String>> steps;
+        private readonly List<Tuple<Func<String, String>, String>> steps;
         private readonly Func<String> saveChanges;
 
         /// <summary>
@@ -33,14 +32,10 @@ namespace OpheliasOasis
         /// <param name="prompts">A list of Strings, each containing a prompt for the respective step.</param>
         /// <param name="steps">A list of functions, each accepting an input String and returning an error message.</param>
         /// <param name="saveChanges">A function that runs before exiting.</param>
-        public ProcessPage(String title, String description, List<String> prompts, List<Func<String, String>> steps, Func<String> saveChanges) : base(title, description)
+        public ProcessPage(String title, String description, List<Tuple<Func<String, String>, String>> steps, Func<String> saveChanges) : base(title, description)
 		{
-            // Validate input
-            if (prompts.Count > steps.Count) throw new ArgumentException($"ProcessPage \"{title}\" has too many prompts");
-            else if (prompts.Count < steps.Count) throw new ArgumentException($"ProcessPage \"{title}\" has too few prompts");
 
             // Store input
-            this.prompts = prompts;
 			this.steps = steps;
             this.saveChanges = saveChanges;
 		}
@@ -63,7 +58,7 @@ namespace OpheliasOasis
             while (step <= steps.Count)
             {
                 // Aquire user input
-                Console.Write($"[Step {step} of {steps.Count}] {prompts[step - 1]}: ");
+                Console.Write($"[Step {step} of {steps.Count}] {steps[step - 1].Item2}: ");
                 uInput = Console.ReadLine();
 
                 // Handle user input
@@ -90,7 +85,7 @@ namespace OpheliasOasis
 
                     // Read in response and move on to the next step
                     default:
-                        procOutput = steps[step - 1].Invoke(uInput);
+                        procOutput = steps[step - 1].Item1.Invoke(uInput);
                         if (String.IsNullOrEmpty(procOutput))
                         {
                             if (step < steps.Count)

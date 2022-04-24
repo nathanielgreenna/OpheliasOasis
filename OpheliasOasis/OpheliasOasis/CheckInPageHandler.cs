@@ -32,7 +32,7 @@ namespace OpheliasOasis
             Htl = htl;
 
             // Initialize page
-            checkIn = new ProcessPage("Check In", "Check In", new List<String> { "Input Name" }, checkInFunctions, null);
+            checkIn = new ProcessPage("Check In", "Check In", new List<Tuple<Func<String, String>, String>>{ Tuple.Create<Func<String, String>, String>(CheckInRes, "Input Name") }, null);
         }
 
         /// <summary>

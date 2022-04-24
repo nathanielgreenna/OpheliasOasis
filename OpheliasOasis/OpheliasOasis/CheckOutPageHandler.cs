@@ -20,8 +20,6 @@ namespace OpheliasOasis
         private static Reservation d;
         private static ProcessPage checkOut;
 
-        public static List<Func<String, String>> checkOutFunctions = new List<Func<String, String>> { CheckOutRes };
-
         public static void Init(ReservationDB db, Hotel htl)
         {
             // Initialize references
@@ -29,7 +27,7 @@ namespace OpheliasOasis
             Htl = htl;
 
             // Initialize page
-            checkOut = new ProcessPage("Check Out", "Check Out", new List<String> { "Input Name" }, checkOutFunctions, null);
+            checkOut = new ProcessPage("Check Out", "Check Out", new List<Tuple<Func<String, String>, String>>{ Tuple.Create<Func<String, String>, String>(CheckOutRes, "Input Name")}, null);
         }
 
         /// <summary>
