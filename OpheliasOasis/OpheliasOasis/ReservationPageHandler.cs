@@ -400,7 +400,8 @@ namespace OpheliasOasis
 		{
 			// Parse input
 			if (String.IsNullOrEmpty(input) && (bufferRes.getReservationType() != ReservationType.SixtyDay || !String.IsNullOrEmpty(bufferRes.getCustomerCreditCard())))
-            {
+      {
+
 				// Skip if requested and allowed
 				return "";
 			}

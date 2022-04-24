@@ -31,9 +31,9 @@ namespace OpheliasOasis
         private int roomNumber;
         [DataMember(Name = "startDate")]
         private DateTime startDate;
-        [DataMember(Name = "endDate")]
-        private DateTime paymentDate;
         [DataMember(Name = "paymentDate")]
+        private DateTime paymentDate;
+        [DataMember(Name = "endDate")]
         private DateTime endDate;
         [DataMember(Name = "resPrice")]
         private double totalPrice;
