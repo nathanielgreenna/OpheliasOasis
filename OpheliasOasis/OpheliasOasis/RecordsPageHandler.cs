@@ -21,6 +21,7 @@ namespace OpheliasOasis
         public static ProcessPage generateEmails;
         public static ProcessPage createBackups;
         public static ProcessPage chargeNoShow;
+        public static ProcessPage changeMPass;
 
 
 
@@ -50,6 +51,15 @@ namespace OpheliasOasis
             Tuple.Create<Func<String, String>, String>(generalCheck, "This process will charge no-show penalties and cancel reservations when complete (B to go back, <Enter to continue>)");
 
 
+        private readonly static Tuple<Func<String, String>, String> checkP =
+            Tuple.Create<Func<String, String>, String>(checkPasschange, "Input Current Manager Password");
+        private readonly static Tuple<Func<String, String>, String> pass1 =
+            Tuple.Create<Func<String, String>, String>(getNewPass, "Input New Manager Password (5 or more characters)");
+        private readonly static Tuple<Func<String, String>, String> pass2 =
+            Tuple.Create<Func<String, String>, String>(confirmNewPass, "Confirm Password");
+
+
+
 
 
         public static void Init(ReservationDB db, Calendar cl, Hotel hotel,String mp)
@@ -60,7 +70,6 @@ namespace OpheliasOasis
             ht = hotel;
             manPass = mp;
             rGen = new ReportGenerator();
-
 
 
 
@@ -78,8 +87,13 @@ namespace OpheliasOasis
 
             chargeNoShow = new ProcessPage("Charge No-Shows", "Charges No-Show penalties and cancels associated reservations", new List<Tuple<Func<String, String>, String>> { noShowConfirmation }, ChargeNoShows);
 
+            changeMPass = new ProcessPage("Change Manager Password", "Choose manager password. Password will be changed upon completing this page.",
+                new List<Tuple<Func<String, String>, String>> {
+                    checkP, pass1, pass2
+                }, changePass);
+
             // Initialize menu
-            recordsMenu = new MenuPage("Records", "Records submenu (Generate Reports, Generate Emails && Cancel no-CCs, Create Backups, Charge No-Shows)", new List<Page> { generateReports, generateEmails, createBackups, chargeNoShow });
+            recordsMenu = new MenuPage("Records", "Records submenu (Generate Reports, Generate Emails && Cancel no-CCs, Create Backups, Charge No-Shows)", new List<Page> { generateReports, generateEmails, createBackups, chargeNoShow, changeMPass });
         }
 
         //----------------REPORTS---------------------
@@ -213,7 +227,7 @@ namespace OpheliasOasis
             dayReservations = rdb.getReservation(DateTime.Today.Subtract(TimeSpan.FromDays(1)));
             foreach (Reservation res in dayReservations)
             {
-                if (!res.getReservationStatus().Equals(ReservationStatus.CheckedIn))
+                if ( (res.getReservationType() == ReservationType.Conventional || res.getReservationType() == ReservationType.Incentive) && !(res.getReservationStatus() == ReservationStatus.CheckedIn || res.getReservationStatus() == ReservationStatus.CheckedOut ))
                 {
                     CreditCardStub.chargeNoShowPenalty(res);
                     res.cancelReservation();
@@ -224,6 +238,56 @@ namespace OpheliasOasis
             System.Threading.Thread.Sleep(2000);
             return "";
         }
+
+
+        //------------------------Change Manager Password---------------------------
+        private static String candidatePass;
+
+
+        static String checkPasschange(String input)
+        {
+                if (input != manPass)
+                {
+                    return "Password incorrect.";
+                }
+            return "";
+        }
+
+
+        static String getNewPass(String input) 
+        { 
+            if(input.Length < 5) 
+            {
+                return ("Must be 5 or more characters");
+            }
+            candidatePass = input;
+            return ("");
+        }
+
+        static String confirmNewPass(String input)
+        {
+            if (input != candidatePass)
+            {
+                return ("Must match Step 2 input");
+            }
+            return ("");
+        }
+
+        static String changePass() 
+        {
+            Program.setPassword(candidatePass);
+            manPass = candidatePass;
+            Console.WriteLine("Password changed!");
+            System.Threading.Thread.Sleep(2000);
+            return "";
+        }
+
+
+
+
+
+
+
 
 
         //-----------------TESTS----------------------------------
