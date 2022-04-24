@@ -34,15 +34,16 @@ namespace OpheliasOasis
 
     static class XMLreader
     {
+        static private String filePath = "C:\\OpheliasOasis\\Archive\\";
         static public void XMLout(ReservationDB ResDB, Hotel hotel, Calendar cal, String ManPass) 
         {
-            if (File.Exists(@".\" + DateTime.Today.ToString("D"))) 
+            if (File.Exists(filePath + DateTime.Today.ToString("D"))) 
             {
-                File.Delete(@".\" + DateTime.Today.ToString("D"));
+                File.Delete(filePath + DateTime.Today.ToString("D"));
             }
-            Console.WriteLine(@".\" + DateTime.Today.ToString("D"));
+            Console.WriteLine(filePath + DateTime.Today.ToString("D"));
             
-            FileStream fs = new FileStream(@".\" + DateTime.Today.ToString("D"), FileMode.Create);
+            FileStream fs = new FileStream(filePath + DateTime.Today.ToString("D"), FileMode.Create);
 
             XmlDictionaryWriter writer = XmlDictionaryWriter.CreateTextWriter(fs);
             DataContractSerializer ser = new DataContractSerializer(typeof(XMLformat));
@@ -54,12 +55,12 @@ namespace OpheliasOasis
 
         static public XMLformat XMLin(DateTime day)
         {
-            if (! File.Exists(@".\" + day.ToString("D")))
+            if (! File.Exists(filePath + day.ToString("D")))
             {
                 throw new FileNotFoundException();
             }
 
-            FileStream fs = new FileStream(@".\" + day.ToString("D"), FileMode.OpenOrCreate);
+            FileStream fs = new FileStream(filePath + day.ToString("D"), FileMode.OpenOrCreate);
             XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
 
             // Create the DataContractSerializer instance.
