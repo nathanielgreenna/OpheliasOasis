@@ -30,11 +30,11 @@ namespace OpheliasOasis
         {
             try
             {
-                return (reservationByDate[date]);
+                return (new List<Reservation>(reservationByDate[date]));
             }
             catch(KeyNotFoundException)
             {
-                return (null);
+                return (new List<Reservation>());
             }
         }
 
@@ -42,11 +42,12 @@ namespace OpheliasOasis
         {
             try
             {
-                return (reservationByName[name]);
+                
+                return (new List<Reservation>(reservationByName[name]));
             }
             catch (KeyNotFoundException)
             {
-                return (null);
+                return (new List<Reservation>());
             }
         }
 
@@ -95,6 +96,30 @@ namespace OpheliasOasis
 
 
         }
+
+        public void replaceReservation(Reservation oldRes, Reservation newRes) 
+        {
+            if (newRes == null) { throw new ArgumentException("Second Argument Null"); }
+            List<Reservation> nameList;
+            List<Reservation> dateList;
+
+            try
+            {
+                nameList = reservationByName[oldRes.getCustomerName()];
+                dateList = reservationByDate[oldRes.getStartDate()];
+                nameList.Remove(oldRes);
+                dateList.Remove(oldRes);
+            }
+            catch (KeyNotFoundException)
+            {
+                throw new ArgumentException("Source reservation not found in database");
+            }
+
+            addReservation(newRes);
+
+        }
+
+
 
         public void reorganize()
         {

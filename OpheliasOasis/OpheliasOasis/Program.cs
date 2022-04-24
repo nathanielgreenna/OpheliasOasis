@@ -28,14 +28,15 @@ namespace OpheliasOasis
         {
             //Ophelia's is in AU, so make culture AU
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-AU");
-            ReservationPageHandler.Init(new ReservationDB(), calendar);
+
+
 
             StartupScreen();
-            return;
-
+            ReservationPageHandler.Init(new ReservationDB(), calendar);
+            RecordsPageHandler.Init(reservationDB, calendar, managerPassword);
 
             //level 2 of tree
-            
+
 
 
 
@@ -51,117 +52,10 @@ namespace OpheliasOasis
             while(true)
             {
                 System.Threading.Thread.Sleep(2000);
-                ReservationPageHandler.resMenu.Open();
+                RecordsPageHandler.recordsMenu.Open();
             }
 
         }
-
-        /// <summary>
-        /// Display the menu for adding, creating, or removing reservations.
-        /// </summary>
-        /*static void ReservationMenu()
-        {
-            while (true)
-            {
-                // Display menu options
-                DisplayHeader("Reservation Menu");
-                Console.WriteLine("Please select one of the following options:");
-                Console.WriteLine("\t1: Place a new reservation");
-                Console.WriteLine("\t2: Update an existing reservation");
-                Console.WriteLine("\t3: Cancel an existing reservation");
-                Console.WriteLine("\t4: Return to the main menu");
-                Console.WriteLine();
-
-                string selectionText;
-                int selection;
-
-                Console.Write("Please enter your selection (1-4): ");
-                selectionText = Console.ReadLine();
-
-                // If necessary, repeatedly request a selection until a valid number (1-4) is provided
-                while (!int.TryParse(selectionText, out selection) || selection > 4 || selection < 1)
-                {
-                    Console.Write("Selection \"" + selectionText + "\" is not valid. Please enter your selection (1-4): ");
-                    selectionText = Console.ReadLine();
-                }
-
-                Console.WriteLine();
-
-                // Navigate to selected process
-                switch (selection)
-                {
-                    //case 1: PlaceReservation(); break;
-                   // case 2: UpdateReservation(); break;
-                   // case 3: CancelReservation(); break;
-                    case 4: return;
-                }
-            }
-        } */
-
-        /// <summary>
-        /// Walk the user through placing a reservation.
-        /// </summary>
-        /*static void PlaceReservation()
-        {
-            // Store step variables
-            int step = 1;
-            int maxStep = 5;
-
-            // Store menu variables
-            string temp;
-            string? name = null;
-            int? creditCard = null;
-            DateTime? date = null;
-            ReservationType? type = null;
-
-            // Display page information
-            DisplayHeader("Place New Reservation");
-            DisplayStepNavigationHint();
-
-            // Loop through the steps - allows user to move backwards and forwards through the process
-            while (step <= maxStep)
-            {
-                // Keep user informed of progress
-                Console.Write("Step " + step + " of " + maxStep + ": ");
-
-                // Perform step
-                switch (step)
-                {
-                    case 1: date = RequestReservationStartDate(date); break;
-                }
-
-                // Navigate to the next user-selected step
-                Console.Write("Continute? (Enter B, R, C):");
-
-                switch (Console.ReadLine().ToUpper())
-                {
-                    case "B":
-                        if (step > 1)
-                        {
-                            step--;
-                        }
-                        else
-                        {
-                            Console.Write("Are you sure you want to exit this menu? (Y/n):");
-                            if (Console.ReadLine().ToUpper() != "N") return;
-                        }
-                        break;
-                    case "R":
-                        break;
-                    default:
-                        if (step < maxStep)
-                        {
-                            step++;
-                        }
-                        else
-                        {
-                            Console.Write("Are you sure you want to exit this menu? (Y/n):");
-                            if (Console.ReadLine().ToUpper() != "N") return;
-                        }
-                        break;
-                }
-            }
-        } */
 
         /// <summary>
         /// Walk the user through updating a reservation.
