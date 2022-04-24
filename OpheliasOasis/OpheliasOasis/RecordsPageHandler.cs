@@ -20,6 +20,7 @@ namespace OpheliasOasis
         public static ProcessPage generateReports;
         public static ProcessPage generateEmails;
         public static ProcessPage createBackups;
+        public static ProcessPage chargeNoShow;
 
 
 
@@ -45,7 +46,8 @@ namespace OpheliasOasis
         private readonly static Tuple<Func<String, String>, String> backupConfirmation =
             Tuple.Create<Func<String, String>, String>(generalCheck, "This process will create a backup when complete (B to go back, <Enter to continue>)");
 
-
+        private readonly static Tuple<Func<String, String>, String> noShowConfirmation =
+            Tuple.Create<Func<String, String>, String>(generalCheck, "This process will charge no-show penalties and cancel reservations when complete (B to go back, <Enter to continue>)");
 
 
 
@@ -74,9 +76,10 @@ namespace OpheliasOasis
 
             createBackups = new ProcessPage("Create Backups", "Creates a new backup, saving data for the next time the application is opened", new List<Tuple<Func<String, String>, String>> { backupConfirmation }, makeBackup);
 
+            chargeNoShow = new ProcessPage("Charge No-Shows", "Charges No-Show penalties and cancels associated reservations", new List<Tuple<Func<String, String>, String>> { noShowConfirmation }, ChargeNoShows);
 
             // Initialize menu
-            recordsMenu = new MenuPage("Records", "Records submenu (Generate Reports, Generate Emails && Cancel no-CCs, Create Backups)", new List<Page> { generateReports, generateEmails, createBackups });
+            recordsMenu = new MenuPage("Records", "Records submenu (Generate Reports, Generate Emails && Cancel no-CCs, Create Backups, Charge No-Shows)", new List<Page> { generateReports, generateEmails, createBackups, chargeNoShow });
         }
 
         //----------------REPORTS---------------------
@@ -150,14 +153,12 @@ namespace OpheliasOasis
         //--------------------Email&CancelNoCCs------------------------
 
 
-
-
         static String generalCheck(String input)
         {
             return "";
         }
 
-            static String GenEmails()
+        static String GenEmails()
         {
             int c = 0;
             int e = 0;
@@ -167,9 +168,9 @@ namespace OpheliasOasis
                 dayReservations = rdb.getReservation(DateTime.Today.AddDays(daysinfuture));
                 foreach(Reservation res in dayReservations)
                 {
-                    if(res.getReservationType() == ReservationType.SixtyDay && (String.IsNullOrEmpty(res.getCustomerCreditCard()) || ! (res.getReservationStatus() == "Paid"))) 
+                    if(res.getReservationType() == ReservationType.SixtyDay && (String.IsNullOrEmpty(res.getCustomerCreditCard()) || ! (res.getReservationStatus().Equals(ReservationStatus.Paid)))) 
                     {
-                        res.setReservationStatus("Cancelled");
+                        res.cancelReservation();
                         cal.decrementOverSpan(res.getStartDate(),res.getEndDate());
                         c++;
                     }
@@ -181,9 +182,9 @@ namespace OpheliasOasis
                 dayReservations = rdb.getReservation(DateTime.Today.AddDays(daysinfuture));
                 foreach (Reservation res in dayReservations)
                 {
-                    if (res.getReservationType() == ReservationType.SixtyDay && (String.IsNullOrEmpty(res.getCustomerCreditCard()) || !(res.getReservationStatus() == "Emailed")))
+                    if (res.getReservationType() == ReservationType.SixtyDay && (String.IsNullOrEmpty(res.getCustomerCreditCard()) || !(res.getReservationStatus().Equals(ReservationStatus.Emailed))))
                     {
-                        res.setReservationStatus("Emailed");
+                        res.setReservationStatus(ReservationStatus.Emailed);
                         EmailStub.sendEmail(new PaymentInformationRequestEmail(res));
                         e++;
                     }
@@ -204,10 +205,29 @@ namespace OpheliasOasis
         }
 
 
+        //--------------------NoShows------------------------
+        static String ChargeNoShows()
+        {
+            int c = 0;
+            List<Reservation> dayReservations;
+            dayReservations = rdb.getReservation(DateTime.Today.Subtract(TimeSpan.FromDays(1)));
+            foreach (Reservation res in dayReservations)
+            {
+                if (!res.getReservationStatus().Equals(ReservationStatus.CheckedIn))
+                {
+                    CreditCardStub.chargeNoShowPenalty(res);
+                    res.cancelReservation();
+                    c++;
+                }
+            }
+            Console.WriteLine("Charged " + c + " no-shows and cancelled their reservations.");
+            System.Threading.Thread.Sleep(2000);
+            return "";
+        }
 
 
-            //-----------------TESTS----------------------------------
-            private static String Test(String input)
+        //-----------------TESTS----------------------------------
+        private static String Test(String input)
         {
             return "";
         }

@@ -7,6 +7,7 @@
  * 4/20/2022: added public to methods - Nathaniel
  * 4/20/2022: Changed reservationType to type ReservationType - Alex
  * 4/23/2022: Changed customerCreditCard to string and price to double - Alex
+ * 4/24/2022: Changed reservationStatus to type ReservationStatus - Alec
 */
 
 using System;
@@ -38,7 +39,7 @@ namespace OpheliasOasis
         [DataMember(Name = "resPrice")]
         private double totalPrice;
         [DataMember(Name = "resStatus")]
-        private String reservationStatus;
+        private ReservationStatus reservationStatus;
 
 
         public Reservation()
@@ -133,11 +134,11 @@ namespace OpheliasOasis
             totalPrice = price;
         }
 
-        public String getReservationStatus()
+        public ReservationStatus getReservationStatus()
         {
             return reservationStatus;
         }
-        public void setReservationStatus(String status)
+        public void setReservationStatus(ReservationStatus status)
         {
             reservationStatus = status;
         }
@@ -146,17 +147,17 @@ namespace OpheliasOasis
 
         public void cancelReservation() 
         {
-            reservationStatus = "Cancelled";
+            reservationStatus = ReservationStatus.Cancelled;
         }
 
         public void checkIn()
         {
-            reservationStatus = "Checked In";
+            reservationStatus = ReservationStatus.CheckedIn;
         }
 
         public void checkOut()
         {
-            reservationStatus = "Checked Out";
+            reservationStatus = ReservationStatus.CheckedOut;
         }
 
         public void changeReservation(DateTime sDate, DateTime eDate)
