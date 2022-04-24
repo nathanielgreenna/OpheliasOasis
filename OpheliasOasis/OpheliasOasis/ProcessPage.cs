@@ -59,6 +59,7 @@ namespace OpheliasOasis
                 // Aquire user input
                 Console.Write($"[Step {step} of {steps.Count}] {steps[step - 1].Item2}: ");
                 uInput = Console.ReadLine();
+
                 // Handle user input
                 switch (uInput.ToUpper())
                 {
@@ -86,6 +87,7 @@ namespace OpheliasOasis
                         procOutput = steps[step - 1].Item1.Invoke(uInput);
                         if (String.IsNullOrEmpty(procOutput))
                         {
+                            Console.WriteLine();
                             if (step < steps.Count)
                             {
                                 step++;
@@ -117,6 +119,7 @@ namespace OpheliasOasis
                         else 
                         {
                             Console.WriteLine($"Error: {procOutput}. Please try again.");
+                            Console.WriteLine();
                         }
                         break;
                 }
