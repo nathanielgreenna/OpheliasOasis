@@ -16,7 +16,7 @@ namespace OpheliasOasis
 {
     // summary
     // Simulates a credit card API by storing charges into text files.
-    // smmary
+    // summary
     public static class CreditCardStub
     {
         private static string path = "C:\\OpheliasOasis\\Charges\\";

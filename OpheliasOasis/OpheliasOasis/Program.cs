@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+
 namespace OpheliasOasis
 {
     /// <summary>
@@ -115,42 +116,39 @@ namespace OpheliasOasis
             Console.WriteLine("   . _ ||||| . _               .   _________  ");
             Console.WriteLine("_   ___|||||__  _    .   . _____   .         _");
             Console.WriteLine("     _ `---'    .    ..   _   .   .  ____    .");
-            Console.WriteLine("Loading most recent backup...");
+            Console.WriteLine("Loading...");
 
 
             Directory.CreateDirectory("C:\\OpheliasOasis");
-            Directory.CreateDirectory("C:\\OpheliasOasis\\Archive");
+            Directory.CreateDirectory("C:\\OpheliasOasis\\Backups");
             Directory.CreateDirectory("C:\\OpheliasOasis\\Reports");
             Directory.CreateDirectory("C:\\OpheliasOasis\\EmailCCStubs");
+            Directory.CreateDirectory("C:\\OpheliasOasis\\Data\\Reservations");
+            Directory.CreateDirectory("C:\\OpheliasOasis\\Data\\Calendar");
+            Directory.CreateDirectory("C:\\OpheliasOasis\\Data\\Hotel");
+
+
+            try 
+            {
+                managerPassword = XMLreader.readInMPass();
+                hotel = XMLreader.readInHotel();
+                reservationDB = XMLreader.readInResDB();
+                calendar = XMLreader.readInCal();
+            }
+            catch (FileNotFoundException){
+
+            }
+
+
+
 
 
             XMLformat g;
             DateTime t = DateTime.Today;
-            for (int i = 0; i < 100; i++) 
-            {
-                try 
-                {
-                    g = XMLreader.XMLin(t);
-                    Console.SetCursorPosition(0, Console.CursorTop - 1);
-                    Console.Write("Loaded Most Recent Backup From " + t.ToString("D"));
-                    reservationDB = g.R;
-                    calendar = g.C;
-                    hotel = g.H;
-                    managerPassword = g.M;
-                    System.Threading.Thread.Sleep(2000);
-                    return;
-
-                }
-                catch(FileNotFoundException)
-                {
-                    t = t.AddDays(-1);
-                }
-
-            }
             Console.SetCursorPosition(0, Console.CursorTop - 1);
-            Console.WriteLine("Backup not found within the last 100 days.");
+            Console.WriteLine("Previous data was not found or has been corrupted");
             String inp;
-            Console.Write("Type SETUP if this is the first time opening the application, or enter a date in DD/MM/YYYY format to attempt to load: ");
+            Console.Write("Type SETUP if this is the first time opening the application, or enter a date in DD/MM/YYYY format to attempt to load that date's backup: ");
 
             while (true)
             { 
@@ -158,9 +156,11 @@ namespace OpheliasOasis
                 switch (inp) 
                 {
                     case "SETUP":
+                        XMLreader.clearFolders();
                         reservationDB = new ReservationDB();
-                        hotel = new Hotel();
+                        hotel = new Hotel(MAX_OCCUPANCY);
                         calendar = new Calendar();
+                        XMLreader.changeHotel(hotel);
                         Console.WriteLine("Welcome to the application!");
                         System.Threading.Thread.Sleep(2000);
                         SetManagerPassword();
@@ -229,6 +229,7 @@ namespace OpheliasOasis
         public static void setPassword(String newpass) 
         {
             managerPassword = newpass;
+            XMLreader.changeMPass(managerPassword);
         }
 
 

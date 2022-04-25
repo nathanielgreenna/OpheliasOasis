@@ -19,6 +19,8 @@ namespace OpheliasOasis
         [DataMember(Name = "resByName")]
         private Dictionary<String, List<Reservation>> reservationByName = new Dictionary<String, List<Reservation>>();
         private Dictionary<DateTime, List<Reservation>> reservationByDate = new Dictionary<DateTime, List<Reservation>>();
+        [DataMember(Name = "maxID")]
+        private uint idcount = 1; 
 
         public ReservationDB()
         {
@@ -91,9 +93,36 @@ namespace OpheliasOasis
                 reservationByName[res.getCustomerName()].Add(res);
             }
 
+            res.setID(idcount);
+            XMLreader.AddOrChangeReservationinDB(res);
+            idcount++;
+        }
+        public void addReservationReader(Reservation res)
+        {
+            try
+            {
+                reservationByDate[res.getStartDate()].Add(res);
+            }
+            catch (KeyNotFoundException)
+            {
+                reservationByDate.Add(res.getStartDate(), new List<Reservation>());
+                reservationByDate[res.getStartDate()].Add(res);
+            }
 
+            try
+            {
+                reservationByName[res.getCustomerName()].Add(res);
+            }
+            catch (KeyNotFoundException)
+            {
+                reservationByName.Add(res.getCustomerName(), new List<Reservation>());
+                reservationByName[res.getCustomerName()].Add(res);
+            }
 
-
+            if(res.getID() >= idcount) 
+            {
+                idcount = res.getID() + 1;
+            }
 
         }
 
@@ -102,7 +131,7 @@ namespace OpheliasOasis
             if (newRes == null) { throw new ArgumentException("Second Argument Null"); }
             List<Reservation> nameList;
             List<Reservation> dateList;
-
+            
             try
             {
                 nameList = reservationByName[oldRes.getCustomerName()];
@@ -114,9 +143,9 @@ namespace OpheliasOasis
             {
                 throw new ArgumentException("Source reservation not found in database");
             }
-
-            addReservation(newRes);
-
+            newRes.setID(oldRes.getID());
+            addReservationReader(newRes);
+            XMLreader.AddOrChangeReservationinDB(newRes);
         }
 
 
@@ -145,9 +174,7 @@ namespace OpheliasOasis
                         reservationByDate.Add(transferRes.getStartDate(), new List<Reservation>());
                         reservationByDate[transferRes.getStartDate()].Add(transferRes);
                     }
-
-
-
+                    XMLreader.AddOrChangeReservationinDB(transferRes);
                 }
 
 
