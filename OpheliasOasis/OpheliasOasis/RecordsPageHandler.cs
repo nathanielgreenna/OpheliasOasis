@@ -235,7 +235,7 @@ namespace OpheliasOasis
             {
                 if ( (res.getReservationType() == ReservationType.Conventional || res.getReservationType() == ReservationType.Incentive) && !(res.getReservationStatus() == ReservationStatus.CheckedIn || res.getReservationStatus() == ReservationStatus.CheckedOut ))
                 {
-                    CreditCardStub.chargeNoShowPenalty(res);
+                    CreditCardStub.WriteTransaction(res.getCustomerCreditCard(), res.getCustomerName(), "Ophelia's Oasis", "1234 1234 1234 1234", res.getFirstDayPrice());
                     res.cancelReservation();
                     c++;
                 }
