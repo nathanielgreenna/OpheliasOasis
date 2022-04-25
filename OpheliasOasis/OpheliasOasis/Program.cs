@@ -31,8 +31,11 @@ namespace OpheliasOasis
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-AU");
 
             StartupScreen();
-            ReservationPageHandler.Init(new ReservationDB(), calendar);
-            RecordsPageHandler.Init(reservationDB, calendar, hotel ,managerPassword);
+            CheckInPageHandler.Init(reservationDB, hotel);
+            CheckOutPageHandler.Init(reservationDB, hotel);
+            DatesPageHandler.Init(calendar, managerPassword);
+            RecordsPageHandler.Init(reservationDB, calendar, hotel, managerPassword);
+            ReservationPageHandler.Init(reservationDB, calendar);
 
             //level 2 of tree
 
@@ -46,12 +49,12 @@ namespace OpheliasOasis
             //MenuPage reservations = new MenuPage("Reservation Menu", "Place, update, or cancel a reservation", new List<Page> { ReservationPageHandler.p, ReservationPageHandler.u, ReservationPageHandler.c });
 
             //Home. this is top of the tree
-            //MenuPage home = new MenuPage("Home Menu", "Ophelia's Oasis Home Menu", new List<Page> { checkIn, checkOut, dates, reportsEmailsBackups, reservations });
+            MenuPage home = new MenuPage("Home Menu", "Ophelia's Oasis Home Menu", new List<Page> { CheckInPageHandler.getPage(), CheckOutPageHandler.getPage(), DatesPageHandler.datesMenu, RecordsPageHandler.recordsMenu, ReservationPageHandler.resMenu });
 
             while(true)
             {
                 System.Threading.Thread.Sleep(2000);
-                RecordsPageHandler.recordsMenu.Open();
+                home.Open();
             }
 
         }
@@ -134,6 +137,7 @@ namespace OpheliasOasis
                 hotel = XMLreader.readInHotel();
                 reservationDB = XMLreader.readInResDB();
                 calendar = XMLreader.readInCal();
+                return;
             }
             catch (FileNotFoundException){
 
