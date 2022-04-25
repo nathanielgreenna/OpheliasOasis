@@ -68,6 +68,7 @@ namespace OpheliasOasis
             {
                 ID = newID;
             }
+        }
         public Reservation Clone()
         {
             Reservation clone = new Reservation();
