@@ -5,7 +5,7 @@
  * 
  * Changelog:
  * 4/23/2022: Initial commit - Alex
- * 4/24/2022: Added interface to reservationDB - Alex
+ * 4/24/2022: Added interface to reservationDB & changed code to treat end date as check-out date - Alex
  */
 
 using System;
@@ -39,16 +39,16 @@ namespace OpheliasOasis
 			Tuple.Create<Func<String, String>, String>(InputResSelection, "Select one of the options above (enter the index of the left)");
 
 		private readonly static Tuple<Func<String, String>, String> newStartDateRequest =
-			Tuple.Create<Func<String, String>, String>(InputStartDate, "Enter the start date (determines the reservation types availble)");
+			Tuple.Create<Func<String, String>, String>(InputStartDate, "Enter the check-in date (determines the reservation types availble)");
 
 		private readonly static Tuple<Func<String, String>, String> updatedStartDateRequest =
-			Tuple.Create<Func<String, String>, String>(InputStartDate, "Enter the new start date (determines the reservation types availble)");
+			Tuple.Create<Func<String, String>, String>(InputStartDate, "Enter the new check-in date (determines the reservation types availble)");
 
 		private readonly static Tuple<Func<String, String>, String> newEndDateRequest =
-			Tuple.Create<Func<String, String>, String>(InputEndDate, "Enter the end date");
+			Tuple.Create<Func<String, String>, String>(InputEndDate, "Enter the checkout date");
 
 		private readonly static Tuple<Func<String, String>, String> updatedEndDateRequest =
-			Tuple.Create<Func<String, String>, String>(InputEndDate, "Enter the new end date");
+			Tuple.Create<Func<String, String>, String>(InputEndDate, "Enter the new checkout date");
 
 		private readonly static Tuple<Func<String, String>, String> reservationTypeRequest =
 			Tuple.Create<Func<String, String>, String>(InputType, "Enter the desired reservation type (1: Conventional, 2: Incentive, 3: 60-days, 4: Prepaid)");
@@ -206,16 +206,16 @@ namespace OpheliasOasis
 			{
 				return $"\"{input}\" is not a valid date";
 			}
-			if (endDate < bufferRes.getStartDate())
+			if (endDate <= bufferRes.getStartDate())
 			{
-				return $"{endDate.ToShortDateString()} is before start date ({bufferRes.getStartDate().ToShortDateString()})";
+				return $"{endDate.ToShortDateString()} is on or before before start date ({bufferRes.getStartDate().ToShortDateString()})";
 			}
 
 			// Check availibility
 			Console.Write("Confirming availibility... ");
 
 			// Ensure space is availible on all intermediate days
-			for (DateTime d = bufferRes.getStartDate(); d <= endDate; d = d.AddDays(1))
+			for (DateTime d = bufferRes.getStartDate(); d < endDate; d = d.AddDays(1))
 			{
 				if (cal.retrieveDate(d).IsFull()) return $"Hotel is full on {d.ToShortDateString()}";
 			}
@@ -256,14 +256,14 @@ namespace OpheliasOasis
 					// Reject days with too large an occupancy
 					int totalOccupancy = 0;
 					double totalOccupancyPercent;
-					for (DateTime d = bufferRes.getStartDate(); d <= bufferRes.getEndDate(); d = d.AddDays(1))
+					for (DateTime d = bufferRes.getStartDate(); d < bufferRes.getEndDate(); d = d.AddDays(1))
 					{
 						totalOccupancy += cal.retrieveDate(d).getOccupancy();
 					}
-					totalOccupancyPercent = (double)totalOccupancy / (1.0 + (bufferRes.getEndDate() - bufferRes.getStartDate()).TotalDays);
+					totalOccupancyPercent = (double) totalOccupancy / (bufferRes.getEndDate() - bufferRes.getStartDate()).TotalDays;
 					if (totalOccupancyPercent > 0.6)
 					{
-						return $"Incentive reservations are only allowed when the avergage occupancy is under 60% (currently {totalOccupancy:P})";
+						return $"Incentive reservations are only allowed when the avergage occupancy is under 60.00% (currently {totalOccupancy:P})";
 					}
 
 					// Accept otherwise
@@ -303,7 +303,7 @@ namespace OpheliasOasis
 			// Calculate the base 
 			Console.Write("Calculating price... ");
 			double cost = 0;
-			for (DateTime d = bufferRes.getStartDate(); d <= bufferRes.getEndDate(); d = d.AddDays(1))
+			for (DateTime d = bufferRes.getStartDate(); d < bufferRes.getEndDate(); d = d.AddDays(1))
 			{
 				cost += cal.retrieveDate(d).getBasePrice();
 			}
