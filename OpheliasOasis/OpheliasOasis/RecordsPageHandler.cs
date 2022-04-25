@@ -95,6 +95,12 @@ namespace OpheliasOasis
             // Initialize menu
             recordsMenu = new MenuPage("Records", "Records submenu (Generate Reports, Generate Emails && Cancel no-CCs, Create Backups, Charge No-Shows)", new List<Page> { generateReports, generateEmails, createBackups, chargeNoShow, changeMPass });
         }
+            
+
+
+
+
+
 
         //----------------REPORTS---------------------
 
@@ -278,6 +284,7 @@ namespace OpheliasOasis
             Program.setPassword(candidatePass);
             manPass = candidatePass;
             XMLreader.changeMPass(manPass);
+            DatesPageHandler.setPassword(manPass);
             Console.WriteLine("Password changed!");
             System.Threading.Thread.Sleep(2000);
             return "";
