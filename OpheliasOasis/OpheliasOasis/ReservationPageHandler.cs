@@ -429,7 +429,7 @@ namespace OpheliasOasis
             }
 			else
             {
-				bufferRes.setReservationStatus(ReservationStatus.Cancelled);
+				bufferRes.cancelReservation();
 				return "";
             }
         }
