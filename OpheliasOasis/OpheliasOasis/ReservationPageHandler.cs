@@ -450,7 +450,7 @@ namespace OpheliasOasis
 			else
 			{
 				// Make payments for prepaid and 60-days with credit card information provided
-				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), "Ophelia's Oasis", bufferRes.getTotalPrice());
+				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", bufferRes.getTotalPrice());
 				bufferRes.setReservationStatus(ReservationStatus.Paid);
 			}
 			rdb.addReservation(bufferRes);
@@ -478,11 +478,11 @@ namespace OpheliasOasis
 
 				if (priceDifference > 0)
                 {
-					CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), "Ophelia's Oasis", priceDifference);
+					CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", priceDifference);
                 }
 				else
                 {
-					CreditCardStub.WriteTransaction("Ophelia's Oasis", bufferRes.getCustomerName(), -priceDifference);
+					CreditCardStub.WriteTransaction("Ophelia's Oasis", "1234 1234 1234 1234", bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), -priceDifference);
 				}
 
 			} else
@@ -493,7 +493,7 @@ namespace OpheliasOasis
 
 				if (priceDifference > 0)
                 {
-					CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), "Ophelia's Oasis", priceDifference);
+					CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", priceDifference);
 				}
             }
 
@@ -507,7 +507,7 @@ namespace OpheliasOasis
 			if (bufferRes.getReservationType() == ReservationType.Conventional || bufferRes.getReservationType() == ReservationType.Incentive)
 			{
 				double refund = (bufferRes.getStartDate() - DateTime.Today).TotalDays > 3 ? bufferRes.getTotalPrice() : bufferRes.getTotalPrice() - bufferRes.getFirstDayPrice();
-				CreditCardStub.WriteTransaction("Ophelia's Oasis", bufferRes.getCustomerName(), refund);
+				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", refund);
 			}
 
 			// Save changes
