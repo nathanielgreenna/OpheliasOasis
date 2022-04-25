@@ -129,6 +129,8 @@ namespace OpheliasOasis
             Directory.CreateDirectory("C:\\OpheliasOasis\\Data\\Reservations");
             Directory.CreateDirectory("C:\\OpheliasOasis\\Data\\Calendar");
             Directory.CreateDirectory("C:\\OpheliasOasis\\Data\\Hotel");
+            Directory.CreateDirectory("C:\\OpheliasOasis\\AccomodationBills");
+
 
 
             try 
@@ -225,6 +227,7 @@ namespace OpheliasOasis
             }
             managerPassword = candidatePassword;
             Console.WriteLine("Manager password set! This can be changed later in the Records menu.");
+            XMLreader.changeMPass(managerPassword);
             System.Threading.Thread.Sleep(4000);
 
         }
