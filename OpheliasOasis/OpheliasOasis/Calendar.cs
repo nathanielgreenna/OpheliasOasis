@@ -77,6 +77,20 @@ namespace OpheliasOasis
 
         }
 
+        public void XMLReaderOnlyAdd(ReservationDate d) 
+        {
+            dates.Add(d.getDate(),d);
+        }
+
+        public void WriteCaltoXML() 
+        {
+            Dictionary<DateTime,ReservationDate>.ValueCollection outDates = dates.Values;
+
+            foreach(ReservationDate d in outDates) 
+            {
+                XMLreader.changeReservationDate(d);
+            }
+        }
 
 
 

@@ -50,14 +50,17 @@ namespace OpheliasOasis
         public void setBasePrice(double newPrice)
         {
             basePrice = newPrice;
+            XMLreader.changeReservationDate(this);
         }
         public void increaseOccupancy() 
         {
             occupancy++;
+            XMLreader.changeReservationDate(this);
         }
         public void decreaseOccupancy()
         {
             occupancy--;
+            XMLreader.changeReservationDate(this);
         }
         public int getOccupancy()
         {

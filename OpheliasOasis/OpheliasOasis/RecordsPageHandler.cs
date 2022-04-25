@@ -277,6 +277,7 @@ namespace OpheliasOasis
         {
             Program.setPassword(candidatePass);
             manPass = candidatePass;
+            XMLreader.changeMPass(manPass);
             Console.WriteLine("Password changed!");
             System.Threading.Thread.Sleep(2000);
             return "";

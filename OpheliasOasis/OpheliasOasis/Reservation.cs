@@ -15,33 +15,34 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
-
 namespace OpheliasOasis
 {
     [DataContract(Name = "Res", Namespace = "OpheliasOasis")]
     public class Reservation
     {
-        [DataMember(Name = "resType")]
+        [DataMember(Name = "ID")]
+        private uint ID = 0;
+        [DataMember(Name = "Type")]
         private ReservationType reservationType;
-        [DataMember(Name = "resName")]
+        [DataMember(Name = "Name")]
         private String customerName;
-        [DataMember(Name = "resCC")]
+        [DataMember(Name = "CC")]
         private String customerCreditCard;
-        [DataMember(Name = "resEmail")]
+        [DataMember(Name = "Email")]
         private String customerEmail;
         [DataMember(Name = "roomNo")]
         private int roomNumber;
-        [DataMember(Name = "startDate")]
+        [DataMember(Name = "sDate")]
         private DateTime startDate;
-        [DataMember(Name = "paymentDate")]
+        [DataMember(Name = "payDate")]
         private DateTime paymentDate;
-        [DataMember(Name = "endDate")]
+        [DataMember(Name = "eDate")]
         private DateTime endDate;
-        [DataMember(Name = "resPrice")]
+        [DataMember(Name = "Price")]
         private double totalPrice;
-        [DataMember(Name = "resPriceFirstDay")]
+        [DataMember(Name = "FPrice")]
         private double firstDayPrice;
-        [DataMember(Name = "resStatus")]
+        [DataMember(Name = "Status")]
         private ReservationStatus reservationStatus;
 
 
@@ -57,6 +58,16 @@ namespace OpheliasOasis
             endDate = eDate;
         }
 
+        public uint getID()
+        {
+            return ID;
+        }
+        public void setID(uint newID)
+        {
+            if (ID == 0)
+            {
+                ID = newID;
+            }
         public Reservation Clone()
         {
             Reservation clone = new Reservation();
@@ -71,7 +82,6 @@ namespace OpheliasOasis
             clone.totalPrice = totalPrice;
             clone.reservationStatus = reservationStatus;
             return clone;
-
         }
 
         public ReservationType getReservationType() 
@@ -81,6 +91,7 @@ namespace OpheliasOasis
         public void setReservationType(ReservationType type) 
         {
             reservationType = type;
+            if(ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
         public String getCustomerName() 
         {
@@ -97,6 +108,7 @@ namespace OpheliasOasis
         public void setCustomerCreditCard(String card)
         {
             customerCreditCard = card;
+            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
         public String getCustomerEmail() 
         {
@@ -105,6 +117,7 @@ namespace OpheliasOasis
         public void setCustomerEmail(String email) 
         {
             customerEmail = email;
+            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
         public int getRoomNumber() 
         {
@@ -113,6 +126,7 @@ namespace OpheliasOasis
         public void setRoomNumber(int roomNo)
         {
             roomNumber = roomNo;
+            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
 
         public DateTime getStartDate() 
@@ -128,6 +142,7 @@ namespace OpheliasOasis
         public void setPaymentDate(DateTime t)
         {
             paymentDate = t;
+            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
 
         public DateTime getPaymentDate()
@@ -143,6 +158,7 @@ namespace OpheliasOasis
         public void setEndDate(DateTime t)
         {
             endDate = t;
+            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
 
         public double getTotalPrice() 
@@ -153,6 +169,7 @@ namespace OpheliasOasis
         public void setTotalPrice(double price)
         {
             totalPrice = price;
+            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
 
         public double getFirstDayPrice()
@@ -163,6 +180,7 @@ namespace OpheliasOasis
         public void setFirstDayPrice(double price)
         {
             firstDayPrice = price;
+            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
 
 
@@ -175,6 +193,7 @@ namespace OpheliasOasis
         public void setReservationStatus(ReservationStatus status)
         {
             reservationStatus = status;
+            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
 
 
@@ -182,22 +201,26 @@ namespace OpheliasOasis
         public void cancelReservation() 
         {
             reservationStatus = ReservationStatus.Cancelled;
+            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
 
         public void checkIn()
         {
             reservationStatus = ReservationStatus.CheckedIn;
+            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
 
         public void checkOut()
         {
             reservationStatus = ReservationStatus.CheckedOut;
+            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
 
         public void changeReservation(DateTime sDate, DateTime eDate)
         {
             startDate = sDate;
             endDate = eDate;
+            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
 
 

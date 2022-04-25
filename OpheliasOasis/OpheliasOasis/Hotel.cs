@@ -22,16 +22,9 @@ namespace OpheliasOasis
         [DataMember(Name = "RoomsOcc")]
         private int roomsOccupied;
 
-        public Hotel() 
+        public Hotel(int numrooms) 
         { 
-            rooms = new List<bool>
-            {
-                false, false, false, false, false, false, false, false, false,
-                false, false, false, false, false, false, false, false, false,
-                false, false, false, false, false, false, false, false, false,
-                false, false, false, false, false, false, false, false, false,
-                false, false, false, false, false, false, false, false, false,
-            };
+            rooms = new List<bool>(new bool[numrooms]);
             roomsOccupied = 0;
         }
 
@@ -55,6 +48,7 @@ namespace OpheliasOasis
                 {
                     this.rooms[i] = true;
                     this.roomsOccupied++;
+                    XMLreader.changeHotel(this);
                     return i + 1;
                 }
             }
@@ -67,6 +61,7 @@ namespace OpheliasOasis
             {
                 this.rooms[i] = false;
                 this.roomsOccupied--;
+                XMLreader.changeHotel(this);
             }
         }
     }
