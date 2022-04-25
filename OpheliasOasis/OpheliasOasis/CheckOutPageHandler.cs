@@ -96,7 +96,7 @@ namespace OpheliasOasis
                 accomBill.Add("Payment Date: " + d.getPaymentDate() + ", " + d.getTotalPrice());
             }
 
-            String file = @"C:\AccomodationBills\" + today.ToShortDateString() + @"\" + d.getCustomerName() + ".txt";
+            String file = @"C:\OpheliasOasis\AccomodationBills\" + today.ToString("dd-MM-yyyy") + @"\" + d.getCustomerName() + ".txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < accomBill.Count; i++)
