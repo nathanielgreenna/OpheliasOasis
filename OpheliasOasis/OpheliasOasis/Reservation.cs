@@ -8,6 +8,7 @@
  * 4/20/2022: Changed reservationType to type ReservationType - Alex
  * 4/23/2022: Changed customerCreditCard to string and price to double - Alex
  * 4/24/2022: Changed reservationStatus to type ReservationStatus - Alec
+ * 4/24/2022: Added clone method - Alex
 */
 
 using System;
@@ -67,6 +68,20 @@ namespace OpheliasOasis
             {
                 ID = newID;
             }
+        public Reservation Clone()
+        {
+            Reservation clone = new Reservation();
+            clone.reservationType = reservationType;
+            clone.customerName = customerName;
+            clone.customerCreditCard = customerCreditCard;
+            clone.customerEmail = customerEmail;
+            clone.roomNumber = roomNumber;
+            clone.startDate = startDate;
+            clone.paymentDate = paymentDate;
+            clone.endDate = endDate;
+            clone.totalPrice = totalPrice;
+            clone.reservationStatus = reservationStatus;
+            return clone;
         }
 
         public ReservationType getReservationType() 

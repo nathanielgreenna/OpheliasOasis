@@ -5,6 +5,7 @@
  * 
  * Changelog:
  * 4/24/2022: Initial code - Alec
+ * 4/24/2022: Added "Placed" - Alex
  */
 
 using System;
@@ -16,6 +17,11 @@ namespace OpheliasOasis
     /// </summary>
     public enum ReservationStatus
     {
+        /// <summary>
+		/// Initial state of a reservation.
+		/// </summary>
+        Placed,
+
         /// <summary>
 		/// Credit card information pending (SixtyDay Reservations).
 		/// </summary>
@@ -39,9 +45,6 @@ namespace OpheliasOasis
         /// <summary>
         /// Reservation has been cancelled.
         /// </summary>
-        Cancelled,
-
-
-        Standard
+        Cancelled
     }
 }
