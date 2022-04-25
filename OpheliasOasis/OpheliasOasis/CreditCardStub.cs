@@ -5,6 +5,7 @@
  * 
  * Changelog:
  * 4/24/2022: Initial code - Alec
+ * 4/24/2022: Added WriteTransaction method
  */
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace OpheliasOasis
     public static class CreditCardStub
     {
         private static string path = "C:\\OpheliasOasis\\Charges\\";
+        private static readonly StreamWriter sw = new StreamWriter("C:\\OpheliasOasis\\Charges\\TransactionRecord.txt");
 
         // summary
         // Charges a customer's credit card for their reservation.
@@ -49,6 +51,11 @@ namespace OpheliasOasis
             {
                 sw.Write(output);
             }
+        }
+
+        public static void WriteTransaction(String srcAccount, String destAccount, double amt)
+        {
+            sw.WriteLine($"[{DateTime.Today.ToShortDateString()}] {amt:C2} transferred from {srcAccount} to {destAccount}");
         }
     }
 }

@@ -8,7 +8,7 @@
  * 4/20/2022: Changed reservationType to type ReservationType - Alex
  * 4/23/2022: Changed customerCreditCard to string and price to double - Alex
  * 4/24/2022: Changed reservationStatus to type ReservationStatus - Alec
- * 4/24/2022: Added clone method - Alex
+ * 4/24/2022: Added clone method & replaced setters for customerName and startDate with "with<Field>" - Alex
 */
 
 using System;
@@ -98,10 +98,18 @@ namespace OpheliasOasis
         {
             return customerName;
         }
-        public void setCustomerName(String name) 
+        /// <summary>
+        /// Used in lieu of a setter, since customerName is a key for the ReservationDB.
+        /// </summary>
+        /// <param name="name">The new customer name.</param>
+        /// <returns>A copy of the reservation with the new customer name.</returns>
+        public Reservation WithCustomerName(String name)
         {
-            customerName = name;
+            Reservation withName = this.Clone();
+            withName.customerName = name;
+            return withName;
         }
+
         public String getCustomerCreditCard()
         {
             return customerCreditCard;
@@ -135,9 +143,16 @@ namespace OpheliasOasis
             return startDate;
         }
 
-        public void setStartDate(DateTime t)
+        /// <summary>
+        /// Used in lieu of a setter, since startDate is a key for the ReservationDB.
+        /// </summary>
+        /// <param name="t">The new start date.</param>
+        /// <returns>A copy of the reservation with the new start date.</returns>
+        public Reservation WithStartDate(DateTime t)
         {
-            startDate = t;
+            Reservation withDate = this.Clone();
+            withDate.startDate = t;
+            return withDate;
         }
 
         public void setPaymentDate(DateTime t)
@@ -184,9 +199,6 @@ namespace OpheliasOasis
             if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
 
-
-
-
         public ReservationStatus getReservationStatus()
         {
             return reservationStatus;
@@ -196,8 +208,6 @@ namespace OpheliasOasis
             reservationStatus = status;
             if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
-
-
 
         public void cancelReservation() 
         {
@@ -223,10 +233,5 @@ namespace OpheliasOasis
             endDate = eDate;
             if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
-
-
-
-
-
     }
 }
