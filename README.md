@@ -1,9 +1,9 @@
 # OpheliasOasis
-This is our to-do list, please tell us what you're working on by putting your name next to it,  or mark complete by striking it through:
+This is our to-do list, please tell us what you've lightly tested by putting your name next to it:
 
 - Main
   - Welcome - Nathan
-  - Home - 
+  - Home - Nathan
   - Check in - Nathan
   - Check out - Nathan
   - Dates - Nathan
@@ -14,7 +14,7 @@ This is our to-do list, please tell us what you're working on by putting your na
     - Backups - 
     - Charge No-Shows - 
   - Reservations - 
-    - Create - 
+    - Create - Nathan
     - Modify - 
     - Cancel - 
 
