@@ -40,10 +40,10 @@ namespace OpheliasOasis
 			Tuple.Create<Func<String, String>, String>(InputResSelection, "Select one of the options above (enter the index of the left)");
 
 		private readonly static Tuple<Func<String, String>, String> newStartDateRequest =
-			Tuple.Create<Func<String, String>, String>(InputStartDate, "Enter the check-in date (determines the reservation types availble)");
+			Tuple.Create<Func<String, String>, String>(InputStartDate, "Enter the check-in date (determines the reservation types available)");
 
 		private readonly static Tuple<Func<String, String>, String> updatedStartDateRequest =
-			Tuple.Create<Func<String, String>, String>(InputStartDate, "Enter the new check-in date (determines the reservation types availble)");
+			Tuple.Create<Func<String, String>, String>(InputStartDate, "Enter the new check-in date (determines the reservation types available)");
 
 		private readonly static Tuple<Func<String, String>, String> newEndDateRequest =
 			Tuple.Create<Func<String, String>, String>(InputEndDate, "Enter the checkout date");
@@ -138,7 +138,7 @@ namespace OpheliasOasis
 
 			for (int i = 0; i < searchResults.Count; i++)
 			{
-				Console.WriteLine($"\t{i + 1}: {searchResults[i].getReservationType()} Reservation from {searchResults[i].getStartDate().ToShortDateString()} to {searchResults[i].getEndDate().ToShortDateString()} ({searchResults[i].getReservationStatus()})");
+				Console.WriteLine($"\t{i + 1}: {searchResults[i].getReservationType()} Reservation from {searchResults[i].getStartDate().ToShortDateString()} to {searchResults[i].getEndDate().ToShortDateString()} ({searchResults[i].getReservationStatus()}, Credit Card #: {searchResults[i].getCustomerCreditCard()})");
 			}
 
 			// Move on to next step
@@ -215,7 +215,7 @@ namespace OpheliasOasis
 			// Check availibility
 			Console.Write("Confirming availibility... ");
 
-			// Ensure space is availible on all intermediate days
+			// Ensure space is available on all intermediate days
 			for (DateTime d = bufferRes.getStartDate(); d < endDate; d = d.AddDays(1))
 			{
 				if (cal.retrieveDate(d).IsFull()) return $"Hotel is full on {d.ToShortDateString()}";
@@ -453,6 +453,12 @@ namespace OpheliasOasis
 				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", bufferRes.getTotalPrice());
 				bufferRes.setReservationStatus(ReservationStatus.Paid);
 			}
+
+			for (DateTime d = bufferRes.getStartDate(); d < bufferRes.getEndDate(); d = d.AddDays(1))
+			{
+				cal.retrieveDate(d).increaseOccupancy();
+			}
+
 			rdb.addReservation(bufferRes);
 			bufferRes = null;
 			return "";
@@ -497,6 +503,17 @@ namespace OpheliasOasis
 				}
             }
 
+			for (DateTime d = referenceRes.getStartDate(); d < referenceRes.getEndDate(); d = d.AddDays(1))
+			{
+				cal.retrieveDate(d).decreaseOccupancy();
+			}
+
+			for (DateTime d = bufferRes.getStartDate(); d < bufferRes.getEndDate(); d = d.AddDays(1))
+			{
+				cal.retrieveDate(d).increaseOccupancy();
+			}
+
+
 			// Save changes
 			return ChangeReservation();
 		}
@@ -508,6 +525,11 @@ namespace OpheliasOasis
 			{
 				double refund = (bufferRes.getStartDate() - DateTime.Today).TotalDays > 3 ? bufferRes.getTotalPrice() : bufferRes.getTotalPrice() - bufferRes.getFirstDayPrice();
 				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", refund);
+			}
+
+			for (DateTime d = bufferRes.getStartDate(); d < bufferRes.getEndDate(); d = d.AddDays(1))
+			{
+				cal.retrieveDate(d).decreaseOccupancy();
 			}
 
 			// Save changes

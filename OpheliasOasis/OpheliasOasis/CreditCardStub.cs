@@ -20,8 +20,6 @@ namespace OpheliasOasis
     /// </summary>
     public static class CreditCardStub
     {
-        private static readonly StreamWriter sw = new StreamWriter("C:\\OpheliasOasis\\Charges\\TransactionRecord.txt");
-
         /// <summary>
         /// "Charge" a credit card.
         /// </summary>
@@ -32,7 +30,12 @@ namespace OpheliasOasis
         /// <param name="amt">A double containing the amount transacted.</param>
         public static void WriteTransaction(String srcAccountNumber, String srcAccountName, String destAccountNumber, String destAccountName, double amt)
         {
-            sw.WriteLine($"[{DateTime.Today.ToShortDateString()}] {amt:C2} transferred from {srcAccountName} ({srcAccountNumber}) to {destAccountName} ({destAccountNumber})");
+            String file = "C:\\OpheliasOasis\\EmailCCStubs\\TransactionRecord.txt";
+            using (StreamWriter sw = new StreamWriter(file, true))
+            {
+                sw.WriteLine($"[{DateTime.Today.ToShortDateString()}] {amt:C2} transferred from {srcAccountName} ({srcAccountNumber}) to {destAccountName} ({destAccountNumber})");
+            }
+
         }
     }
 }
