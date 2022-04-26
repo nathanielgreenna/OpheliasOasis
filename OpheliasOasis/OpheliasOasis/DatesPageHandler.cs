@@ -63,7 +63,7 @@ namespace OpheliasOasis
 
             setIndividual = new ProcessPage("Set Specific Date Price (Manager Only)", "Sets a specific date", new List<Tuple<Func<String, String>, String>> { checkPS, recieveDate, recievePrice }, setInPrice);
 
-            setForYear = new ProcessPage("Set Prices For a Month (Manager Only)", "Set 31 days of prices", monthOfSetting, updateMonthPrices);
+            setForYear = new ProcessPage("Set Prices For a Month (Manager Only)", "Set 31 days of prices. \n WARNING: DO NOT USE THE BACK COMMAND (B) ON THIS PAGE", monthOfSetting, updateMonthPrices);
 
 
             datesMenu = new MenuPage("Dates", "Dates submenu", new List<Page> { showIndividual, showYearAhead, setIndividual , setForYear});
@@ -110,6 +110,7 @@ namespace OpheliasOasis
 
         static String inputDatePrice(String input)
         {
+            if (currDay == 31) { return "Please do not use the Back command (B) on this page. Please Quit (Q) and re-enter data"; }
 
             if (String.IsNullOrEmpty(input)) 
             {
@@ -118,6 +119,7 @@ namespace OpheliasOasis
                 Console.Write("Current Price for " + dateToChange.AddDays(currDay).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(dateToChange.AddDays(currDay)).getBasePrice());
                 return ""; 
             }
+            
             if (double.TryParse(input, out double inPrice))
             {
                 g[currDay] = inPrice;
