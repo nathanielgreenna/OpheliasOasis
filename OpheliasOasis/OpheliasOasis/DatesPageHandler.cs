@@ -19,29 +19,36 @@ namespace OpheliasOasis
         public static ProcessPage showIndividual;
         public static ProcessPage showYearAhead;
 
-        private static List<Tuple<Func<String, String>, String>> yearOfSetting;
+        private static List<Tuple<Func<String, String>, String>> monthOfSetting;
+
+        private static DateTime dateToChange;
 
 
         private readonly static Tuple<Func<String, String>, String> checkPS =
         Tuple.Create<Func<String, String>, String>(checkPasschangeSingle, "Input Manager Password");
         private readonly static Tuple<Func<String, String>, String> recieveDate =
         Tuple.Create<Func<String, String>, String>(getInDate, "Input Date to have price changed (DD/MM/YYYY)");
+        private readonly static Tuple<Func<String, String>, String> recieveMonth =
+        Tuple.Create<Func<String, String>, String>(getInMonth, "Input start of date range in DD/MM/YYYY or  MM/YYYY format");
         private readonly static Tuple<Func<String, String>, String> recievePrice =
         Tuple.Create<Func<String, String>, String>(getInPrice, "Input new base price");
         private readonly static Tuple<Func<String, String>, String> viewDate =
         Tuple.Create<Func<String, String>, String>(getInDate, "Input Date (DD/MM/YYYY)");
-        private readonly static Tuple<Func<String, String>, String> viewYear =
-        Tuple.Create<Func<String, String>, String>(showYearOfDates, "This will print a year's worth of dates and their prices");
+        private readonly static Tuple<Func<String, String>, String> viewMonth =
+        Tuple.Create<Func<String, String>, String>(showMonthOfDates, "This will print a month's dates and prices (MM/YYYY)");
+        private readonly static Tuple<Func<String, String>, String> getDateMonth =
+        Tuple.Create<Func<String, String>, String>(getInMonth, "Input first date to change");
 
         public static void Init(Calendar cl, String mPass)
         {
             cal = cl;
             manPass = mPass;
-            yearOfSetting = new List<Tuple<Func<String, String>, String>>();
-            yearOfSetting.Add(new Tuple<Func<String, String>, String>(checkPasschangeYear, "Input Manager Password"));
-            for (int i = 0; i < 365; i++) 
+            monthOfSetting = new List<Tuple<Func<String, String>, String>>();
+            monthOfSetting.Add(new Tuple<Func<String, String>, String>(checkPasschangeMonth, "Input Manager Password"));
+            monthOfSetting.Add(getDateMonth);
+            for (int i = 2; i < 33; i++) 
             {
-                yearOfSetting.Add(new Tuple<Func<String, String>, String>(inputDatePrice, "Input New Price, <Enter> to skip"));
+                monthOfSetting.Add(new Tuple<Func<String, String>, String>(inputDatePrice, "Input New Price, <Enter> to skip"));
             }
 
 
@@ -50,13 +57,13 @@ namespace OpheliasOasis
 
 
 
-            showYearAhead = new ProcessPage("Date Information for Next Year", "Display a year of dates and prices", new List<Tuple<Func<String, String>, String>> { viewYear }, null);
+            showYearAhead = new ProcessPage("Date Information for one month", "Display a month of dates and prices", new List<Tuple<Func<String, String>, String>> { viewMonth }, null);
 
             showIndividual = new ProcessPage("Individual Date Information", "Display a specific date", new List<Tuple<Func<String, String>, String>> { viewDate }, null);
 
             setIndividual = new ProcessPage("Set Specific Date Price (Manager Only)", "Sets a specific date", new List<Tuple<Func<String, String>, String>> { checkPS, recieveDate, recievePrice }, setInPrice);
 
-            setForYear = new ProcessPage("Set Prices The Year Ahead (Manager Only)", "Set a price or skip for each day in the year ahead", yearOfSetting, updateYearPrices);
+            setForYear = new ProcessPage("Set Prices For a Month (Manager Only)", "Set 31 days of prices", monthOfSetting, updateMonthPrices);
 
 
             datesMenu = new MenuPage("Dates", "Dates submenu", new List<Page> { showIndividual, showYearAhead, setIndividual , setForYear});
@@ -76,21 +83,29 @@ namespace OpheliasOasis
 
 
 
-        //SET DATES FOR THE YEAR AHEAD
-        private static double[] g = new double[365];
+        //SET DATES FOR A MONTH
+        private static double[] g = new double[31];
         private static int currDay;
 
-        static String checkPasschangeYear(String input)
+        static String getInMonth(String input)
+        {
+            if (!DateTime.TryParse(input, out dateToChange))
+            {
+                return ("Not the correct format.");
+            }
+
+            currDay = 0;
+            Console.Write("Current Price for " + dateToChange.AddDays(currDay).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(dateToChange.AddDays(currDay)).getBasePrice());
+            return "";
+        }
+
+        static String checkPasschangeMonth(String input)
         {
             if (input != manPass)
             {
                 return "Password incorrect.";
             }
-            currDay = 1;
-            Console.Write("Current Price for " + DateTime.Today.AddDays(currDay).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(DateTime.Today.AddDays(currDay)).getBasePrice());
             return "";
-
-
         }
 
         static String inputDatePrice(String input)
@@ -98,16 +113,19 @@ namespace OpheliasOasis
 
             if (String.IsNullOrEmpty(input)) 
             {
-                g[currDay - 1] = -1;
+                g[currDay] = -1;
                 currDay += 1;
-                Console.Write("Current Price for " + DateTime.Today.AddDays(currDay).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(DateTime.Today.AddDays(currDay)).getBasePrice());
+                Console.Write("Current Price for " + dateToChange.AddDays(currDay).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(dateToChange.AddDays(currDay)).getBasePrice());
                 return ""; 
             }
             if (double.TryParse(input, out double inPrice))
             {
-                g[currDay - 1] = inPrice;
+                g[currDay] = inPrice;
                 currDay += 1;
-                Console.Write("Current Price for " + DateTime.Today.AddDays(currDay).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(DateTime.Today.AddDays(currDay)).getBasePrice());
+                if (currDay != 31)
+                { 
+                    Console.Write("Current Price for " + dateToChange.AddDays(currDay).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(dateToChange.AddDays(currDay)).getBasePrice());
+                }
                 return "";
             }
             else
@@ -116,13 +134,13 @@ namespace OpheliasOasis
             }
         }
 
-        static String updateYearPrices()
+        static String updateMonthPrices()
         {
-            for(int i = 1; i < 366; i++)
+            for(int i = 0; i < 31; i++)
             {
-                if (g[i - 1] != -1)
+                if (g[i] != -1)
                 {
-                    cal.retrieveDate(DateTime.Today.AddDays(i)).setBasePrice(g[i - 1]);
+                    cal.retrieveDate(dateToChange.AddDays(i)).setBasePrice(g[i]);
                 }
             }
 
@@ -130,7 +148,7 @@ namespace OpheliasOasis
         }
 
         //Update a single price
-        private static DateTime dateToChange;
+        
         private static double inPrice;
         static String checkPasschangeSingle(String input)
         {
@@ -172,15 +190,18 @@ namespace OpheliasOasis
             return "";
         }
 
-        //show a year of prices
-        static String showYearOfDates(String input)
+        //show a month of prices
+        static String showMonthOfDates(String input)
         {
-            for(int i = 0; i < 365; i++)
+            if (!DateTime.TryParse(input, out dateToChange)) { return ("Not a valid month"); }
+            if (dateToChange.Day != 1) { return ("Not a valid month"); }
+
+            int g = 0;
+            for(DateTime i = dateToChange; i.Month == dateToChange.Month; i = i.AddDays(1))
             {
-
-                Console.Write(DateTime.Today.AddDays(i).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(DateTime.Today.AddDays(i)).getBasePrice() + "          ");
-
-                if (i % 7 == 0) { Console.WriteLine(""); }
+                if (g % 7 == 0) { Console.WriteLine(""); }
+                Console.Write((i.ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(i).getBasePrice()).PadRight(25));
+                g++;
             }
             return "";
         }

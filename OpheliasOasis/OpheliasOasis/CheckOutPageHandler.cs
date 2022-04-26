@@ -17,8 +17,21 @@ namespace OpheliasOasis
     {
         private static ReservationDB ResDB;
         private static Hotel Htl;
-        private static Reservation d;
         private static ProcessPage checkOut;
+        private static List<Reservation> searchResults;
+        private static Reservation? referenceRes;
+
+        private readonly static Tuple<Func<String, String>, String> guestNameSearchRequest =
+            Tuple.Create<Func<String, String>, String>(InputSearchName, "Enter the name the guest used to place the reservation");
+        private readonly static Tuple<Func<String, String>, String> selectionSearchRequest =
+            Tuple.Create<Func<String, String>, String>(InputResSelection, "Select one of the options above (enter the index of the left)");
+
+
+
+
+
+
+
 
         public static void Init(ReservationDB db, Hotel htl)
         {
@@ -27,7 +40,7 @@ namespace OpheliasOasis
             Htl = htl;
 
             // Initialize page
-            checkOut = new ProcessPage("Check Out", "Check Out", new List<Tuple<Func<String, String>, String>>{ Tuple.Create<Func<String, String>, String>(CheckOutRes, "Input Name")}, null);
+            checkOut = new ProcessPage("Check Out", "Check Out", new List<Tuple<Func<String, String>, String>> { guestNameSearchRequest, selectionSearchRequest }, CheckOutConfirm);
         }
 
         /// <summary>
@@ -39,41 +52,93 @@ namespace OpheliasOasis
             return checkOut;
         }
 
+        static String InputSearchName(String input)
+        {
+            // Check for first and last name
+            if (!input.Contains(" "))
+            {
+                return "First and last name required";
+            }
+
+            // Aquire search results
+            searchResults = ResDB.getReservation(input);
+
+            for (int i = 0; i < searchResults.Count; i++)
+            {
+                if (searchResults[i].getEndDate() < DateTime.Today)
+                {
+                    searchResults.RemoveAt(i);
+                }
+            }
+
+
+
+            if (searchResults == null || searchResults.Count < 1)
+            {
+                return $"No reservations under the name \"{input}\" today";
+            }
+
+
+            // Display search results
+            Console.WriteLine($"Reservations for {input} available for check-out today:");
+            int g = 0;
+
+            for (int i = 0; i < searchResults.Count; i++)
+            {
+                if (searchResults[i].getReservationStatus() == ReservationStatus.CheckedIn)
+                {
+                    Console.WriteLine($"\t{g + 1}: {searchResults[i].getReservationType()} Reservation from {searchResults[i].getStartDate().ToShortDateString()} to {searchResults[i].getEndDate().ToShortDateString()} ({searchResults[i].getReservationStatus()}, Credit Card #: {searchResults[i].getCustomerCreditCard()})");
+                    g++;
+                }
+            }
+
+            Console.WriteLine($"\nOther Reservations for {input} unavailable or already checked out:");
+
+            for (int i = searchResults.Count - 1; i >= 0; i--)
+            {
+                if (!(searchResults[i].getReservationStatus() == ReservationStatus.CheckedIn))
+                {
+                    Console.WriteLine($"\t{searchResults[i].getReservationType()} Reservation from {searchResults[i].getStartDate().ToShortDateString()} to {searchResults[i].getEndDate().ToShortDateString()} ({searchResults[i].getReservationStatus()}, Credit Card #: {searchResults[i].getCustomerCreditCard()})");
+                    searchResults.RemoveAt(i);
+                }
+            }
+
+
+
+            // Move on to next step
+            return "";
+        }
+
+        static String InputResSelection(String input)
+        {
+            // Read and validate the selection
+            int selection;
+
+            if (!int.TryParse(input, out selection) || selection > searchResults.Count || selection < 1)
+            {
+                return $"\"{input}\" is not between 1 and {searchResults.Count}";
+            }
+
+            //continue
+            referenceRes = searchResults[selection - 1];
+            Console.Write(referenceRes.getCustomerName() + " was assigned to room " + referenceRes.getRoomNumber() + ". Save to check out the guest.");
+            
+            return "";
+        }
+
+
         /// <summary>
         /// A method that finds the reservation for a customer, and if found, checks them out.
         /// </summary>
         /// <param name="input">A string containing the input.</param>
         /// <returns>A string containing the reason why the input is not valid, if applicable. Otherwise a success message.</returns>
-        public static String CheckOutRes(String inStr)
+        public static String CheckOutConfirm()
         {
-            List<Reservation> reservations = ResDB.getReservation(inStr);
-            if (reservations == null)
-            {
-                return "No reservations found for \"" + inStr + "\".";
-            }
-            else
-            {
-                DateTime today = DateTime.Today;
-                d = null;
-                foreach (Reservation reservation in reservations)
-                {
-                    if (reservation.getStartDate().DayOfYear == today.DayOfYear)
-                    {
-                        d = reservation; break;
-                    }
-                }
-                if (d == null)
-                {
-                    return "No reservations for \"" + inStr + "\" end today.";
-                }
-                else
-                {
-                    d.checkOut();
-                    Htl.clearRoom(d.getRoomNumber());
-                    printAccomodationBill();
-                    return "Check-out successful. Accomodation bill printed.";
-                }
-            }
+            referenceRes.checkOut();
+            Htl.clearRoom(referenceRes.getRoomNumber());
+            printAccomodationBill();
+            Console.WriteLine("Check-out successful. Accomodation bill printed.");
+            return "";
         }
 
         /// <summary>
@@ -83,20 +148,20 @@ namespace OpheliasOasis
         {
             List<String> accomBill = new List<String>();
             DateTime today = DateTime.Today;
-            int nights = d.getEndDate().Subtract(d.getStartDate()).Days;
+            int nights = referenceRes.getEndDate().Subtract(referenceRes.getStartDate()).Days;
             accomBill.Add(today.ToShortDateString());
-            accomBill.Add(d.getCustomerName());
-            accomBill.Add("Room Number: " + d.getRoomNumber());
-            accomBill.Add("Arrival Date: " + d.getStartDate().ToShortDateString());
-            accomBill.Add("Departure Date: " + d.getEndDate().ToShortDateString());
+            accomBill.Add(referenceRes.getCustomerName());
+            accomBill.Add("Room Number: " + referenceRes.getRoomNumber());
+            accomBill.Add("Arrival Date: " + referenceRes.getStartDate().ToShortDateString());
+            accomBill.Add("Departure Date: " + referenceRes.getEndDate().ToShortDateString());
             accomBill.Add("Nights: " + nights);
-            accomBill.Add("Total Charge: " + d.getTotalPrice());
-            if (d.getReservationType().Equals(ReservationType.Prepaid) || d.getReservationType().Equals(ReservationType.SixtyDay))
+            accomBill.Add("Total Charge: " + referenceRes.getTotalPrice());
+            if (referenceRes.getReservationType().Equals(ReservationType.Prepaid) || referenceRes.getReservationType().Equals(ReservationType.SixtyDay))
             {
-                accomBill.Add("Payment Date: " + d.getPaymentDate() + ", " + d.getTotalPrice());
+                accomBill.Add("Payment Date: " + referenceRes.getPaymentDate() + ", " + referenceRes.getTotalPrice());
             }
 
-            String file = @"C:\OpheliasOasis\AccomodationBills\" + today.ToString("dd-MM-yyyy") + @"\" + d.getCustomerName() + ".txt";
+            String file = @"C:\OpheliasOasis\AccomodationBills\" + today.ToString("dd-MM-yyyy") + " " + referenceRes.getCustomerName() + ".txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < accomBill.Count; i++)

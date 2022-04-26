@@ -22,6 +22,7 @@ namespace OpheliasOasis
         public static ProcessPage createBackups;
         public static ProcessPage chargeNoShow;
         public static ProcessPage changeMPass;
+        public static ProcessPage roomAssign;
 
 
 
@@ -50,6 +51,8 @@ namespace OpheliasOasis
         private readonly static Tuple<Func<String, String>, String> noShowConfirmation =
             Tuple.Create<Func<String, String>, String>(generalCheck, "This process will charge no-show penalties and cancel reservations when complete (B to go back, <Enter to continue>)");
 
+        private readonly static Tuple<Func<String, String>, String> assignRoomsConfirmation =
+            Tuple.Create<Func<String, String>, String>(generalCheck, "This process will assign rooms to the day's guests (B to go back, <Enter to continue>)");
 
         private readonly static Tuple<Func<String, String>, String> checkP =
             Tuple.Create<Func<String, String>, String>(checkPasschange, "Input Current Manager Password");
@@ -87,13 +90,15 @@ namespace OpheliasOasis
 
             chargeNoShow = new ProcessPage("Charge No-Shows", "Charges No-Show penalties and cancels associated reservations", new List<Tuple<Func<String, String>, String>> { noShowConfirmation }, ChargeNoShows);
 
+            roomAssign = new ProcessPage("Assign Rooms for Today's Arrivals", "Assigns a room to each guest arriving today", new List<Tuple<Func<String, String>, String>> { assignRoomsConfirmation }, assignRooms);
+
             changeMPass = new ProcessPage("Change Manager Password", "Choose manager password. Password will be changed upon completing this page.",
                 new List<Tuple<Func<String, String>, String>> {
                     checkP, pass1, pass2
                 }, changePass);
 
             // Initialize menu
-            recordsMenu = new MenuPage("Records", "Records submenu (Generate Reports, Generate Emails && Cancel no-CCs, Create Backups, Charge No-Shows)", new List<Page> { generateReports, generateEmails, createBackups, chargeNoShow, changeMPass });
+            recordsMenu = new MenuPage("Records", "Records submenu (Generate Reports, Generate Emails && Cancel no-CCs, Create Backups, Charge No-Shows)", new List<Page> { roomAssign, generateReports, generateEmails, createBackups, chargeNoShow, changeMPass });
         }
             
 
@@ -233,14 +238,19 @@ namespace OpheliasOasis
             dayReservations = rdb.getReservation(DateTime.Today.Subtract(TimeSpan.FromDays(1)));
             foreach (Reservation res in dayReservations)
             {
-                if ( (res.getReservationType() == ReservationType.Conventional || res.getReservationType() == ReservationType.Incentive) && !(res.getReservationStatus() == ReservationStatus.CheckedIn || res.getReservationStatus() == ReservationStatus.CheckedOut ))
+                if ( !(res.getReservationStatus() == ReservationStatus.CheckedIn || res.getReservationStatus() == ReservationStatus.CheckedOut || res.getReservationStatus() == ReservationStatus.Cancelled))
                 {
-                    CreditCardStub.WriteTransaction(res.getCustomerCreditCard(), res.getCustomerName(), "Ophelia's Oasis", "1234 1234 1234 1234", res.getFirstDayPrice());
-                    res.cancelReservation();
+                    if(res.getReservationType() == ReservationType.Conventional || res.getReservationType() == ReservationType.Incentive)
+                    {
+                        CreditCardStub.WriteTransaction(res.getCustomerCreditCard(), res.getCustomerName(), "Ophelia's Oasis", "1234 1234 1234 1234", res.getFirstDayPrice());
+                        res.cancelReservation();
+                    }
+                    ht.clearRoom(res.getRoomNumber());
+                    
                     c++;
                 }
             }
-            Console.WriteLine("Charged " + c + " no-shows and cancelled their reservations.");
+            Console.WriteLine("Charged " + c + " no-shows, un-assigned their rooms, and cancelled their reservations.");
             System.Threading.Thread.Sleep(2000);
             return "";
         }
@@ -290,11 +300,19 @@ namespace OpheliasOasis
             return "";
         }
 
-
-
-
-
-
+        //------------------Assign Rooms for the day----------------------  
+        
+        static String assignRooms()
+        {
+            foreach(Reservation curr in rdb.getReservation(DateTime.Today)) 
+            {
+                if(curr.getReservationStatus() != ReservationStatus.Cancelled && curr.getRoomNumber() == 0)
+                curr.setRoomNumber(ht.assignRoom());
+            }
+            Console.Write("Rooms Assigned");
+            System.Threading.Thread.Sleep(2000);
+            return "";
+        }
 
 
 
