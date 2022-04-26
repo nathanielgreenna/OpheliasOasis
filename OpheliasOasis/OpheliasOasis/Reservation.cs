@@ -40,10 +40,14 @@ namespace OpheliasOasis
         private DateTime endDate;
         [DataMember(Name = "Price")]
         private double totalPrice;
-        [DataMember(Name = "FPrice")]
-        private double firstDayPrice;
         [DataMember(Name = "Status")]
         private ReservationStatus reservationStatus;
+        [DataMember(Name = "Rates")]
+        private Dictionary<DateTime, double> datesRate = new Dictionary<DateTime, double>();
+        [DataMember(Name = "Costs")]
+        private Dictionary<DateTime, double> datesCost = new Dictionary<DateTime, double>();
+        [DataMember(Name = "Paid")]
+        private bool paid;
 
 
         public Reservation()
@@ -82,6 +86,9 @@ namespace OpheliasOasis
             clone.endDate = endDate;
             clone.totalPrice = totalPrice;
             clone.reservationStatus = reservationStatus;
+            clone.datesCost = new Dictionary<DateTime, double>(datesCost);
+            clone.datesRate = new Dictionary<DateTime, double>(datesRate);
+            clone.paid = paid;
             return clone;
         }
 
@@ -190,13 +197,57 @@ namespace OpheliasOasis
 
         public double getFirstDayPrice()
         {
-            return firstDayPrice;
+            return datesCost[getStartDate()];
         }
 
-        public void setFirstDayPrice(double price)
+        public double getDateCost(DateTime date)
         {
-            firstDayPrice = price;
-            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
+            try
+            {
+                return datesCost[date];
+            }
+            catch (KeyNotFoundException)
+            {
+                return 0.0;
+            }
+        }
+
+        public void setDateCost(DateTime date, double cost)
+        {
+            datesCost.Add(date, cost);
+        }
+
+        public double getDateRate(DateTime date)
+        {
+            try
+            {
+                return datesRate[date];
+            }
+            catch (KeyNotFoundException)
+            {
+                return 0.0;
+            }
+        }
+
+        public void setDateRate(DateTime date, double rate)
+        {
+            datesRate.Add(date, rate);
+        }
+
+        public void clearDates()
+        {
+            datesCost = new Dictionary<DateTime, double>();
+            datesRate = new Dictionary<DateTime, double>();
+        }
+
+        public bool getPaid()
+        {
+            return paid;
+        }
+
+        public void setPaid(bool pay)
+        {
+            paid = pay;
         }
 
         public ReservationStatus getReservationStatus()
