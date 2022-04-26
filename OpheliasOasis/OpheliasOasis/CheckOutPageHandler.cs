@@ -134,9 +134,14 @@ namespace OpheliasOasis
         /// <returns>A string containing the reason why the input is not valid, if applicable. Otherwise a success message.</returns>
         public static String CheckOutConfirm()
         {
+            if (referenceRes.getReservationType() == ReservationType.Conventional || referenceRes.getReservationType() == ReservationType.Incentive)
+            {
+                CreditCardStub.WriteTransaction("Ophelia's Oasis", "1234 1234 1234 1234", referenceRes.getCustomerName(), referenceRes.getCustomerCreditCard(), referenceRes.getTotalPrice());
+            }
+            printAccomodationBill();
             referenceRes.checkOut();
             Htl.clearRoom(referenceRes.getRoomNumber());
-            printAccomodationBill();
+            
             Console.WriteLine("Check-out successful. Accomodation bill printed.");
             return "";
         }
