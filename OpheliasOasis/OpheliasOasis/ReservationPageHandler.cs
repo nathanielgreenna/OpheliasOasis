@@ -447,7 +447,7 @@ namespace OpheliasOasis
 				// Skip payment
 				bufferRes.setReservationStatus(ReservationStatus.Placed);
 			}
-			else
+			else 
 			{
 				// Make payments for prepaid and 60-days with credit card information provided
 				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", bufferRes.getTotalPrice());
@@ -486,7 +486,7 @@ namespace OpheliasOasis
                 {
 					CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", priceDifference);
                 }
-				else
+				else if (priceDifference < 0)
                 {
 					CreditCardStub.WriteTransaction("Ophelia's Oasis", "1234 1234 1234 1234", bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), -priceDifference);
 				}
