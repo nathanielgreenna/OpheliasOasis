@@ -32,11 +32,11 @@ namespace OpheliasOasis
                 foreach (Reservation reservation in reservations)
                 {
                     output.Add(reservation.getCustomerName() + ", " + reservation.getReservationType() +
-                        ", " + reservation.getRoomNumber() + ", " + reservation.getEndDate().ToShortDateString());
+                        ", Room Number " + reservation.getRoomNumber() + ", Departure Date: " + reservation.getEndDate().ToShortDateString());
                 }
             }
 
-            string file = path + today.ToString("m") + "DailyArrivalsReport.txt";
+            string file = path + today.ToString("m") + " Daily Arrivals Report.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)
@@ -60,12 +60,12 @@ namespace OpheliasOasis
                 reservations.Sort((a, b) => a.getRoomNumber().CompareTo(b.getRoomNumber()));
                 foreach (Reservation reservation in reservations)
                 {
-                    output.Add(reservation.getRoomNumber() + ", " + reservation.getCustomerName() +
-                        ", " + reservation.getEndDate().ToShortDateString());
+                    output.Add("Room Number " + reservation.getRoomNumber() + ", " + reservation.getCustomerName() +
+                        ", Departure Date: " + reservation.getEndDate().ToShortDateString());
                 }
             }
 
-            string file = path + today.ToString("m") + "DailyOccupancyReport.txt";
+            string file = path + today.ToString("m") + " Daily Occupancy Report.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)
@@ -82,6 +82,7 @@ namespace OpheliasOasis
             DateTime date = DateTime.Today;
             for (int i = 0; i < 30; i++)
             {
+                date = date.AddDays(1);
                 List<Reservation> reservations = reservationDB.getActiveReservations(date);
                 int prepaid = 0;
                 int sixtyDay = 0;
@@ -110,14 +111,13 @@ namespace OpheliasOasis
                 output.Add(date.ToShortDateString() + ": Prepaid: " + prepaid + ", 60-Day: " + sixtyDay + ", Conventional: " + conventianal +
                     ", Incentive: " + incentive + ", Total Occupancy: " + occupancy);
                 totalOccupancy += occupancy;
-                date = date.AddDays(1);
             }
-            DateTime startDate = DateTime.Today;
+            DateTime startDate = DateTime.Today.AddDays(1);
             DateTime endDate = DateTime.Today.AddDays(30);
             double occupancyRate = totalOccupancy / 30;
             output.Add("Average Expected Occupancy Rate from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": " + occupancyRate.ToString("F1"));
 
-            string file = path + DateTime.Today.ToString("m") + "ExpectedOccupancyReport.txt";
+            string file = path + DateTime.Today.ToString("m") + " Expected Occupancy Report.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)
@@ -134,23 +134,23 @@ namespace OpheliasOasis
             DateTime date = DateTime.Today;
             for (int i = 0; i < 30; i++)
             {
+                date = date.AddDays(1);
                 List<Reservation> reservations = reservationDB.getActiveReservations(date);
                 double income = 0;
                 foreach (Reservation reservation in reservations)
                 {
-                    income += reservation.getTotalPrice();
+                    income += reservation.getDateCost(date);
                 }
                 totalIncome += income;
-                output.Add(date.ToShortDateString() + ": $" + income);
-                date = date.AddDays(1);
+                output.Add(date.ToShortDateString() + ": $" + income.ToString("F2"));
             }
-            DateTime startDate = DateTime.Today;
+            DateTime startDate = DateTime.Today.AddDays(1);
             DateTime endDate = DateTime.Today.AddDays(30);
             double averageIncome = totalIncome / 30;
-            output.Add("Total Income from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + totalIncome);
+            output.Add("Total Income from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + totalIncome.ToString("F2"));
             output.Add("Average Income from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + averageIncome.ToString("F2"));
 
-            string file = path + DateTime.Today.ToString("m") + "ExpectedIncomeReport.txt";
+            string file = path + DateTime.Today.ToString("m") + " Expected Income Report.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)
@@ -160,34 +160,35 @@ namespace OpheliasOasis
             }
         }
 
-        public void generateIncentiveReport(ReservationDB reservationDB, Calendar calendar)
+        public void generateIncentiveReport(ReservationDB reservationDB)
         {
             List<String> output = new List<String>();
             double totalDiscount = 0;
             DateTime date = DateTime.Today;
             for (int i = 0; i < 30; i++)
             {
+                date = date.AddDays(1);
                 List<Reservation> reservations = reservationDB.getActiveReservations(date);
-                double baseRate = calendar.retrieveDate(date).getBasePrice();
+                double baseRate = 0;
                 double discount = 0;
                 foreach (Reservation reservation in reservations)
                 {
                     if (reservation.getReservationType().Equals(ReservationType.Incentive))
                     {
-                        discount += (baseRate - reservation.getTotalPrice());
+                        baseRate = reservation.getDateRate(date);
+                        discount += (baseRate - reservation.getDateCost(date));
                     }
                 }
                 totalDiscount += discount;
-                output.Add(date.ToShortDateString() + ": $" + discount);
-                date = date.AddDays(1);
+                output.Add(date.ToShortDateString() + ": $" + discount.ToString("F2"));
             }
-            DateTime startDate = DateTime.Today;
+            DateTime startDate = DateTime.Today.AddDays(1);
             DateTime endDate = DateTime.Today.AddDays(30);
             double averageDicount = totalDiscount / 30;
-            output.Add("Total Discount from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + totalDiscount);
+            output.Add("Total Discount from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + totalDiscount.ToString("F2"));
             output.Add("Average Discount from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": $" + averageDicount.ToString("F2"));
 
-            string file = path + DateTime.Today.ToString("m") + "IncentiveReport.txt";
+            string file = path + DateTime.Today.ToString("m") + " Incentive Report.txt";
             using (StreamWriter sw = File.CreateText(file))
             {
                 for (int i = 0; i < output.Count; i++)

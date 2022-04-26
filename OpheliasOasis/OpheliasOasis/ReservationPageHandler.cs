@@ -269,6 +269,7 @@ namespace OpheliasOasis
 
 					// Accept otherwise
 					discount = 0.20;
+					type = ReservationType.Incentive;
 					break;
 
 				// Sixty Day
@@ -282,6 +283,7 @@ namespace OpheliasOasis
 
 					// Accept otherwise
 					discount = 0.15;
+					type = ReservationType.SixtyDay;
 					break;
 
 				// Prepaid
@@ -295,6 +297,7 @@ namespace OpheliasOasis
 
 					// Accept otherwise
 					discount = 0.25;
+					type = ReservationType.Prepaid;
 					break;
 
 				// Invalid selection
@@ -304,14 +307,18 @@ namespace OpheliasOasis
 			// Calculate the base 
 			Console.Write("Calculating price... ");
 			double cost = 0;
+			double rate;
 			for (DateTime d = bufferRes.getStartDate(); d < bufferRes.getEndDate(); d = d.AddDays(1))
 			{
-				cost += cal.retrieveDate(d).getBasePrice();
+				// Store base rate for each date
+				rate = cal.retrieveDate(d).getBasePrice();
+				bufferRes.setDateRate(d, rate);
+				// Apply discount and store discounted rate
+				rate *= (1.0 - discount);
+				cost += rate;
+				bufferRes.setDateCost(d, rate);
 			}
 
-			// Apply discount
-			cost *= (1.0 - discount);
-			bufferRes.setFirstDayPrice(cal.retrieveDate(bufferRes.getStartDate()).getBasePrice());
 			bufferRes.setTotalPrice(cost);
 
 			// Display the price

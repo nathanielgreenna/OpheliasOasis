@@ -170,7 +170,7 @@ namespace OpheliasOasis
             if (GenerateReportArray[1]) { rGen.generateDailyOccupancyReport(rdb); }
             if (GenerateReportArray[2]) { rGen.generateExpectedOccupancyReport(rdb); }
             if (GenerateReportArray[3]) { rGen.generateExpectedRoomIncomeReport(rdb); }
-            if (GenerateReportArray[4]) { rGen.generateIncentiveReport(rdb, cal); }
+            if (GenerateReportArray[4]) { rGen.generateIncentiveReport(rdb); }
             return "";
         }
 
