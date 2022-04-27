@@ -40,7 +40,7 @@ namespace OpheliasOasis
             Htl = htl;
 
             // Initialize page
-            checkOut = new ProcessPage("Check Out", "Check Out", new List<Tuple<Func<String, String>, String>> { guestNameSearchRequest, selectionSearchRequest }, CheckOutConfirm);
+            checkOut = new ProcessPage("Check Out", "Check Out", new List<Tuple<Func<String, String>, String>> { guestNameSearchRequest, selectionSearchRequest }, CheckOutConfirm, null);
         }
 
         /// <summary>
@@ -136,7 +136,8 @@ namespace OpheliasOasis
         {
             if (referenceRes.getReservationType() == ReservationType.Conventional || referenceRes.getReservationType() == ReservationType.Incentive)
             {
-                CreditCardStub.WriteTransaction("Ophelia's Oasis", "1234 1234 1234 1234", referenceRes.getCustomerName(), referenceRes.getCustomerCreditCard(), referenceRes.getTotalPrice());
+                CreditCardStub.WriteTransaction(referenceRes.getCustomerName(), referenceRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", referenceRes.GetTotalPrice());
+                referenceRes.SetPaid(true);
             }
             printAccomodationBill();
             referenceRes.checkOut();
@@ -160,10 +161,10 @@ namespace OpheliasOasis
             accomBill.Add("Arrival Date: " + referenceRes.getStartDate().ToShortDateString());
             accomBill.Add("Departure Date: " + referenceRes.getEndDate().ToShortDateString());
             accomBill.Add("Nights: " + nights);
-            accomBill.Add("Total Charge: " + referenceRes.getTotalPrice());
+            accomBill.Add("Total Charge: " + referenceRes.GetTotalPrice());
             if (referenceRes.getReservationType().Equals(ReservationType.Prepaid) || referenceRes.getReservationType().Equals(ReservationType.SixtyDay))
             {
-                accomBill.Add("Payment Date: " + referenceRes.getPaymentDate() + ", " + referenceRes.getTotalPrice());
+                accomBill.Add("Payment Date: " + referenceRes.getPaymentDate() + ", " + referenceRes.GetTotalPrice());
             }
 
             String file = @"C:\OpheliasOasis\AccomodationBills\" + today.ToString("dd-MM-yyyy") + " " + referenceRes.getCustomerName() + ".txt";

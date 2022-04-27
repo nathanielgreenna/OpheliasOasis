@@ -82,20 +82,20 @@ namespace OpheliasOasis
             generateReports = new ProcessPage("Report Generation", "Choose reports to generate. Reports will be generated upon completing this page.",
                 new List<Tuple<Func<String, String>, String>> {
                     genDAR, genDOR, genEOR, genERIR, genIR, checkPassw
-                }, GenerateSelectedReports);
+                }, GenerateSelectedReports, null);
 
-            generateEmails = new ProcessPage("Handle 60-day Reservation Updates", "Send 60-day emails, cancel 60-day reservations with no credit cards within 30 days.", new List<Tuple<Func<String, String>, String>> { emailConfirmation }, GenEmails);
+            generateEmails = new ProcessPage("Handle 60-day Reservation Updates", "Send 60-day emails, cancel 60-day reservations with no credit cards within 30 days.", new List<Tuple<Func<String, String>, String>> { emailConfirmation }, GenEmails, null);
 
-            createBackups = new ProcessPage("Create Backups", "Creates a new backup, saving data for the next time the application is opened", new List<Tuple<Func<String, String>, String>> { backupConfirmation }, makeBackup);
+            createBackups = new ProcessPage("Create Backups", "Creates a new backup, saving data for the next time the application is opened", new List<Tuple<Func<String, String>, String>> { backupConfirmation }, makeBackup, null);
 
-            chargeNoShow = new ProcessPage("Charge No-Shows", "Charges No-Show penalties and cancels associated reservations", new List<Tuple<Func<String, String>, String>> { noShowConfirmation }, ChargeNoShows);
+            chargeNoShow = new ProcessPage("Charge No-Shows", "Charges No-Show penalties and cancels associated reservations", new List<Tuple<Func<String, String>, String>> { noShowConfirmation }, ChargeNoShows, null);
 
-            roomAssign = new ProcessPage("Assign Rooms for Today's Arrivals", "Assigns a room to each guest arriving today", new List<Tuple<Func<String, String>, String>> { assignRoomsConfirmation }, assignRooms);
+            roomAssign = new ProcessPage("Assign Rooms for Today's Arrivals", "Assigns a room to each guest arriving today", new List<Tuple<Func<String, String>, String>> { assignRoomsConfirmation }, assignRooms, null);
 
             changeMPass = new ProcessPage("Change Manager Password", "Choose manager password. Password will be changed upon completing this page.",
                 new List<Tuple<Func<String, String>, String>> {
                     checkP, pass1, pass2
-                }, changePass);
+                }, changePass, null);
 
             // Initialize menu
             recordsMenu = new MenuPage("Records", "Records submenu (Generate Reports, Generate Emails && Cancel no-CCs, Create Backups, Charge No-Shows)", new List<Page> { roomAssign, generateReports, generateEmails, createBackups, chargeNoShow, changeMPass });
@@ -170,7 +170,7 @@ namespace OpheliasOasis
             if (GenerateReportArray[1]) { rGen.generateDailyOccupancyReport(rdb); }
             if (GenerateReportArray[2]) { rGen.generateExpectedOccupancyReport(rdb); }
             if (GenerateReportArray[3]) { rGen.generateExpectedRoomIncomeReport(rdb); }
-            if (GenerateReportArray[4]) { rGen.generateIncentiveReport(rdb); }
+            if (GenerateReportArray[4]) { rGen.generateIncentiveReport(rdb, cal); }
             return "";
         }
 
@@ -242,7 +242,7 @@ namespace OpheliasOasis
                 {
                     if(res.getReservationType() == ReservationType.Conventional || res.getReservationType() == ReservationType.Incentive)
                     {
-                        CreditCardStub.WriteTransaction(res.getCustomerCreditCard(), res.getCustomerName(), "Ophelia's Oasis", "1234 1234 1234 1234", res.getFirstDayPrice());
+                        CreditCardStub.WriteTransaction(res.getCustomerCreditCard(), res.getCustomerName(), "Ophelia's Oasis", "1234 1234 1234 1234", res.GetFirstDayPrice());
                         res.cancelReservation();
                     }
                     ht.clearRoom(res.getRoomNumber());

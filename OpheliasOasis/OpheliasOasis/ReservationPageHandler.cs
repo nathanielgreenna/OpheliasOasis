@@ -57,22 +57,22 @@ namespace OpheliasOasis
 			Tuple.Create<Func<String, String>, String>(InputType, "Enter the desired reservation type (1: Conventional, 2: Incentive, 3: 60-days, 4: Prepaid)");
 
 		private readonly static Tuple<Func<String, String>, String> newGuestNameRequest =
-			Tuple.Create<Func<String, String>, String>(InputName, "Enter guest name (you may press <enter> to skip if already provided)");
+			Tuple.Create<Func<String, String>, String>(InputName, "Enter guest name (press <enter> to leave unchanged)");
 
 		private readonly static Tuple<Func<String, String>, String> updatedGuestNameRequest =
-			Tuple.Create<Func<String, String>, String>(InputName, "Enter new guest name (or press <enter> to skip)");
+			Tuple.Create<Func<String, String>, String>(InputName, "Enter new guest name (press <enter> to leave unchanged)");
 
 		private readonly static Tuple<Func<String, String>, String> newCreditCardRequest =
-			Tuple.Create<Func<String, String>, String>(InputCreditCard, "Enter credit card number (you may press <enter> to skip if already provided or for 60-days reservations)");
+			Tuple.Create<Func<String, String>, String>(InputCreditCard, "Enter credit card number (you may press <enter> to skip if already provided / for 60-days reservations)");
 
 		private readonly static Tuple<Func<String, String>, String> updatedCreditCardRequest =
-			Tuple.Create<Func<String, String>, String>(InputCreditCard, "Enter new credit card number (or press <enter> to skip)");
+			Tuple.Create<Func<String, String>, String>(InputCreditCard, "Enter new credit card number (press <enter> to leave unchanged)");
 
 		private readonly static Tuple<Func<String, String>, String> newEmailRequest =
-			Tuple.Create<Func<String, String>, String>(InputEmail, "Enter email address (you may press <enter> to skip unless you skipped Step 5 and the information has not been provided)");
+			Tuple.Create<Func<String, String>, String>(InputEmail, "Enter email address (you may press <enter> to skip if credit card has been provided)");
 
 		private readonly static Tuple<Func<String, String>, String> updatedEmailRequest =
-			Tuple.Create<Func<String, String>, String>(InputEmail, "Enter email new adddress (or press <enter> to skip)");
+			Tuple.Create<Func<String, String>, String>(InputEmail, "Enter new email adddress (press <enter> to leave unchanged)");
 
 		private readonly static Tuple<Func<String, String>, String> cancelrequest =
 			Tuple.Create<Func<String, String>, String>(InputCancellationConfirmation, "Cancel reservation? (Y/n)");
@@ -92,22 +92,22 @@ namespace OpheliasOasis
 			placeRes = new ProcessPage("Place Reservation", "Place a new reservation",
 				new List<Tuple<Func<String, String>, String>> {
 					newStartDateRequest, newEndDateRequest, reservationTypeRequest, newGuestNameRequest, newCreditCardRequest, newEmailRequest
-				}, PlaceReservation);
+				}, PlaceReservation, ClearBuffer);
 
 			changeRes = new ProcessPage("Change Reservation", "Change the dates and type of an existing reservation",
 				new List<Tuple<Func<String, String>, String>> {
 					guestNameSearchRequest, selectionSearchRequest, updatedStartDateRequest, updatedEndDateRequest, reservationTypeRequest, newCreditCardRequest, newEmailRequest
-				}, ChangeReservationDates);
+				}, ChangeReservationDates, ClearBuffer);
 
 			changeGuestInfo = new ProcessPage("Change Guest Information", "Change the guest information for an existing reservation",
 				new List<Tuple<Func<String, String>, String>> {
 					guestNameSearchRequest, selectionSearchRequest, updatedGuestNameRequest, updatedCreditCardRequest, updatedEmailRequest
-				}, ChangeReservation);
+				}, ChangeReservation, ClearBuffer);
 
 			cancelRes = new ProcessPage("Cancel Reservation", "Cancel an existing reservation",
 				new List<Tuple<Func<String, String>, String>> {
 					guestNameSearchRequest, selectionSearchRequest, cancelrequest
-				}, CancelReservation);
+				}, CancelReservation, ClearBuffer);
 
 			// Initialize menu
 			resMenu = new MenuPage("Reservations", "Reservations submenu (place, update, or cancel a reservation)", new List<Page> { placeRes, changeRes, changeGuestInfo, cancelRes });
@@ -140,7 +140,7 @@ namespace OpheliasOasis
 
 			for (int i = 0; i < searchResults.Count; i++)
 			{
-				Console.WriteLine($"\t{i + 1}: {searchResults[i].getReservationType()} Reservation from {searchResults[i].getStartDate().ToShortDateString()} to {searchResults[i].getEndDate().ToShortDateString()} ({searchResults[i].getReservationStatus()}, Credit Card #: XXXX XXXX XXXX XXXX {searchResults[i].getCustomerCreditCard().Split(" ")[3]})");
+				Console.WriteLine($"\t{i + 1}: {searchResults[i]}");
 			}
 
 			// Move on to next step
@@ -168,7 +168,7 @@ namespace OpheliasOasis
 			// Ensure the date is active
 			if (referenceRes.getReservationStatus() == ReservationStatus.Cancelled)
             {
-				return "You cannot modified a cancelled reservation";
+				return "You cannot modifiy a cancelled reservation";
             }
 
 			// Store and coninue
@@ -183,6 +183,12 @@ namespace OpheliasOasis
 		/// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
 		static String InputStartDate(String input)
 		{
+			// Don't allow changes if the existing start date has already passed
+			if (referenceRes != null && bufferRes.getStartDate() < DateTime.Today)
+            {
+				return "The reservation has already started. Start date cannot be changed";
+            }
+
 			// Validate start date
 			DateTime startDate;
 			if (!DateTime.TryParse(input, out startDate))
@@ -217,6 +223,12 @@ namespace OpheliasOasis
 		/// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
 		static String InputEndDate(String input)
 		{
+			// Don't allow changes if the existing end date has already passed
+			if (referenceRes != null && bufferRes.getEndDate() < DateTime.Today)
+			{
+				return "The reservation has already ended. End date cannot be changed";
+			}
+
 			// Validate end date
 			DateTime endDate;
 			if (!DateTime.TryParse(input, out endDate))
@@ -260,6 +272,11 @@ namespace OpheliasOasis
 			// Validate selection
 			switch (input)
 			{
+				// Attempt to leave unchanged
+				case "":
+					Console.WriteLine($"Type left as {bufferRes.getReservationType()} Reservation.");
+					break;
+
 				// Conventional
 				case "1":
 					break;
@@ -317,34 +334,36 @@ namespace OpheliasOasis
 					break;
 
 				// Invalid selection
-				default: return $"\"{input}\" is not between 1 and 4";
+				default:
+					return $"\"{input}\" is not between 1 and 4";
 			}
 
-			// Calculate the base 
+			// Change discount to penalty if changing a Prepaid or SixtyDays reservation
+			if (referenceRes != null && (referenceRes.getReservationType() == ReservationType.Prepaid || referenceRes.getReservationType() == ReservationType.SixtyDay))
+            {
+				discount = -0.10;
+            }
+
+			// Calculate the price
 			Console.Write("Calculating price... ");
-			double cost = 0;
-			double rate;
+			List<double> prices = new List<double>();
+
+			// Store price
 			for (DateTime d = bufferRes.getStartDate(); d < bufferRes.getEndDate(); d = d.AddDays(1))
 			{
-				// Store base rate for each date
-				rate = cal.retrieveDate(d).getBasePrice();
-				bufferRes.setDateRate(d, rate);
-				// Apply discount and store discounted rate
-				rate *= (1.0 - discount);
-				cost += rate;
-				bufferRes.setDateCost(d, rate);
+				prices.Add((1.0 - discount) * cal.retrieveDate(d).getBasePrice());
 			}
 
-			bufferRes.setTotalPrice(cost);
+			bufferRes.SetPrices(prices);
 
 			// Display the price
-			if (discount > 0)
+			if (Math.Abs(discount) > 0.001)
 			{
-				Console.Write($"Applied {discount:P} discount. ");
+				Console.Write($"Applied {Math.Abs(discount):P} {(discount < 0 ? "penalty" : "discount")}. ");
 			}
-			Console.WriteLine($"Calculated final price: {cost:C2}.");
+			Console.WriteLine($"Calculated final price: {bufferRes.GetTotalPrice():C2}.");
 
-			// Store and continue
+			// Store type and continue
 			bufferRes.setReservationType(type);
 			return "";
 		}
@@ -360,6 +379,7 @@ namespace OpheliasOasis
 			if (String.IsNullOrEmpty(input) && !String.IsNullOrEmpty(bufferRes.getCustomerName()))
 			{
 				// Skip if requested and allowed
+				Console.WriteLine($"Name left as \"{bufferRes.getCustomerName()}\".");
 				return "";
 			}
 			else if (!input.Contains(" "))
@@ -386,8 +406,22 @@ namespace OpheliasOasis
 			// Skip if requested and allowed
 			if (String.IsNullOrEmpty(input) && (bufferRes.getReservationType() == ReservationType.SixtyDay || !String.IsNullOrEmpty(bufferRes.getCustomerCreditCard())))
 			{
+				if (!String.IsNullOrEmpty(bufferRes.getCustomerCreditCard()))
+				{
+					Console.WriteLine($"Credit card left as XXXX XXXX XXXX {bufferRes.getCustomerCreditCard().Split(" ")[3]}.");
+				}
+				else
+				{
+					Console.WriteLine("Credit card skipped.");
+				}
 				return "";
 			}
+
+			// Don't allow changes after the reservation has been paid
+			if (bufferRes.IsPaid())
+            {
+				return "The reservation has been paid for. You cannot change the payment information";
+            }
 
 			// Catch imporper spacing
 			if (sets.Length != 4)
@@ -414,6 +448,7 @@ namespace OpheliasOasis
 
 			// Store and continue
 			bufferRes.setCustomerCreditCard(input);
+			bufferRes.setReservationStatus(ReservationStatus.Paid);
 			return "";
 		}
 
@@ -428,6 +463,14 @@ namespace OpheliasOasis
 			if (String.IsNullOrEmpty(input) && (bufferRes.getReservationType() != ReservationType.SixtyDay || !String.IsNullOrEmpty(bufferRes.getCustomerCreditCard())))
 			{
 				// Skip if requested and allowed
+				if (!String.IsNullOrEmpty(bufferRes.getCustomerEmail()))
+				{
+					Console.WriteLine($"Email address left as \"{bufferRes.getCustomerEmail()}\".");
+				}
+				else
+                {
+					Console.WriteLine("Email skipped.");
+                }
 				return "";
 			}
 			else if (!input.Contains("@") || !input.Contains("."))
@@ -454,10 +497,15 @@ namespace OpheliasOasis
 			}
 			else
 			{
-				bufferRes.cancelReservation();
 				return "";
 			}
 		}
+
+		static String ClearBuffer()
+        {
+			bufferRes = referenceRes = null;
+			return "";
+        }
 
 		/// <summary>
 		/// Save changes to a new reservation by adding the buffer to the database.
@@ -466,10 +514,10 @@ namespace OpheliasOasis
 		static String PlaceReservation()
 		{
 			// Make payments for prepaid and 60-days with credit card information provided
-			if (bufferRes.getReservationType() == ReservationType.Prepaid|| (bufferRes.getReservationType() == ReservationType.SixtyDay && String.IsNullOrEmpty(bufferRes.getCustomerCreditCard())))
+			if (bufferRes.getReservationType() == ReservationType.Prepaid || (bufferRes.getReservationType() == ReservationType.SixtyDay && !String.IsNullOrEmpty(bufferRes.getCustomerCreditCard())))
 			{
-				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", bufferRes.getTotalPrice());
-				bufferRes.setReservationStatus(ReservationStatus.Paid);
+				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", bufferRes.GetTotalPrice());
+				bufferRes.SetPaid(true);
 			}
 
 			// Update occupancy
@@ -480,19 +528,24 @@ namespace OpheliasOasis
 
 			// Save & return
 			rdb.addReservation(bufferRes);
-			bufferRes = null;
-			return "";
+			return ClearBuffer();
 		}
 
 		/// <summary>
-		/// Save changes to an existing reservation by swapping the original with the copy containing the changes.
+		/// Save changes to an existing reservation by swapping the original with the copy containing the changes. Apply charges to 60-days.
 		/// </summary>
 		/// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
 		static String ChangeReservation()
 		{
+			if (bufferRes.getReservationType() == ReservationType.SixtyDay && !bufferRes.IsPaid() && !String.IsNullOrEmpty(bufferRes.getCustomerCreditCard()))
+            {
+				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", bufferRes.GetTotalPrice());
+				bufferRes.SetPaid(true);
+			}
+
+			// Save & return
 			rdb.replaceReservation(referenceRes, bufferRes);
-			bufferRes = referenceRes = null;
-			return "";
+			return ClearBuffer();
 		}
 
 		/// <summary>
@@ -501,18 +554,20 @@ namespace OpheliasOasis
 		/// <returns>A string containing any error message if applicable. A blank string otherwise.</returns>
 		static String ChangeReservationDates()
 		{
-			// Prepaid and 60-days advance reservations have an additional charge for changing rooms
-			if (referenceRes.getReservationType() == ReservationType.Prepaid || referenceRes.getReservationType() == ReservationType.SixtyDay)
-            {
-				double discount = referenceRes.getReservationType() == ReservationType.Prepaid ? 0.25 : 0.15;
-				double penalty = 1.1;
-				double priceDifference = penalty / discount * bufferRes.getTotalPrice() - referenceRes.getTotalPrice();
+			// Compute price difference
+			double priceDifference = bufferRes.GetTotalPrice() - referenceRes.GetTotalPrice();
 
-				if (priceDifference > 0)
-                {
-					CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", priceDifference);
-				}
+			// No refunds for Perpaid or SixtyDays
+			if (bufferRes.getReservationType() == ReservationType.Prepaid || bufferRes.getReservationType() == ReservationType.SixtyDay)
+            {
+				priceDifference = priceDifference < 0 ? 0 : priceDifference;
             }
+
+			// Make corrections if the price has been paid
+			if (referenceRes.IsPaid() && priceDifference > 0)
+            {
+				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", priceDifference);
+			}
 
 			// Update occupancy
 			for (DateTime d = referenceRes.getStartDate(); d < referenceRes.getEndDate(); d = d.AddDays(1))
@@ -537,8 +592,8 @@ namespace OpheliasOasis
 			// Apply applicable refunds
 			if (bufferRes.getReservationType() == ReservationType.Conventional || bufferRes.getReservationType() == ReservationType.Incentive)
 			{
-				double refund = (bufferRes.getStartDate() - DateTime.Today).TotalDays > 3 ? bufferRes.getTotalPrice() : bufferRes.getTotalPrice() - bufferRes.getFirstDayPrice();
-				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", refund);
+				double refund = (bufferRes.getStartDate() - DateTime.Today).TotalDays > 3 ? bufferRes.GetTotalPrice() : bufferRes.GetTotalPrice() - bufferRes.GetFirstDayPrice();
+				CreditCardStub.WriteTransaction("Ophelia's Oasis", "1234 1234 1234 1234", bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), refund);
 			}
 			
 			// Update occupancy
@@ -548,6 +603,7 @@ namespace OpheliasOasis
 			}
 
 			// Save & return
+			bufferRes.cancelReservation();
 			return ChangeReservation();
 		}
 	}
