@@ -58,7 +58,7 @@ namespace OpheliasOasis
 
         static String CheckInConfirm()
         {
-            if(referenceRes.getRoomNumber() == 0)
+            if(referenceRes.getRoomNumber() <= 0)
             {
                 referenceRes.setRoomNumber(Htl.assignRoom());
             }
@@ -141,7 +141,7 @@ namespace OpheliasOasis
             // Store and continue
             referenceRes = searchResults[selection - 1];
 
-            if (referenceRes.getRoomNumber() == 0)
+            if (referenceRes.getRoomNumber() <= 0)
             {
                 Console.Write(referenceRes.getCustomerName() + " has not been assigned a room yet. Customer will be checked in, and a room will be assigned and displayed upon saving");
             }

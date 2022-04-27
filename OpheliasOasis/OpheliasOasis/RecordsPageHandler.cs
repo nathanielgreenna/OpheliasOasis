@@ -306,7 +306,7 @@ namespace OpheliasOasis
         {
             foreach(Reservation curr in rdb.getReservation(DateTime.Today)) 
             {
-                if(curr.getReservationStatus() != ReservationStatus.Cancelled && curr.getRoomNumber() == 0)
+                if(curr.getReservationStatus() != ReservationStatus.Cancelled && curr.getRoomNumber() <= 0)
                 curr.setRoomNumber(ht.assignRoom());
             }
             Console.Write("Rooms Assigned");

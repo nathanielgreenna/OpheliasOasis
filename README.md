@@ -12,9 +12,9 @@ This is our to-do list, please tell us what you've lightly tested by putting you
     - Reports - 
     - Emails - 
     - Backups - 
-    - Charge No-Shows - 
+    - Charge No-Shows - Alec
   - Reservations - 
-    - Create - Nathan
+    - Create -
     - Modify - 
     - Cancel - 
 
