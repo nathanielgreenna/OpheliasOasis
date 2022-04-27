@@ -193,7 +193,7 @@ namespace OpheliasOasis
                 dayReservations = rdb.getReservation(DateTime.Today.AddDays(daysinfuture));
                 foreach(Reservation res in dayReservations)
                 {
-                    if(res.getReservationType() == ReservationType.SixtyDay && (String.IsNullOrEmpty(res.getCustomerCreditCard()) || ! (res.getReservationStatus().Equals(ReservationStatus.Paid)))) 
+                    if(res.getReservationType() == ReservationType.SixtyDay && (String.IsNullOrEmpty(res.getCustomerCreditCard()) || ! (res.getReservationStatus().Equals(ReservationStatus.Confirmed)))) 
                     {
                         res.cancelReservation();
                         cal.decrementOverSpan(res.getStartDate(),res.getEndDate());

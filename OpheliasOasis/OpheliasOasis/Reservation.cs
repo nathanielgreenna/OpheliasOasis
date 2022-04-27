@@ -288,7 +288,7 @@ namespace OpheliasOasis
 
         public override string ToString()
         {
-            return $"{reservationType} Reservation from {startDate.ToShortDateString()} to {startDate.ToShortDateString()} ({(paid ? "Paid" : "Unpaid")}, {reservationStatus}, " +
+            return $"{reservationType} Reservation from {startDate.ToShortDateString()} to {endDate.ToShortDateString()} ({(paid ? "Paid" : "Unpaid")}, {reservationStatus}, " +
                 $"Credit card: {(String.IsNullOrEmpty(customerCreditCard) ? "Not provided" : $"XXXX XXXX XXXX {customerCreditCard.Split(" ")[3]}")}, " +
                 $"Email: {(String.IsNullOrEmpty(customerEmail) ? "Not provided" : customerEmail)})";
         }
