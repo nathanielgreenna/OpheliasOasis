@@ -59,6 +59,7 @@ namespace OpheliasOasis
                 // If necessary, repeatedly request a selection until a valid number is provided
                 while (!int.TryParse(selectionText, out selection) || selection > pages.Count || selection < 0)
                 {
+                    Console.WriteLine();
                     Console.Write($"Selection \"{selectionText}\" is not valid. Please enter your selection (0 - {pages.Count}): ");
                     selectionText = Console.ReadLine();
                 }

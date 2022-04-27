@@ -57,13 +57,13 @@ namespace OpheliasOasis
 
 
 
-            showYearAhead = new ProcessPage("Date Information for one month", "Display a month of dates and prices", new List<Tuple<Func<String, String>, String>> { viewMonth }, null);
+            showYearAhead = new ProcessPage("Date Information for one month", "Display a month of dates and prices", new List<Tuple<Func<String, String>, String>> { viewMonth }, null, null);
 
-            showIndividual = new ProcessPage("Individual Date Information", "Display a specific date", new List<Tuple<Func<String, String>, String>> { viewDate }, null);
+            showIndividual = new ProcessPage("Individual Date Information", "Display a specific date", new List<Tuple<Func<String, String>, String>> { viewDate }, null, null);
 
-            setIndividual = new ProcessPage("Set Specific Date Price (Manager Only)", "Sets a specific date", new List<Tuple<Func<String, String>, String>> { checkPS, recieveDate, recievePrice }, setInPrice);
+            setIndividual = new ProcessPage("Set Specific Date Price (Manager Only)", "Sets a specific date", new List<Tuple<Func<String, String>, String>> { checkPS, recieveDate, recievePrice }, setInPrice, null);
 
-            setForYear = new ProcessPage("Set Prices For a Month (Manager Only)", "Set 31 days of prices. \n WARNING: DO NOT USE THE BACK COMMAND (B) ON THIS PAGE", monthOfSetting, updateMonthPrices);
+            setForYear = new ProcessPage("Set Prices For a Month (Manager Only)", "Set 31 days of prices. \n WARNING: DO NOT USE THE BACK COMMAND (B) ON THIS PAGE", monthOfSetting, updateMonthPrices, null);
 
 
             datesMenu = new MenuPage("Dates", "Dates submenu", new List<Page> { showIndividual, showYearAhead, setIndividual , setForYear});

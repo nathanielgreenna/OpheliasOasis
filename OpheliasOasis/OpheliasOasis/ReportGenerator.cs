@@ -139,7 +139,7 @@ namespace OpheliasOasis
                 double income = 0;
                 foreach (Reservation reservation in reservations)
                 {
-                    income += reservation.getDateCost(date);
+                    income += reservation.GetDatePrice(date);
                 }
                 totalIncome += income;
                 output.Add(date.ToShortDateString() + ": $" + income.ToString("F2"));
@@ -160,7 +160,7 @@ namespace OpheliasOasis
             }
         }
 
-        public void generateIncentiveReport(ReservationDB reservationDB)
+        public void generateIncentiveReport(ReservationDB reservationDB, Calendar calendar)
         {
             List<String> output = new List<String>();
             double totalDiscount = 0;
@@ -175,8 +175,8 @@ namespace OpheliasOasis
                 {
                     if (reservation.getReservationType().Equals(ReservationType.Incentive))
                     {
-                        baseRate = reservation.getDateRate(date);
-                        discount += (baseRate - reservation.getDateCost(date));
+                        baseRate = calendar.retrieveDate(date).getBasePrice();
+                        discount += (baseRate - reservation.GetDatePrice(date));
                     }
                 }
                 totalDiscount += discount;

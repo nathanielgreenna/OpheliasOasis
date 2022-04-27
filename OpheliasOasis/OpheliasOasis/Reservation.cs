@@ -13,8 +13,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Runtime.Serialization;
+
 namespace OpheliasOasis
 {
     [DataContract(Name = "Res", Namespace = "OpheliasOasis")]
@@ -42,19 +42,19 @@ namespace OpheliasOasis
         private double totalPrice;
         [DataMember(Name = "Status")]
         private ReservationStatus reservationStatus;
-        [DataMember(Name = "Rates")]
-        private Dictionary<DateTime, double> datesRate = new Dictionary<DateTime, double>();
-        [DataMember(Name = "Costs")]
-        private Dictionary<DateTime, double> datesCost = new Dictionary<DateTime, double>();
+        [DataMember(Name = "Prices")]
+        private List<double> prices = new List<double>();
         [DataMember(Name = "Paid")]
         private bool paid;
 
 
         public Reservation()
         {
+            paid = false;
         }
         public Reservation(ReservationType resType, String cusName, String cusCC, DateTime sDate, DateTime eDate) 
         {
+            paid = false;
             reservationType = resType;
             customerName = cusName;
             customerCreditCard = cusCC;
@@ -86,8 +86,7 @@ namespace OpheliasOasis
             clone.endDate = endDate;
             clone.totalPrice = totalPrice;
             clone.reservationStatus = reservationStatus;
-            clone.datesCost = new Dictionary<DateTime, double>(datesCost);
-            clone.datesRate = new Dictionary<DateTime, double>(datesRate);
+            clone.prices = new List<double>(prices);
             clone.paid = paid;
             return clone;
         }
@@ -184,70 +183,72 @@ namespace OpheliasOasis
             if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
         }
 
-        public double getTotalPrice() 
+        /// <summary>
+        /// Get the total price for all nights of the reservation.
+        /// </summary>
+        /// <returns>A double containing the total price</returns>
+        public double GetTotalPrice() 
         {
             return totalPrice;
         }
 
-        public void setTotalPrice(double price)
+        /// <summary>
+        /// Get the price of the first day. Used in calculating fees.
+        /// </summary>
+        /// <returns>A double containing the cost of the first night of the reservation.</returns>
+        public double GetFirstDayPrice()
         {
-            totalPrice = price;
-            if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
+            return prices[0];
         }
 
-        public double getFirstDayPrice()
+        /// <summary>
+        /// Return the price for a given day.
+        /// </summary>
+        /// <param name="date">The date for which to get the price.</param>
+        /// <returns>A double containing the price for the date provided.</returns>
+        public double GetDatePrice(DateTime date)
         {
-            return datesCost[getStartDate()];
-        }
-
-        public double getDateCost(DateTime date)
-        {
-            try
+            if (date >= getStartDate() && date < getEndDate())
             {
-                return datesCost[date];
+                return prices[(int)(date - getStartDate()).TotalDays];
             }
-            catch (KeyNotFoundException)
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Set the prices for a reservation. Throws an ArgumentException if the wrong number of parameters are provided.
+        /// </summary>
+        /// <param name="prices">A list of doubles, each representing the price of the ith day.</param>
+        public void SetPrices(List<double> prices)
+        {
+            // Input validation
+            int days = (int)(getEndDate() - getStartDate()).TotalDays;
+            if (prices.Count != days)
             {
-                return 0.0;
+                throw new ArgumentException("The number of prices and number of days for this reservation do not match up.");
             }
-        }
 
-        public void setDateCost(DateTime date, double cost)
-        {
-            datesCost.Add(date, cost);
-        }
+            // Variable setting
+            this.prices = new List<double>(prices);
 
-        public double getDateRate(DateTime date)
-        {
-            try
+            totalPrice = 0;
+            for (int i = 0; i < days; i++)
             {
-                return datesRate[date];
-            }
-            catch (KeyNotFoundException)
-            {
-                return 0.0;
+                totalPrice += prices[i];
             }
         }
 
-        public void setDateRate(DateTime date, double rate)
-        {
-            datesRate.Add(date, rate);
-        }
-
-        public void clearDates()
-        {
-            datesCost = new Dictionary<DateTime, double>();
-            datesRate = new Dictionary<DateTime, double>();
-        }
-
-        public bool getPaid()
+        public bool IsPaid()
         {
             return paid;
         }
 
-        public void setPaid(bool pay)
+        public void SetPaid(bool paid)
         {
-            paid = pay;
+            this.paid = paid;
+
+            setPaymentDate(DateTime.Now);
         }
 
         public ReservationStatus getReservationStatus()
@@ -283,6 +284,13 @@ namespace OpheliasOasis
             startDate = sDate;
             endDate = eDate;
             if (ID != 0) { XMLreader.AddOrChangeReservationinDB(this); }
+        }
+
+        public override string ToString()
+        {
+            return $"{reservationType} Reservation from {startDate.ToShortDateString()} to {startDate.ToShortDateString()} ({(paid ? "Paid" : "Unpaid")}, {reservationStatus}, " +
+                $"Credit card: {(String.IsNullOrEmpty(customerCreditCard) ? "Not provided" : $"XXXX XXXX XXXX {customerCreditCard.Split(" ")[3]}")}, " +
+                $"Email: {(String.IsNullOrEmpty(customerEmail) ? "Not provided" : customerEmail)})";
         }
     }
 }
