@@ -102,7 +102,7 @@ namespace OpheliasOasis
 
             for (int i = 0; i < searchResults.Count; i++)
             {
-                if ((searchResults[i].getReservationStatus() == ReservationStatus.Paid || searchResults[i].getReservationStatus() == ReservationStatus.Placed)) 
+                if ((searchResults[i].getReservationStatus() == ReservationStatus.Confirmed || searchResults[i].getReservationStatus() == ReservationStatus.Placed)) 
                 {
                     Console.WriteLine($"\t{g + 1}: {searchResults[i].getReservationType()} Reservation from {searchResults[i].getStartDate().ToShortDateString()} to {searchResults[i].getEndDate().ToShortDateString()} ({searchResults[i].getReservationStatus()}, Credit Card #: {searchResults[i].getCustomerCreditCard()})");
                     g++;
@@ -115,7 +115,7 @@ namespace OpheliasOasis
 
             for (int i = searchResults.Count-1; i >= 0; i--)
             {
-                if (!(searchResults[i].getReservationStatus() == ReservationStatus.Paid || searchResults[i].getReservationStatus() == ReservationStatus.Placed))
+                if (!(searchResults[i].getReservationStatus() == ReservationStatus.Confirmed || searchResults[i].getReservationStatus() == ReservationStatus.Placed))
                 {
                     Console.WriteLine($"\t{searchResults[i].getReservationType()} Reservation from {searchResults[i].getStartDate().ToShortDateString()} to {searchResults[i].getEndDate().ToShortDateString()} ({searchResults[i].getReservationStatus()}, Credit Card #: {searchResults[i].getCustomerCreditCard()})");
                     searchResults.RemoveAt(i);

@@ -33,6 +33,7 @@ namespace OpheliasOasis
 		public static ProcessPage changeRes;
 		public static ProcessPage changeGuestInfo;
 		public static ProcessPage cancelRes;
+		public static ProcessPage showDate;
 
 		// Steps - tuples pairing an input-parsing function with the associated prompt - used in ProcessPages
 		private readonly static Tuple<Func<String, String>, String> guestNameSearchRequest =
@@ -77,6 +78,9 @@ namespace OpheliasOasis
 		private readonly static Tuple<Func<String, String>, String> cancelrequest =
 			Tuple.Create<Func<String, String>, String>(InputCancellationConfirmation, "Cancel reservation? (Y/n)");
 
+		private readonly static Tuple<Func<String, String>, String> showDateReservations =
+			Tuple.Create<Func<String, String>, String>(ShowByDate, "Enter a start date to show");
+
 		/// <summary>
 		/// Load the pages and store references to the variables they need.
 		/// </summary>
@@ -109,8 +113,11 @@ namespace OpheliasOasis
 					guestNameSearchRequest, selectionSearchRequest, cancelrequest
 				}, CancelReservation, ClearBuffer);
 
+			showDate = new ProcessPage("Show Reservations by Date", "Shows all reservations beginning on a given date",
+				new List<Tuple<Func<String, String>, String>> { showDateReservations }, null, null);
+
 			// Initialize menu
-			resMenu = new MenuPage("Reservations", "Reservations submenu (place, update, or cancel a reservation)", new List<Page> { placeRes, changeRes, changeGuestInfo, cancelRes });
+			resMenu = new MenuPage("Reservations", "Reservations submenu (place, update, or cancel a reservation)", new List<Page> { placeRes, changeRes, changeGuestInfo, cancelRes, showDate });
 		}
 
 		/// <summary>
@@ -448,7 +455,7 @@ namespace OpheliasOasis
 
 			// Store and continue
 			bufferRes.setCustomerCreditCard(input);
-			bufferRes.setReservationStatus(ReservationStatus.Paid);
+			bufferRes.setReservationStatus(ReservationStatus.Confirmed);
 			return "";
 		}
 
@@ -606,6 +613,28 @@ namespace OpheliasOasis
 			bufferRes.cancelReservation();
 			return ChangeReservation();
 		}
+
+
+		static String ShowByDate(String input)
+		{
+			// Validate date
+			DateTime displayDate;
+			if (!DateTime.TryParse(input, out displayDate))
+			{
+				return $"\"{input}\" is not a valid date";
+			}
+
+			List<Reservation> dateReservations = rdb.getReservation(displayDate);
+
+			Console.WriteLine("Reservations on " + displayDate.ToShortDateString() + ": ");
+            foreach (Reservation r in dateReservations) 
+			{
+				Console.WriteLine( "\t" + r.getCustomerName() + ": " + r);
+			}
+			return "";
+		}
+
+
 	}
 }
 

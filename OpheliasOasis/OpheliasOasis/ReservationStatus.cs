@@ -30,7 +30,7 @@ namespace OpheliasOasis
         /// <summary>
 		/// Credit card information provided.
 		/// </summary>
-        Paid,
+        Confirmed,
 
         /// <summary>
 		/// Customer has checked in.

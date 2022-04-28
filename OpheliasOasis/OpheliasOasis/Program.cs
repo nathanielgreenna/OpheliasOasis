@@ -120,7 +120,7 @@ namespace OpheliasOasis
             Console.WriteLine("_   ___|||||__  _    .   . _____   .         _");
             Console.WriteLine("     _ `---'    .    ..   _   .   .  ____    .");
             Console.WriteLine("Loading...");
-
+            //Credit to https://www.asciiart.eu/nature/deserts for the text art.
 
             Directory.CreateDirectory("C:\\OpheliasOasis");
             Directory.CreateDirectory("C:\\OpheliasOasis\\Backups");
