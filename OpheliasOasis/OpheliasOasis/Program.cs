@@ -31,6 +31,7 @@ namespace OpheliasOasis
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-AU");
 
             StartupScreen();
+            SetupArrivalsReportTest();
             CheckInPageHandler.Init(reservationDB, hotel);
             CheckOutPageHandler.Init(reservationDB, hotel);
             DatesPageHandler.Init(calendar, managerPassword);
@@ -239,8 +240,71 @@ namespace OpheliasOasis
             XMLreader.changeMPass(managerPassword);
         }
 
+        private static void SetupArrivalsReportTest()
+        {
+            Console.WriteLine("Testing Arrival Report...");
+            System.Threading.Thread.Sleep(50);
 
+            reservationDB = new ReservationDB();
+            DateTime twoDaysAgo = DateTime.Today.AddDays(-2);
+            DateTime yesterday = DateTime.Today.AddDays(-1);
+            DateTime today = DateTime.Today;
+            DateTime tomorrow = DateTime.Today.AddDays(1);
+            DateTime twoDaysFromNow = DateTime.Today.AddDays(2);
 
+            List<Tuple<DateTime, DateTime, ReservationStatus, int>> rinfo = new List<Tuple<DateTime, DateTime, ReservationStatus, int>>
+            {
+                Tuple.Create(twoDaysAgo, twoDaysFromNow, ReservationStatus.CheckedIn, 7),
+                Tuple.Create(twoDaysAgo, yesterday, ReservationStatus.CheckedOut, 1),
+                Tuple.Create(twoDaysAgo, today, ReservationStatus.CheckedIn, 2),
+                Tuple.Create(today, tomorrow, ReservationStatus.Confirmed, 5),
+                Tuple.Create(today, tomorrow, ReservationStatus.Cancelled, 3),
+                Tuple.Create(today, tomorrow, ReservationStatus.CheckedOut, 4),
+                Tuple.Create(tomorrow, twoDaysFromNow, ReservationStatus.Confirmed, 6)
+            };
+
+            for (int i = 0; i < rinfo.Count; i++)
+            {
+                int j = rinfo[i].Item4;
+                Reservation res = new Reservation(ReservationType.Conventional, "Guest " + j, $"{j}{j}{j}{j} {j}{j}{j}{j} {j}{j}{j}{j} {j}{j}{j}{j}", rinfo[i].Item1, rinfo[i].Item2);
+                res.setReservationStatus(rinfo[i].Item3);
+                res.setRoomNumber(rinfo.Count + 1 - j);
+                reservationDB.addReservation(res);
+            }
+        }
+
+        private static void SetupOccupancyReportTest()
+        {
+            Console.WriteLine("Testing Occupancy Report...");
+            System.Threading.Thread.Sleep(50);
+
+            reservationDB = new ReservationDB();
+            DateTime twoDaysAgo = DateTime.Today.AddDays(-2);
+            DateTime yesterday = DateTime.Today.AddDays(-1);
+            DateTime today = DateTime.Today;
+            DateTime tomorrow = DateTime.Today.AddDays(1);
+            DateTime twoDaysFromNow = DateTime.Today.AddDays(2);
+
+            List<Tuple<DateTime, DateTime, ReservationStatus, int>> rinfo = new List<Tuple<DateTime, DateTime, ReservationStatus, int>>
+            {
+                Tuple.Create(twoDaysAgo, twoDaysFromNow, ReservationStatus.CheckedIn, 7),
+                Tuple.Create(twoDaysAgo, yesterday, ReservationStatus.CheckedOut, 1),
+                Tuple.Create(yesterday, today, ReservationStatus.Cancelled, 2),
+                Tuple.Create(yesterday, today, ReservationStatus.CheckedOut, 3),
+                Tuple.Create(yesterday, today, ReservationStatus.CheckedIn, 4),
+                Tuple.Create(today, tomorrow, ReservationStatus.CheckedOut, 5),
+                Tuple.Create(tomorrow, twoDaysFromNow, ReservationStatus.Confirmed, 6)
+            };
+
+            for (int i = 0; i < rinfo.Count; i++)
+            {
+                int j = rinfo[i].Item4;
+                Reservation res = new Reservation(ReservationType.Conventional, "Guest " + j, $"{j}{j}{j}{j} {j}{j}{j}{j} {j}{j}{j}{j} {j}{j}{j}{j}", rinfo[i].Item1, rinfo[i].Item2);
+                res.setReservationStatus(rinfo[i].Item3);
+                res.setRoomNumber(rinfo.Count + 1 - j);
+                reservationDB.addReservation(res);
+            }
+        }
 
 
 
