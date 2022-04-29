@@ -80,7 +80,7 @@ namespace OpheliasOasis
             // Aquire search results
             searchResults = ResDB.getReservation(input);
 
-            for (int i = 0; i < searchResults.Count; i++)
+            for (int i = searchResults.Count-1; i >= 0; i--)
             {
                 if(searchResults[i].getStartDate() != DateTime.Today)
                 {
