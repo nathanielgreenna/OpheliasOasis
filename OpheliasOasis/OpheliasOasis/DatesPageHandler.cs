@@ -91,11 +91,11 @@ namespace OpheliasOasis
         {
             if (!DateTime.TryParse(input, out dateToChange))
             {
-                return ("Not the correct format.");
+                return ("Incorrect format");
             }
 
             currDay = 0;
-            Console.Write("Current Price for " + dateToChange.AddDays(currDay).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(dateToChange.AddDays(currDay)).getBasePrice());
+            Console.WriteLine("Current Price for " + dateToChange.AddDays(currDay).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(dateToChange.AddDays(currDay)).getBasePrice());
             return "";
         }
 
@@ -103,7 +103,7 @@ namespace OpheliasOasis
         {
             if (input != manPass)
             {
-                return "Password incorrect.";
+                return "Password incorrect";
             }
             return "";
         }
@@ -116,7 +116,7 @@ namespace OpheliasOasis
             {
                 g[currDay] = -1;
                 currDay += 1;
-                Console.Write("Current Price for " + dateToChange.AddDays(currDay).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(dateToChange.AddDays(currDay)).getBasePrice());
+                Console.WriteLine("Current Price for " + dateToChange.AddDays(currDay).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(dateToChange.AddDays(currDay)).getBasePrice());
                 return ""; 
             }
             
@@ -126,7 +126,7 @@ namespace OpheliasOasis
                 currDay += 1;
                 if (currDay != 31)
                 { 
-                    Console.Write("Current Price for " + dateToChange.AddDays(currDay).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(dateToChange.AddDays(currDay)).getBasePrice());
+                    Console.WriteLine("Current Price for " + dateToChange.AddDays(currDay).ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(dateToChange.AddDays(currDay)).getBasePrice());
                 }
                 return "";
             }
@@ -156,7 +156,7 @@ namespace OpheliasOasis
         {
             if (input != manPass)
             {
-                return "Password incorrect.";
+                return "Password incorrect";
             }
             return "";
         }
@@ -165,12 +165,12 @@ namespace OpheliasOasis
         {
             if (DateTime.TryParse(input, out dateToChange))
             {
-                Console.Write("Current Price: " + cal.retrieveDate(dateToChange).getBasePrice() + " Current Occupancy: " + cal.retrieveDate(dateToChange).getOccupancy());
+                Console.WriteLine("\tCurrent Price: " + cal.retrieveDate(dateToChange).getBasePrice() + "\n\tCurrent Occupancy: " + cal.retrieveDate(dateToChange).getOccupancy());
                 return ("");
             }
             else
             {
-                return ("Not the correct format.");
+                return ("Incorrect format");
             }
         }
 
@@ -182,7 +182,7 @@ namespace OpheliasOasis
             }
             else
             {
-                return ("Not a valid date");
+                return ("Invalid date");
             }
         }
 
@@ -198,13 +198,22 @@ namespace OpheliasOasis
             if (!DateTime.TryParse(input, out dateToChange)) { return ("Not a valid month"); }
             if (dateToChange.Day != 1) { return ("Not a valid month"); }
 
-            int g = 0;
+            Console.WriteLine($"==| For {dateToChange.ToString("y")} | ========");
+
+            int dayOfWeek = 0;
+
+            while (dayOfWeek < (int) dateToChange.DayOfWeek % 7)
+            {
+                Console.Write("".PadRight(25));
+                dayOfWeek++;
+            }
+
             for(DateTime i = dateToChange; i.Month == dateToChange.Month; i = i.AddDays(1))
             {
-                if (g % 7 == 0) { Console.WriteLine(""); }
-                Console.Write((i.ToString("ddd dd-MM-yyyy") + ": " + cal.retrieveDate(i).getBasePrice()).PadRight(25));
-                g++;
+                if (i.Day > 1 && (int) i.DayOfWeek % 7 == 0) { Console.WriteLine(); }
+                Console.Write($"{i.ToString("ddd dd-MM-yyyy")}: {cal.retrieveDate(i).getBasePrice():C} ".PadRight(25));
             }
+            Console.WriteLine();
             return "";
         }
 

@@ -22,6 +22,8 @@ namespace OpheliasOasis
         [DataMember(Name = "RoomsOcc")]
         private int roomsOccupied;
 
+        public static readonly int HOTEL_SIZE = 45;
+
         public Hotel(int numrooms) 
         { 
             rooms = new List<bool>(new bool[numrooms]);

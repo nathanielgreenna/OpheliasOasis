@@ -125,7 +125,7 @@ namespace OpheliasOasis
 
             //continue
             referenceRes = searchResults[selection - 1];
-            Console.Write(referenceRes.getCustomerName() + " was assigned to room " + referenceRes.getRoomNumber() + ". Save to check out the guest.");
+            Console.WriteLine(referenceRes.getCustomerName() + " was assigned to room " + referenceRes.getRoomNumber() + ". Save to check out the guest.");
             
             return "";
         }
