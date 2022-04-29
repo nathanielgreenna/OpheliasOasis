@@ -71,7 +71,7 @@ namespace OpheliasOasis
 			Tuple.Create<Func<String, String>, String>(InputCreditCard, "Enter new credit card number (press <enter> to leave unchanged)");
 
 		private readonly static Tuple<Func<String, String>, String> newEmailRequest =
-			Tuple.Create<Func<String, String>, String>(InputEmail, "Enter email address (you may press <enter> to skip if credit card has been provided)");
+			Tuple.Create<Func<String, String>, String>(InputEmail, "Enter email address (press <enter> to leave unchanged)");
 
 		private readonly static Tuple<Func<String, String>, String> updatedEmailRequest =
 			Tuple.Create<Func<String, String>, String>(InputEmail, "Enter new email adddress (press <enter> to leave unchanged)");
@@ -476,18 +476,10 @@ namespace OpheliasOasis
 		static String InputEmail(String input)
 		{
 			// Parse input
-			if (String.IsNullOrEmpty(input) && (bufferRes.getReservationType() != ReservationType.SixtyDay || !String.IsNullOrEmpty(bufferRes.getCustomerCreditCard())))
+			if (String.IsNullOrEmpty(input) && !String.IsNullOrEmpty(bufferRes.getCustomerCreditCard()))
 			{
 				// Skip if requested and allowed
-				if (!String.IsNullOrEmpty(bufferRes.getCustomerEmail()))
-				{
-					Console.WriteLine($"Email address left as \"{bufferRes.getCustomerEmail()}\".");
-				}
-				else
-                {
-					Console.WriteLine("Email skipped.");
-                }
-				return "";
+				Console.WriteLine($"Email address left as \"{bufferRes.getCustomerEmail()}\".");
 			}
 			else if (!input.Contains("@") || !input.Contains("."))
 			{
