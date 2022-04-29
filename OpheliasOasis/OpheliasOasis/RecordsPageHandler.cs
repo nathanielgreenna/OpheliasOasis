@@ -207,7 +207,7 @@ namespace OpheliasOasis
                 dayReservations = rdb.getReservation(DateTime.Today.AddDays(daysinfuture));
                 foreach (Reservation res in dayReservations)
                 {
-                    if (res.getReservationType() == ReservationType.SixtyDay && (String.IsNullOrEmpty(res.getCustomerCreditCard()) || !(res.getReservationStatus().Equals(ReservationStatus.Emailed))))
+                    if (res.getReservationType() == ReservationType.SixtyDay && (String.IsNullOrEmpty(res.getCustomerCreditCard()) || !(res.getReservationStatus().Equals(ReservationStatus.Emailed) || res.getReservationStatus().Equals(ReservationStatus.Confirmed))))
                     {
                         res.setReservationStatus(ReservationStatus.Emailed);
                         EmailStub.sendEmail(new PaymentInformationRequestEmail(res));

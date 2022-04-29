@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace OpheliasOasis
 {
@@ -11,11 +12,16 @@ namespace OpheliasOasis
 
 
         public static void sendEmail(PaymentInformationRequestEmail g) 
-        { 
-        
-        //output to a text file
+        {
 
-        
+            String file = "C:\\OpheliasOasis\\EmailCCStubs\\EmailRecords.txt";
+            using (StreamWriter sw = new StreamWriter(file, true))
+            {
+                sw.WriteLine("Email sent from Ophelia's Oasis to " + g.GetRecipients()[0] + " at " + DateTime.Now.ToString() + ". Subject line was \"" + g.GetHeaderText() + "\"");
+            }
+            //output to a text file
+
+
         }
 
     }

@@ -35,7 +35,7 @@ namespace OpheliasOasis
             {
                 throw new ArgumentException($"{emailName}: Reservation type must be 60-day, not {reservation.getReservationType()}", "reservation");
             }
-            else if (reservation.getCustomerCreditCard() != "")
+            else if (! String.IsNullOrEmpty(reservation.getCustomerCreditCard()))
             {
                 throw new ArgumentException(emailName + ": Credit card information has already been supplied", "reservation");
             }
@@ -45,7 +45,7 @@ namespace OpheliasOasis
             }
         }
 
-		List<string> IEmail.GetRecipients()
+		public List<string> GetRecipients()
 		{
 			return new List<String>
 			{
@@ -53,12 +53,12 @@ namespace OpheliasOasis
 			};
 		}
 
-		string IEmail.GetHeaderText()
+		public string GetHeaderText()
 		{
 			return "Ophelia’s Oasis - Missing Credit Card Information for Your Reservation";
 		}
 
-		string IEmail.GetBodyText()
+		public string GetBodyText()
 		{
 			return $"Dear {reservation.getCustomerName()},\n" +
 				$"Our records indicate that you placed a 60-days-advance reservation but have not provided your payment " +
@@ -68,7 +68,7 @@ namespace OpheliasOasis
 				$"The Ophelia’s Oasis staff team";
 		}
 
-		List<string> IEmail.GetAttachments()
+		public List<string> GetAttachments()
 		{
 			return new List<String>();
 		}
