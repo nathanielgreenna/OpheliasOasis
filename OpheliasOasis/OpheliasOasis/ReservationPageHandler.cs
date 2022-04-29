@@ -310,7 +310,7 @@ namespace OpheliasOasis
 					{
 						totalOccupancy += cal.retrieveDate(d).getOccupancy();
 					}
-					totalOccupancyPercent = (double)totalOccupancy / (bufferRes.getEndDate() - bufferRes.getStartDate()).TotalDays;
+					totalOccupancyPercent = (double) totalOccupancy / ((double) Hotel.HOTEL_SIZE * (bufferRes.getEndDate() - bufferRes.getStartDate()).TotalDays);
 					if (totalOccupancyPercent > 0.6)
 					{
 						return $"Incentive reservations are only allowed when the avergage occupancy is under 60.00% (currently {totalOccupancy:P})";

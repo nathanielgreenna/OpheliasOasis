@@ -63,7 +63,7 @@ namespace OpheliasOasis
                 referenceRes.setRoomNumber(Htl.assignRoom());
             }
             referenceRes.checkIn();
-            Console.Write(referenceRes.getCustomerName() + " has been checked into room " + referenceRes.getRoomNumber());
+            Console.WriteLine(referenceRes.getCustomerName() + " has been checked into room " + referenceRes.getRoomNumber());
             System.Threading.Thread.Sleep(3000);
             return "";
         }
@@ -143,11 +143,11 @@ namespace OpheliasOasis
 
             if (referenceRes.getRoomNumber() <= 0)
             {
-                Console.Write(referenceRes.getCustomerName() + " has not been assigned a room yet. Customer will be checked in, and a room will be assigned and displayed upon saving");
+                Console.WriteLine(referenceRes.getCustomerName() + " has not been assigned a room yet. Customer will be checked in, and a room will be assigned and displayed upon saving");
             }
             else
             {
-                Console.Write(referenceRes.getCustomerName() + "is assigned to room " + referenceRes.getRoomNumber() + ". Save to check in");
+                Console.WriteLine(referenceRes.getCustomerName() + "is assigned to room " + referenceRes.getRoomNumber() + ". Save to check in");
             }
             return "";
         }
