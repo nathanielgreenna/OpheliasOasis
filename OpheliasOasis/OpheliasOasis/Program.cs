@@ -51,11 +51,17 @@ namespace OpheliasOasis
 
             //Home. this is top of the tree
             MenuPage home = new MenuPage("Home Menu", "Ophelia's Oasis Home Menu", new List<Page> { CheckInPageHandler.getPage(), CheckOutPageHandler.getPage(), DatesPageHandler.datesMenu, RecordsPageHandler.recordsMenu, ReservationPageHandler.resMenu });
-
-            while(true)
+            System.Threading.Thread.Sleep(2000);
+            String exitInput;
+            while (true)
             {
-                System.Threading.Thread.Sleep(2000);
                 home.Open();
+                Console.Write("Do you really want to exit? type YES to quit: ");
+                exitInput = Console.ReadLine();
+                if(exitInput == "YES") 
+                {
+                    Environment.Exit(0);
+                }
             }
 
         }
@@ -175,7 +181,7 @@ namespace OpheliasOasis
                     default:
                         if (DateTime.TryParse(inp, out t))
                         {
-                            if (File.Exists(@".\" + t.ToString("D")))
+                            if (File.Exists("C:\\OpheliasOasis\\Backups\\" + t.ToString("D")))
                             {
                                 g = XMLreader.XMLin(t);
                                 reservationDB = g.R;
