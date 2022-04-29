@@ -9,6 +9,7 @@
  * 4/24/2022: Added code to handle refunds - Alex
  * 4/25/2022: Added code to update occupancy - Nathan
  * 4/26/2022: Kept code from charging guest for changes made to a conventional or incentive reservation & updated to work with new reservation methods - Alex
+ * 4/28/2022: No reservations made ayear in advance - Alex
  */
 
 using System;
@@ -70,7 +71,7 @@ namespace OpheliasOasis
 			Tuple.Create<Func<String, String>, String>(InputCreditCard, "Enter new credit card number (press <enter> to leave unchanged)");
 
 		private readonly static Tuple<Func<String, String>, String> newEmailRequest =
-			Tuple.Create<Func<String, String>, String>(InputEmail, "Enter email address (you may press <enter> to skip if credit card has been provided)");
+			Tuple.Create<Func<String, String>, String>(InputEmail, "Enter email address (press <enter> to leave unchanged)");
 
 		private readonly static Tuple<Func<String, String>, String> updatedEmailRequest =
 			Tuple.Create<Func<String, String>, String>(InputEmail, "Enter new email adddress (press <enter> to leave unchanged)");
@@ -206,6 +207,10 @@ namespace OpheliasOasis
 			{
 				return $"{startDate.ToShortDateString()} is before today ({DateTime.Today.ToShortDateString()})";
 			}
+			if (startDate > DateTime.Today.AddYears(1))
+            {
+				return "Reservations may not be made more than a year in advance";
+            }
 			if (cal.retrieveDate(startDate).IsFull())
 			{
 				return $"Hotel is full on {startDate.ToShortDateString()}";
@@ -245,6 +250,10 @@ namespace OpheliasOasis
 			if (endDate <= bufferRes.getStartDate())
 			{
 				return $"{endDate.ToShortDateString()} is on or before before start date ({bufferRes.getStartDate().ToShortDateString()})";
+			}
+			if (endDate > DateTime.Today.AddYears(1))
+			{
+				return "Reservations may not be made more than a year in advance";
 			}
 
 			// Check availibility
@@ -467,18 +476,10 @@ namespace OpheliasOasis
 		static String InputEmail(String input)
 		{
 			// Parse input
-			if (String.IsNullOrEmpty(input) && (bufferRes.getReservationType() != ReservationType.SixtyDay || !String.IsNullOrEmpty(bufferRes.getCustomerCreditCard())))
+			if (String.IsNullOrEmpty(input) && !String.IsNullOrEmpty(bufferRes.getCustomerCreditCard()))
 			{
 				// Skip if requested and allowed
-				if (!String.IsNullOrEmpty(bufferRes.getCustomerEmail()))
-				{
-					Console.WriteLine($"Email address left as \"{bufferRes.getCustomerEmail()}\".");
-				}
-				else
-                {
-					Console.WriteLine("Email skipped.");
-                }
-				return "";
+				Console.WriteLine($"Email address left as \"{bufferRes.getCustomerEmail()}\".");
 			}
 			else if (!input.Contains("@") || !input.Contains("."))
 			{
