@@ -4,6 +4,7 @@
  * Changelog:
  * 4/20/2022: created/initially coded by Alec
  * 4/21/2022: methods finished by Alec
+ * 4/29/2022: Fixed occupancy report off by one date, added asterisks for guests checking out today, changed to not display cancelled reservations - Alex
 */
 using System;
 using System.Collections.Generic;
@@ -22,18 +23,23 @@ namespace OpheliasOasis
             DateTime today = DateTime.Today;
             List<Reservation> reservations = reservationDB.getReservation(today);
             List<String> output = new List<String>();
-            if (reservations.Count == 0)
+            int activeReservations = 0;
+
+            reservations.Sort((a, b) => a.getCustomerName().CompareTo(b.getCustomerName()));
+
+            foreach (Reservation reservation in reservations)
+            {
+                if (reservation.getReservationStatus() != ReservationStatus.Cancelled)
+                {
+                    output.Add($"Guest: {reservation.getCustomerName()}, Reservation type: {reservation.getReservationType()}, Room: {reservation.getRoomNumber()}, " +
+                        $"Departure Date: {reservation.getEndDate().ToShortDateString()}");
+                    activeReservations++;
+                }
+            }
+
+            if (activeReservations == 0)
             {
                 output.Add("No arrivals today.");
-            }
-            else
-            {
-                reservations.Sort((a, b) => a.getCustomerName().CompareTo(b.getCustomerName()));
-                foreach (Reservation reservation in reservations)
-                {
-                    output.Add(reservation.getCustomerName() + ", " + reservation.getReservationType() +
-                        ", Room Number " + reservation.getRoomNumber() + ", Departure Date: " + reservation.getEndDate().ToShortDateString());
-                }
             }
 
             string file = path + today.ToString("m") + " Daily Arrivals Report.txt";
@@ -48,21 +54,25 @@ namespace OpheliasOasis
 
         public void generateDailyOccupancyReport(ReservationDB reservationDB)
         {
+            DateTime yesterday = DateTime.Today.AddDays(-1);
             DateTime today = DateTime.Today;
-            List<Reservation> reservations = reservationDB.getActiveReservations(today);
+            List<Reservation> reservations = reservationDB.getActiveReservations(yesterday);
             List<String> output = new List<String>();
-            if (reservations.Count == 0)
+            int activeReservations = 0;
+
+            foreach (Reservation reservation in reservations)
             {
-                output.Add("No occupants today.");
-            }
-            else
-            {
-                reservations.Sort((a, b) => a.getRoomNumber().CompareTo(b.getRoomNumber()));
-                foreach (Reservation reservation in reservations)
+                if (reservation.getReservationStatus() != ReservationStatus.Cancelled)
                 {
-                    output.Add("Room Number " + reservation.getRoomNumber() + ", " + reservation.getCustomerName() +
-                        ", Departure Date: " + reservation.getEndDate().ToShortDateString());
+                    output.Add($"Guest: {(reservation.getEndDate().Equals(DateTime.Today) ? "*" : "")}{reservation.getCustomerName()}, " + 
+                        $"Reservation type: {reservation.getReservationType()}, Room: {reservation.getRoomNumber()}, Departure date: " + reservation.getEndDate().ToShortDateString());
+                    activeReservations++;
                 }
+            }
+
+            if (activeReservations == 0)
+            {
+                output.Add("No arrivals today.");
             }
 
             string file = path + today.ToString("m") + " Daily Occupancy Report.txt";

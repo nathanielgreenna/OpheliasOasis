@@ -62,7 +62,7 @@ namespace OpheliasOasis
             {
                 foreach (Reservation reservation in resCollVal)
                 {
-                    if (date.CompareTo(reservation.getStartDate()) > 0 && date.CompareTo(reservation.getEndDate()) <= 0)
+                    if (date.CompareTo(reservation.getStartDate()) >= 0 && date.CompareTo(reservation.getEndDate()) < 0)
                     {
                         reservations.Add(reservation);
                     }
