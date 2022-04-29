@@ -9,6 +9,7 @@
  * 4/24/2022: Added code to handle refunds - Alex
  * 4/25/2022: Added code to update occupancy - Nathan
  * 4/26/2022: Kept code from charging guest for changes made to a conventional or incentive reservation & updated to work with new reservation methods - Alex
+ * 4/28/2022: No reservations made ayear in advance - Alex
  */
 
 using System;
@@ -206,6 +207,10 @@ namespace OpheliasOasis
 			{
 				return $"{startDate.ToShortDateString()} is before today ({DateTime.Today.ToShortDateString()})";
 			}
+			if (startDate > DateTime.Today.AddYears(1))
+            {
+				return "Reservations may not be made more than a year in advance";
+            }
 			if (cal.retrieveDate(startDate).IsFull())
 			{
 				return $"Hotel is full on {startDate.ToShortDateString()}";
@@ -245,6 +250,10 @@ namespace OpheliasOasis
 			if (endDate <= bufferRes.getStartDate())
 			{
 				return $"{endDate.ToShortDateString()} is on or before before start date ({bufferRes.getStartDate().ToShortDateString()})";
+			}
+			if (endDate > DateTime.Today.AddYears(1))
+			{
+				return "Reservations may not be made more than a year in advance";
 			}
 
 			// Check availibility
