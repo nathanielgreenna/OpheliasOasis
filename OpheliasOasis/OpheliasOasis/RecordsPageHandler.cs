@@ -193,7 +193,7 @@ namespace OpheliasOasis
                 dayReservations = rdb.getReservation(DateTime.Today.AddDays(daysinfuture));
                 foreach(Reservation res in dayReservations)
                 {
-                    if(res.getReservationType() == ReservationType.SixtyDay && (String.IsNullOrEmpty(res.getCustomerCreditCard()) || ! (res.getReservationStatus().Equals(ReservationStatus.Confirmed)))) 
+                    if(res.getReservationType() == ReservationType.SixtyDay && (String.IsNullOrEmpty(res.getCustomerCreditCard()) && ! (res.getReservationStatus().Equals(ReservationStatus.Confirmed) || res.getReservationStatus().Equals(ReservationStatus.Cancelled)))) 
                     {
                         res.cancelReservation();
                         cal.decrementOverSpan(res.getStartDate(),res.getEndDate());
@@ -207,7 +207,7 @@ namespace OpheliasOasis
                 dayReservations = rdb.getReservation(DateTime.Today.AddDays(daysinfuture));
                 foreach (Reservation res in dayReservations)
                 {
-                    if (res.getReservationType() == ReservationType.SixtyDay && (String.IsNullOrEmpty(res.getCustomerCreditCard()) || !(res.getReservationStatus().Equals(ReservationStatus.Emailed) || res.getReservationStatus().Equals(ReservationStatus.Confirmed))))
+                    if (res.getReservationType() == ReservationType.SixtyDay && (String.IsNullOrEmpty(res.getCustomerCreditCard())) && ! (res.getReservationStatus().Equals(ReservationStatus.Emailed) || res.getReservationStatus().Equals(ReservationStatus.Confirmed) || res.getReservationStatus().Equals(ReservationStatus.Cancelled)))
                     {
                         res.setReservationStatus(ReservationStatus.Emailed);
                         EmailStub.sendEmail(new PaymentInformationRequestEmail(res));
@@ -243,10 +243,18 @@ namespace OpheliasOasis
                     if(res.getReservationType() == ReservationType.Conventional || res.getReservationType() == ReservationType.Incentive)
                     {
                         CreditCardStub.WriteTransaction(res.getCustomerCreditCard(), res.getCustomerName(), "Ophelia's Oasis", "1234 1234 1234 1234", res.GetFirstDayPrice());
-                        res.cancelReservation();
                     }
                     ht.clearRoom(res.getRoomNumber());
-                    
+                    res.cancelReservation();
+
+                    for (DateTime d = res.getStartDate(); d < res.getEndDate(); d = d.AddDays(1))
+                    {
+                        cal.retrieveDate(d).decreaseOccupancy();
+                    }
+
+
+
+
                     c++;
                 }
             }
