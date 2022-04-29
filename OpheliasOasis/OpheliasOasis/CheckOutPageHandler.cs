@@ -60,22 +60,23 @@ namespace OpheliasOasis
                 return "First and last name required";
             }
 
+            int checkedincount = 0;
             // Aquire search results
             searchResults = ResDB.getReservation(input);
 
             for (int i = 0; i < searchResults.Count; i++)
             {
-                if (searchResults[i].getEndDate() < DateTime.Today)
+                if (searchResults[i].getReservationStatus() == ReservationStatus.CheckedIn)
                 {
-                    searchResults.RemoveAt(i);
+                    checkedincount++;
                 }
             }
 
 
 
-            if (searchResults == null || searchResults.Count < 1)
+            if (checkedincount == 0)
             {
-                return $"No reservations under the name \"{input}\" today";
+                return $"No reservations under the name \"{input}\" available for checkout";
             }
 
 
@@ -98,7 +99,10 @@ namespace OpheliasOasis
             {
                 if (!(searchResults[i].getReservationStatus() == ReservationStatus.CheckedIn))
                 {
-                    Console.WriteLine($"\t{searchResults[i].getReservationType()} Reservation from {searchResults[i].getStartDate().ToShortDateString()} to {searchResults[i].getEndDate().ToShortDateString()} ({searchResults[i].getReservationStatus()}, Credit Card #: {searchResults[i].getCustomerCreditCard()})");
+                    if (searchResults[i].getEndDate() >= DateTime.Today)
+                    { 
+                        Console.WriteLine($"\t{searchResults[i].getReservationType()} Reservation from {searchResults[i].getStartDate().ToShortDateString()} to {searchResults[i].getEndDate().ToShortDateString()} ({searchResults[i].getReservationStatus()}, Credit Card #: {searchResults[i].getCustomerCreditCard()})");
+                    }
                     searchResults.RemoveAt(i);
                 }
             }
