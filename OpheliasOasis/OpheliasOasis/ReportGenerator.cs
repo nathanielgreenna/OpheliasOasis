@@ -134,15 +134,18 @@ namespace OpheliasOasis
             DateTime date = DateTime.Today;
             for (int i = 0; i < 30; i++)
             {
-                date = date.AddDays(1);
                 List<Reservation> reservations = reservationDB.getActiveReservations(date);
                 double income = 0;
                 foreach (Reservation reservation in reservations)
                 {
-                    income += reservation.GetDatePrice(date);
+                    if (!reservation.getReservationStatus().Equals(ReservationStatus.Cancelled))
+                    {
+                        income += reservation.GetDatePrice(date);
+                    }
                 }
                 totalIncome += income;
                 output.Add(date.ToShortDateString() + ": $" + income.ToString("F2"));
+                date = date.AddDays(1);
             }
             DateTime startDate = DateTime.Today.AddDays(1);
             DateTime endDate = DateTime.Today.AddDays(30);
@@ -172,7 +175,7 @@ namespace OpheliasOasis
                 double discount = 0;
                 foreach (Reservation reservation in reservations)
                 {
-                    if (reservation.getReservationType().Equals(ReservationType.Incentive))
+                    if (reservation.getReservationType().Equals(ReservationType.Incentive) && !reservation.getReservationStatus().Equals(ReservationStatus.Cancelled))
                     {
                         baseRate = calendar.retrieveDate(date).getBasePrice();
                         discount += (baseRate - reservation.GetDatePrice(date));
