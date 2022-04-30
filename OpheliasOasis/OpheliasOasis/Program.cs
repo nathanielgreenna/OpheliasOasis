@@ -31,7 +31,7 @@ namespace OpheliasOasis
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-AU");
 
             StartupScreen();
-            SetupChargeNoShowsTest();
+            SetupExpectedOccupancyReportTest();
             CheckInPageHandler.Init(reservationDB, hotel);
             CheckOutPageHandler.Init(reservationDB, hotel);
             DatesPageHandler.Init(calendar, managerPassword);
@@ -343,7 +343,40 @@ namespace OpheliasOasis
             }
         }
 
+        private static void SetupExpectedOccupancyReportTest()
+        {
+            Console.WriteLine("Testing Expected Occupancy Report...");
+            System.Threading.Thread.Sleep(50);
 
+            reservationDB = new ReservationDB();
+            DateTime twoDaysAgo = DateTime.Today.AddDays(-2);
+            DateTime yesterday = DateTime.Today.AddDays(-1);
+            DateTime today = DateTime.Today;
+            DateTime tomorrow = DateTime.Today.AddDays(1);
+            DateTime preEnd30 = DateTime.Today.AddDays(28);
+            DateTime end30 = DateTime.Today.AddDays(29);
+            DateTime postEnd30 = DateTime.Today.AddDays(30);
+            DateTime postEnd302 = DateTime.Today.AddDays(31);
+
+            List<Tuple<DateTime, DateTime, ReservationStatus, int>> rinfo = new List<Tuple<DateTime, DateTime, ReservationStatus, int>>
+            {
+                Tuple.Create(twoDaysAgo, yesterday, ReservationStatus.CheckedOut, 1),
+                Tuple.Create(today, tomorrow, ReservationStatus.CheckedIn, 2),
+                Tuple.Create(tomorrow, end30, ReservationStatus.Confirmed, 3),
+                Tuple.Create(end30, postEnd30, ReservationStatus.Confirmed, 4),
+                Tuple.Create(postEnd30, postEnd302, ReservationStatus.Confirmed, 5),
+                Tuple.Create(yesterday, postEnd30, ReservationStatus.Confirmed, 6),
+                Tuple.Create(yesterday, postEnd30, ReservationStatus.Cancelled, 7),
+            };
+
+            for (int i = 0; i < rinfo.Count; i++)
+            {
+                int j = rinfo[i].Item4;
+                Reservation res = new Reservation(i == 2 ? ReservationType.Incentive : ReservationType.Conventional, "Guest " + j, $"{j}{j}{j}{j} {j}{j}{j}{j} {j}{j}{j}{j} {j}{j}{j}{j}", rinfo[i].Item1, rinfo[i].Item2);
+                res.setReservationStatus(rinfo[i].Item3);
+                reservationDB.addReservation(res);
+            }
+        }
 
 
 

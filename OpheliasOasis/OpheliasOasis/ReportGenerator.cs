@@ -92,7 +92,6 @@ namespace OpheliasOasis
             DateTime date = DateTime.Today;
             for (int i = 0; i < 30; i++)
             {
-                date = date.AddDays(1);
                 List<Reservation> reservations = reservationDB.getActiveReservations(date);
                 int prepaid = 0;
                 int sixtyDay = 0;
@@ -101,31 +100,35 @@ namespace OpheliasOasis
                 int occupancy = 0;
                 foreach (Reservation reservation in reservations)
                 {
-                    occupancy++;
-                    switch (reservation.getReservationType())
+                    if (reservation.getReservationStatus() != ReservationStatus.Cancelled)
                     {
-                        case ReservationType.Prepaid:
-                            prepaid++;
-                            break;
-                        case ReservationType.SixtyDay:
-                            sixtyDay++;
-                            break;
-                        case ReservationType.Conventional:
-                            conventianal++;
-                            break;
-                        case ReservationType.Incentive:
-                            incentive++;
-                            break;
+                        occupancy++;
+                        switch (reservation.getReservationType())
+                        {
+                            case ReservationType.Prepaid:
+                                prepaid++;
+                                break;
+                            case ReservationType.SixtyDay:
+                                sixtyDay++;
+                                break;
+                            case ReservationType.Conventional:
+                                conventianal++;
+                                break;
+                            case ReservationType.Incentive:
+                                incentive++;
+                                break;
+                        }
                     }
                 }
-                output.Add(date.ToShortDateString() + ": Prepaid: " + prepaid + ", 60-Day: " + sixtyDay + ", Conventional: " + conventianal +
+                output.Add(date.ToShortDateString().PadLeft(10) + ": Prepaid: " + prepaid + ", 60-Day: " + sixtyDay + ", Conventional: " + conventianal +
                     ", Incentive: " + incentive + ", Total Occupancy: " + occupancy);
                 totalOccupancy += occupancy;
+                date = date.AddDays(1);
             }
-            DateTime startDate = DateTime.Today.AddDays(1);
-            DateTime endDate = DateTime.Today.AddDays(30);
-            double occupancyRate = totalOccupancy / 30;
-            output.Add("Average Expected Occupancy Rate from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": " + occupancyRate.ToString("F1"));
+            DateTime startDate = DateTime.Today;
+            DateTime endDate = DateTime.Today.AddDays(29);
+            double occupancyRate = (double) totalOccupancy / (double) (Hotel.HOTEL_SIZE * 30);
+            output.Add("Average Expected Occupancy Rate from " + startDate.ToShortDateString() + " to " + endDate.ToShortDateString() + ": " + occupancyRate.ToString("P2"));
 
             string file = path + DateTime.Today.ToString("m") + " Expected Occupancy Report.txt";
             using (StreamWriter sw = File.CreateText(file))
