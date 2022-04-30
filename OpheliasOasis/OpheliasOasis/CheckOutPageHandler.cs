@@ -140,7 +140,7 @@ namespace OpheliasOasis
         {
             if (referenceRes.getReservationType() == ReservationType.Conventional || referenceRes.getReservationType() == ReservationType.Incentive)
             {
-                CreditCardStub.WriteTransaction(referenceRes.getCustomerName(), referenceRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", referenceRes.GetTotalPrice());
+                CreditCardStub.WriteTransaction(referenceRes.getCustomerCreditCard(), referenceRes.getCustomerName(), "1234 1234 1234 1234", "Ophelia's Oasis", referenceRes.GetTotalPrice());
                 referenceRes.SetPaid(true);
             }
             printAccomodationBill();

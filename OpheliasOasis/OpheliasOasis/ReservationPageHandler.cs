@@ -524,7 +524,7 @@ namespace OpheliasOasis
 			// Make payments for prepaid and 60-days with credit card information provided
 			if (bufferRes.getReservationType() == ReservationType.Prepaid || (bufferRes.getReservationType() == ReservationType.SixtyDay && !String.IsNullOrEmpty(bufferRes.getCustomerCreditCard())))
 			{
-				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", bufferRes.GetTotalPrice());
+				CreditCardStub.WriteTransaction(bufferRes.getCustomerCreditCard(), bufferRes.getCustomerName(), "1234 1234 1234 1234", "Ophelia's Oasis", bufferRes.GetTotalPrice());
 				bufferRes.SetPaid(true);
 			}
 
@@ -547,7 +547,7 @@ namespace OpheliasOasis
 		{
 			if (bufferRes.getReservationType() == ReservationType.SixtyDay && !bufferRes.IsPaid() && !String.IsNullOrEmpty(bufferRes.getCustomerCreditCard()))
             {
-				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", bufferRes.GetTotalPrice());
+				CreditCardStub.WriteTransaction(bufferRes.getCustomerCreditCard(), bufferRes.getCustomerName(), "1234 1234 1234 1234", "Ophelia's Oasis", bufferRes.GetTotalPrice());
 				bufferRes.SetPaid(true);
 			}
 
@@ -574,7 +574,7 @@ namespace OpheliasOasis
 			// Make corrections if the price has been paid
 			if (referenceRes.IsPaid() && priceDifference > 0)
             {
-				CreditCardStub.WriteTransaction(bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), "Ophelia's Oasis", "1234 1234 1234 1234", priceDifference);
+				CreditCardStub.WriteTransaction(bufferRes.getCustomerCreditCard(), bufferRes.getCustomerName(), "1234 1234 1234 1234", "Ophelia's Oasis", priceDifference);
 			}
 
 			// Update occupancy
@@ -601,7 +601,7 @@ namespace OpheliasOasis
 			if (bufferRes.getReservationType() == ReservationType.Conventional || bufferRes.getReservationType() == ReservationType.Incentive)
 			{
 				double refund = (bufferRes.getStartDate() - DateTime.Today).TotalDays > 3 ? bufferRes.GetTotalPrice() : bufferRes.GetTotalPrice() - bufferRes.GetFirstDayPrice();
-				CreditCardStub.WriteTransaction("Ophelia's Oasis", "1234 1234 1234 1234", bufferRes.getCustomerName(), bufferRes.getCustomerCreditCard(), refund);
+				CreditCardStub.WriteTransaction("1234 1234 1234 1234", "Ophelia's Oasis", bufferRes.getCustomerCreditCard(), bufferRes.getCustomerName(), refund);
 			}
 			
 			// Update occupancy
