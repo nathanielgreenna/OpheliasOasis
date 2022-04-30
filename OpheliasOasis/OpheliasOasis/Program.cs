@@ -31,7 +31,6 @@ namespace OpheliasOasis
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-AU");
 
             StartupScreen();
-            SetupExpectedOccupancyReportTest();
             CheckInPageHandler.Init(reservationDB, hotel);
             CheckOutPageHandler.Init(reservationDB, hotel);
             DatesPageHandler.Init(calendar, managerPassword);
