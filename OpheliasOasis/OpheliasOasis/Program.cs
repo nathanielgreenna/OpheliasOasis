@@ -31,7 +31,7 @@ namespace OpheliasOasis
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-AU");
 
             StartupScreen();
-            SetupArrivalsReportTest();
+            SetupChargeNoShowsTest();
             CheckInPageHandler.Init(reservationDB, hotel);
             CheckOutPageHandler.Init(reservationDB, hotel);
             DatesPageHandler.Init(calendar, managerPassword);
@@ -308,6 +308,37 @@ namespace OpheliasOasis
                 Reservation res = new Reservation(ReservationType.Conventional, "Guest " + j, $"{j}{j}{j}{j} {j}{j}{j}{j} {j}{j}{j}{j} {j}{j}{j}{j}", rinfo[i].Item1, rinfo[i].Item2);
                 res.setReservationStatus(rinfo[i].Item3);
                 res.setRoomNumber(rinfo.Count + 1 - j);
+                reservationDB.addReservation(res);
+            }
+        }
+
+        private static void SetupChargeNoShowsTest()
+        {
+            Console.WriteLine("Testing No Show Charges...");
+            System.Threading.Thread.Sleep(50);
+
+            reservationDB = new ReservationDB();
+            DateTime twoDaysAgo = DateTime.Today.AddDays(-2);
+            DateTime yesterday = DateTime.Today.AddDays(-1);
+            DateTime today = DateTime.Today;
+            DateTime tomorrow = DateTime.Today.AddDays(1);
+            DateTime twoDaysFromNow = DateTime.Today.AddDays(2);
+
+            List<Tuple<DateTime, DateTime, ReservationStatus, int>> rinfo = new List<Tuple<DateTime, DateTime, ReservationStatus, int>>
+            {
+                Tuple.Create(yesterday, today, ReservationStatus.CheckedIn, 1),
+                Tuple.Create(yesterday, today, ReservationStatus.Confirmed, 2),
+                Tuple.Create(yesterday, today, ReservationStatus.Cancelled, 3),
+                Tuple.Create(twoDaysAgo, yesterday, ReservationStatus.CheckedOut, 4)
+            };
+
+            for (int i = 0; i < rinfo.Count; i++)
+            {
+                int j = rinfo[i].Item4;
+                Reservation res = new Reservation(ReservationType.Conventional, "Guest " + j, $"{j}{j}{j}{j} {j}{j}{j}{j} {j}{j}{j}{j} {j}{j}{j}{j}", rinfo[i].Item1, rinfo[i].Item2);
+                res.setReservationStatus(rinfo[i].Item3);
+                res.setRoomNumber(rinfo.Count + 1 - j);
+                res.SetPrices(new List<double> { 20 });
                 reservationDB.addReservation(res);
             }
         }
