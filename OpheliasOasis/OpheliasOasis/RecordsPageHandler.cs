@@ -242,7 +242,7 @@ namespace OpheliasOasis
                 {
                     if(res.getReservationType() == ReservationType.Conventional || res.getReservationType() == ReservationType.Incentive)
                     {
-                        CreditCardStub.WriteTransaction(res.getCustomerCreditCard(), res.getCustomerName(), "Ophelia's Oasis", "1234 1234 1234 1234", res.GetFirstDayPrice());
+                        CreditCardStub.WriteTransaction(res.getCustomerCreditCard(), res.getCustomerName(), "1234 1234 1234 1234", "Ophelia's Oasis", res.GetFirstDayPrice());
                     }
                     ht.clearRoom(res.getRoomNumber());
                     res.cancelReservation();
