@@ -1,5 +1,8 @@
 ﻿/*
  * ReservationDate
+ * 
+ * Stores the price and occupancy for a given day
+ * 
  * TODO: Should more or less be done. subject to changes
  * Changelog:
  * 4/4/2022: created/initially coded by Nathaniel
@@ -66,10 +69,13 @@ namespace OpheliasOasis
         {
             return (occupancy);
         }
-
+        /// <summary>
+        /// returns whether or not the day is full
+        /// </summary>
+        /// <returns></returns>
         public Boolean IsFull()
         {
-            return occupancy == 45;
+            return occupancy >= Hotel.HOTEL_SIZE;
         }
     }
 }

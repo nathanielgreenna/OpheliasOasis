@@ -32,7 +32,11 @@ namespace OpheliasOasis
 
 
 
-
+        /// <summary>
+        /// initiates CheckOutPageHandler
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="htl"></param>
         public static void Init(ReservationDB db, Hotel htl)
         {
             // Initialize references

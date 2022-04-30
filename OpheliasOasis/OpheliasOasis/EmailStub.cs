@@ -10,7 +10,10 @@ namespace OpheliasOasis
     {
         
 
-
+        /// <summary>
+        /// "Sends" an email (prints to EmailRecords.txt)
+        /// </summary>
+        /// <param name="g"></param>
         public static void sendEmail(PaymentInformationRequestEmail g) 
         {
 

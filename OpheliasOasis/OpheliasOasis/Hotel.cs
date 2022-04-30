@@ -23,25 +23,27 @@ namespace OpheliasOasis
         private int roomsOccupied;
 
         public static readonly int HOTEL_SIZE = 45;
-
+        /// <summary>
+        /// initializes a Hotel
+        /// </summary>
+        /// <param name="numrooms"></param>
         public Hotel(int numrooms) 
         { 
             rooms = new List<bool>(new bool[numrooms]);
             roomsOccupied = 0;
         }
-
-        public List<bool> getRooms()
-        {
-            return this.rooms;
-        }
-        public void setRooms(List<bool> rooms)
-        {
-            this.rooms = rooms;
-        }
+        /// <summary>
+        /// returns number of occupied rooms
+        /// </summary>
+        /// <returns></returns>
         public int getRoomsOccupied()
         {
             return this.roomsOccupied;
         }
+        /// <summary>
+        /// returns a free room, marking it as taken
+        /// </summary>
+        /// <returns></returns>
         public int assignRoom()
         {
             for (int i = 0; i < this.rooms.Count; i++)
@@ -56,6 +58,10 @@ namespace OpheliasOasis
             }
             return -1;
         }
+        /// <summary>
+        /// clears the room number
+        /// </summary>
+        /// <param name="roomNo"></param>
         public void clearRoom(int roomNo)
         {
             int i = roomNo - 1;
