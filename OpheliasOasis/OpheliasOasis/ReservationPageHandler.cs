@@ -118,7 +118,7 @@ namespace OpheliasOasis
 				new List<Tuple<Func<String, String>, String>> { showDateReservations }, null, null);
 
 			// Initialize menu
-			resMenu = new MenuPage("Reservations", "Reservations submenu (place, update, or cancel a reservation)", new List<Page> { placeRes, changeRes, changeGuestInfo, cancelRes, showDate });
+			resMenu = new MenuPage("Reservations", "Place, update, or cancel a reservation", new List<Page> { placeRes, changeRes, changeGuestInfo, cancelRes, showDate });
 		}
 
 		/// <summary>
