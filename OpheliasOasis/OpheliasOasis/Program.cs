@@ -49,7 +49,7 @@ namespace OpheliasOasis
             //MenuPage reservations = new MenuPage("Reservation Menu", "Place, update, or cancel a reservation", new List<Page> { ReservationPageHandler.p, ReservationPageHandler.u, ReservationPageHandler.c });
 
             //Home. this is top of the tree
-            MenuPage home = new MenuPage("Home Menu", "Ophelia's Oasis Home Menu", new List<Page> { CheckInPageHandler.getPage(), CheckOutPageHandler.getPage(), DatesPageHandler.datesMenu, RecordsPageHandler.recordsMenu, ReservationPageHandler.resMenu });
+            MenuPage home = new MenuPage("Home Menu", "Ophelia's Oasis Home Menu", new List<Page> { CheckInPageHandler.getPage(), CheckOutPageHandler.getPage(), ReservationPageHandler.resMenu, DatesPageHandler.datesMenu, RecordsPageHandler.recordsMenu });
             System.Threading.Thread.Sleep(2000);
             String exitInput;
             while (true)
