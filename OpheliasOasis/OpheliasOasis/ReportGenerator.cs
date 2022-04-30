@@ -167,7 +167,6 @@ namespace OpheliasOasis
             DateTime date = DateTime.Today;
             for (int i = 0; i < 30; i++)
             {
-                date = date.AddDays(1);
                 List<Reservation> reservations = reservationDB.getActiveReservations(date);
                 double baseRate = 0;
                 double discount = 0;
@@ -181,6 +180,7 @@ namespace OpheliasOasis
                 }
                 totalDiscount += discount;
                 output.Add(date.ToShortDateString() + ": $" + discount.ToString("F2"));
+                date = date.AddDays(1);
             }
             DateTime startDate = DateTime.Today.AddDays(1);
             DateTime endDate = DateTime.Today.AddDays(30);
