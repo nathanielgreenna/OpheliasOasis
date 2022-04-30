@@ -30,7 +30,11 @@ namespace OpheliasOasis
             Tuple.Create<Func<String, String>, String>(InputResSelection, "Select one of the options above (enter the index of the left)");
 
 
-
+        /// <summary>
+        /// Initializes CheckOutPageHandler
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="htl"></param>
         public static void Init(ReservationDB db, Hotel htl)
         {
             // Initialize references
@@ -50,12 +54,11 @@ namespace OpheliasOasis
             return checkIn;
         }
 
-        /// <summary>
-        /// A method that finds the reservation for a customer, and if found, checks them in.
-        /// </summary>
-        /// <param name="input">A string containing the input.</param>
-        /// <returns>A string containing the reason why the input is not valid, if applicable. Otherwise a success message.</returns>
 
+        /// <summary>
+        /// Checks in the customer.
+        /// </summary>
+        /// <returns></returns>
         static String CheckInConfirm()
         {
             if(referenceRes.getRoomNumber() <= 0)
@@ -68,7 +71,11 @@ namespace OpheliasOasis
             return "";
         }
 
-
+        /// <summary>
+        /// Searches for reservations of provided name
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String InputSearchName(String input)
         {
             // Check for first and last name
@@ -127,7 +134,11 @@ namespace OpheliasOasis
             // Move on to next step
             return "";
         }
-
+        /// <summary>
+        /// Chooses an option from those provided
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String InputResSelection(String input)
         {
             // Read and validate the selection

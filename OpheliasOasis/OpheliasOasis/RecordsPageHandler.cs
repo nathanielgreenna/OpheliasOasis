@@ -1,4 +1,15 @@
-﻿using System;
+﻿/*
+ * RecordsPageHandler
+ * 
+ * Handles all processes within the Records menu
+ * 
+ * TODO: 
+ * Changelog:
+ * 4/20/2022: created/initially coded by Nathan
+*/
+
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -64,7 +75,13 @@ namespace OpheliasOasis
 
 
 
-
+        /// <summary>
+        /// Initiates RecordsPageHandler
+        /// </summary>
+        /// <param name="db"></param>
+        /// <param name="cl"></param>
+        /// <param name="hotel"></param>
+        /// <param name="mp"></param>
         public static void Init(ReservationDB db, Calendar cl, Hotel hotel,String mp)
         {
             // Initialize references
@@ -108,7 +125,11 @@ namespace OpheliasOasis
 
 
         //----------------REPORTS---------------------
-
+        /// <summary>
+        /// The next five functions help to generate reports
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String gDAR(String input)
         {
             GenerateReportArray = new List<bool> { false, false, false, false, false};
@@ -150,7 +171,11 @@ namespace OpheliasOasis
             else { GenerateReportArray[4] = false; }
             return "";
         }
-
+        /// <summary>
+        /// checks manager password
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String checkPass(String input)
         {
             if(GenerateReportArray[2] || GenerateReportArray[3] || GenerateReportArray[4])
@@ -163,7 +188,10 @@ namespace OpheliasOasis
             return "";
             
         }
-
+        /// <summary>
+        /// actually generates the selected reports
+        /// </summary>
+        /// <returns></returns>
         static String GenerateSelectedReports()
         {
             if (GenerateReportArray[0]) { rGen.generateDailyArrivalsReport(rdb); }
@@ -177,12 +205,19 @@ namespace OpheliasOasis
 
         //--------------------Email&CancelNoCCs------------------------
 
-
+        /// <summary>
+        /// dummy step
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String generalCheck(String input)
         {
             return "";
         }
-
+        /// <summary>
+        /// generates emails and cancels reservations with no changes
+        /// </summary>
+        /// <returns></returns>
         static String GenEmails()
         {
             int c = 0;
@@ -223,6 +258,10 @@ namespace OpheliasOasis
 
 
         //----------------------------Backups------------------------------------
+        /// <summary>
+        /// makes a backup
+        /// </summary>
+        /// <returns></returns>
         static String makeBackup() 
         {
             XMLreader.XMLout(rdb, ht, cal, manPass);
@@ -231,6 +270,10 @@ namespace OpheliasOasis
 
 
         //--------------------NoShows------------------------
+        /// <summary>
+        /// charges no-show fees.
+        /// </summary>
+        /// <returns></returns>
         static String ChargeNoShows()
         {
             int c = 0;
@@ -264,7 +307,11 @@ namespace OpheliasOasis
         //------------------------Change Manager Password---------------------------
         private static String candidatePass;
 
-
+        /// <summary>
+        /// checks manager password
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String checkPasschange(String input)
         {
                 if (input != manPass)
@@ -274,7 +321,11 @@ namespace OpheliasOasis
             return "";
         }
 
-
+        /// <summary>
+        /// gets the desired user password
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String getNewPass(String input) 
         { 
             if(input.Length < 5) 
@@ -284,7 +335,11 @@ namespace OpheliasOasis
             candidatePass = input;
             return ("");
         }
-
+        /// <summary>
+        /// confirms the new password
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String confirmNewPass(String input)
         {
             if (input != candidatePass)
@@ -293,7 +348,10 @@ namespace OpheliasOasis
             }
             return ("");
         }
-
+        /// <summary>
+        /// changes the password
+        /// </summary>
+        /// <returns></returns>
         static String changePass() 
         {
             Program.setPassword(candidatePass);
@@ -306,7 +364,10 @@ namespace OpheliasOasis
         }
 
         //------------------Assign Rooms for the day----------------------  
-        
+        /// <summary>
+        /// assigns available rooms to users. 
+        /// </summary>
+        /// <returns></returns>
         static String assignRooms()
         {
             foreach(Reservation curr in rdb.getReservation(DateTime.Today)) 

@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*
+ * XMLReader
+ * 
+ * Handles reading/writing to Data folder and Backups folder
+ * 
+ * TODO: 
+ * Changelog:
+ * 4/20/2022: created/initially coded by Nathan
+*/
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -40,7 +49,13 @@ namespace OpheliasOasis
         static private String HotelfilePath = "C:\\OpheliasOasis\\Data\\Hotel\\";
 
 
-
+        /// <summary>
+        /// prints a backup to Backups folder
+        /// </summary>
+        /// <param name="ResDB"></param>
+        /// <param name="hotel"></param>
+        /// <param name="cal"></param>
+        /// <param name="ManPass"></param>
         static public void XMLout(ReservationDB ResDB, Hotel hotel, Calendar cal, String ManPass) 
         {
             
@@ -59,7 +74,11 @@ namespace OpheliasOasis
             fs.Close();
         }
 
-
+        /// <summary>
+        /// reads a backup from Backups folder
+        /// </summary>
+        /// <param name="day"></param>
+        /// <returns></returns>
         static public XMLformat XMLin(DateTime day)
         {
             if (! File.Exists(backupfilePath + day.ToString("D")))
@@ -86,7 +105,10 @@ namespace OpheliasOasis
 
 
         }
-
+        /// <summary>
+        /// handles writing a reservation (new or modified in ResDB) to Data folder
+        /// </summary>
+        /// <param name="d"></param>
         static public void AddOrChangeReservationinDB(Reservation d)
         {
             if (d.getID() == 0) { throw new ArgumentException("no ID provided"); }
@@ -107,7 +129,10 @@ namespace OpheliasOasis
 
 
 
-
+        /// <summary>
+        /// handles writing a ReservationDate (new or modified in Calendar) to Data folder
+        /// </summary>
+        /// <param name="day"></param>
         static public void changeReservationDate(ReservationDate day)
         {
 
@@ -124,6 +149,10 @@ namespace OpheliasOasis
             fs.Close();
         }
 
+        /// <summary>
+        /// handles writing a change to Hotel to the Data folder
+        /// </summary>
+        /// <param name="h"></param>
         static public void changeHotel(Hotel h)
         {
 
@@ -140,6 +169,10 @@ namespace OpheliasOasis
             fs.Close();
         }
 
+        /// <summary>
+        /// handles writing the manager password (new or modified in DB) to Data folder
+        /// </summary>
+        /// <param name="h"></param>
         static public void changeMPass(String h)
         {
 
@@ -156,7 +189,10 @@ namespace OpheliasOasis
             fs.Close();
         }
 
-
+        /// <summary>
+        /// Reads in data from the Reservations folder at startup
+        /// </summary>
+        /// <returns></returns>
         static public ReservationDB readInResDB()
         {
             ReservationDB loadResDB = new ReservationDB();
@@ -177,6 +213,10 @@ namespace OpheliasOasis
 
         }
 
+        /// <summary>
+        /// reads in the calendar from Calendar at startup
+        /// </summary>
+        /// <returns></returns>
         static public Calendar readInCal()
         {
             Calendar loadCal = new Calendar();
@@ -198,6 +238,10 @@ namespace OpheliasOasis
 
         }
 
+        /// <summary>
+        /// Reads in the Hotel from Hotel at startup
+        /// </summary>
+        /// <returns></returns>
         static public Hotel readInHotel()
         {
             if (!File.Exists(HotelfilePath + "Hotel"))
@@ -218,6 +262,10 @@ namespace OpheliasOasis
             return returnHotel;
         }
 
+        /// <summary>
+        /// reads in the management password at startup
+        /// </summary>
+        /// <returns></returns>
         static public String readInMPass()
         {
             if (!File.Exists(HotelfilePath + "Other"))
@@ -238,7 +286,9 @@ namespace OpheliasOasis
             return returnMPass;
         }
 
-
+        /// <summary>
+        /// deletes the data folders if a client is using a backup.
+        /// </summary>
         static public void clearFolders() 
         {
             IEnumerable<string> resfiles = Directory.EnumerateFiles(ResDBfilePath);

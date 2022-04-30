@@ -1,7 +1,7 @@
 ﻿/*
- * Hotel
+ * Calendar
  * 
- * retrieveDate requires that your DateTime has a time of 00:00:00. If it doesn't, this will return null. Otherwise, it will always return a ReservationDate, even if it isn't previously created.
+ * Stores ReservationDates
  * 
  * TODO: 
  * Changelog:
@@ -25,7 +25,11 @@ namespace OpheliasOasis
         public Calendar() 
         { 
         }
-        
+        /// <summary>
+        /// Retrive a date from the calendar
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public ReservationDate retrieveDate(DateTime date) 
         {
             DateTime today = DateTime.Today;
@@ -50,7 +54,11 @@ namespace OpheliasOasis
 
         }
 
-
+        /// <summary>
+        /// Increments dates over a span, not including the endDate
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
         public void incrementOverSpan(DateTime start, DateTime end) 
         { 
             if(start > end) { throw new ArgumentException("Start is after beginning"); }
@@ -63,7 +71,11 @@ namespace OpheliasOasis
             }
 
         }
-
+        /// <summary>
+        /// Decrements dates over a span, not including the endDate
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
         public void decrementOverSpan(DateTime start, DateTime end)
         {
             if (start > end) { throw new ArgumentException("Start is after beginning"); }
@@ -76,12 +88,17 @@ namespace OpheliasOasis
             }
 
         }
-
+        /// <summary>
+        /// Special method for XMLReader, doesn't refresh the date in the Data folder
+        /// </summary>
+        /// <param name="d"></param>
         public void XMLReaderOnlyAdd(ReservationDate d) 
         {
             dates.Add(d.getDate(),d);
         }
-
+        /// <summary>
+        /// Writes the whole calendar to XML in the Data folder
+        /// </summary>
         public void WriteCaltoXML() 
         {
             Dictionary<DateTime,ReservationDate>.ValueCollection outDates = dates.Values;

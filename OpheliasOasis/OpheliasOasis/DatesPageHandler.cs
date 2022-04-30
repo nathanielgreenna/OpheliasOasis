@@ -1,4 +1,14 @@
-﻿using System;
+﻿/*
+ * DatesPagweHandler
+ * 
+ * Handles everything within the Dates Menu.
+ * 
+ * TODO: 
+ * Changelog:
+ * 4/20/2022: created/initially coded by Nathan
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -37,7 +47,12 @@ namespace OpheliasOasis
         private readonly static Tuple<Func<String, String>, String> viewMonth =
             Tuple.Create<Func<String, String>, String>(showMonthOfDates, "This will print a month's dates and prices (MM/YYYY)");
         private readonly static Tuple<Func<String, String>, String> getDateMonth =
-            Tuple.Create<Func<String, String>, String>(getInMonth, "Input first date to change");
+        Tuple.Create<Func<String, String>, String>(getInMonth, "Input first date to change");
+        /// <summary>
+        /// Initiates DatesPageHandler.
+        /// </summary>
+        /// <param name="cl"></param>
+        /// <param name="mPass"></param>
 
         public static void Init(Calendar cl, String mPass)
         {
@@ -72,7 +87,10 @@ namespace OpheliasOasis
 
 
 
-
+        /// <summary>
+        /// sets password
+        /// </summary>
+        /// <param name="mPass"></param>
         public static void setPassword(String mPass)
         {
             manPass = mPass;
@@ -85,7 +103,11 @@ namespace OpheliasOasis
         //SET DATES FOR A MONTH
         private static double[] g = new double[31];
         private static int currDay;
-
+        /// <summary>
+        /// Gets the day that is input, prints its data
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String getInMonth(String input)
         {
             if (!DateTime.TryParse(input, out dateToChange))
@@ -107,6 +129,11 @@ namespace OpheliasOasis
             return "";
         }
 
+        /// <summary>
+        /// Gets price data to be input for each day
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String inputDatePrice(String input)
         {
             if (currDay == 31) { return "Please do not use the Back command (B) on this page. Please Quit (Q) and re-enter data"; }
@@ -135,6 +162,10 @@ namespace OpheliasOasis
             }
         }
 
+        /// <summary>
+        /// Actually updates the collected prices
+        /// </summary>
+        /// <returns></returns>
         static String updateMonthPrices()
         {
             for(int i = 0; i < 31; i++)
@@ -151,6 +182,11 @@ namespace OpheliasOasis
         //Update a single price
         
         private static double inPrice;
+        /// <summary>
+        /// checks that manager password is correct
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String checkPasschangeSingle(String input)
         {
             if (input != manPass)
@@ -159,7 +195,11 @@ namespace OpheliasOasis
             }
             return "";
         }
-
+        /// <summary>
+        /// gets the date to be changed
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String getInDate(String input)
         {
             if (DateTime.TryParse(input, out dateToChange))
@@ -172,7 +212,11 @@ namespace OpheliasOasis
                 return ("Incorrect format");
             }
         }
-
+        /// <summary>
+        /// gets the price to change the date to
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String getInPrice(String input)
         {
             if (double.TryParse(input, out inPrice))
@@ -184,14 +228,21 @@ namespace OpheliasOasis
                 return ("Invalid date");
             }
         }
-
+        /// <summary>
+        /// actually sets the date's price
+        /// </summary>
+        /// <returns></returns>
         static String setInPrice()
         {
             cal.retrieveDate(dateToChange).setBasePrice(inPrice);
             return "";
         }
 
-        //show a month of prices
+        /// <summary>
+        /// shows a month of prices
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         static String showMonthOfDates(String input)
         {
             if (!DateTime.TryParse(input, out dateToChange)) { return ("Not a valid month"); }

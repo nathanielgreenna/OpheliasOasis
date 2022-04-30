@@ -27,7 +27,11 @@ namespace OpheliasOasis
         }
 
 
-
+        /// <summary>
+        /// returns a list of reservations starting on a given day
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public List<Reservation> getReservation(DateTime date) 
         {
             try
@@ -39,7 +43,11 @@ namespace OpheliasOasis
                 return (new List<Reservation>());
             }
         }
-
+        /// <summary>
+        /// returns reservations for a particular name (two customers could have the same name)
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public List<Reservation> getReservation(String name)
         {
             try
@@ -53,7 +61,11 @@ namespace OpheliasOasis
             }
         }
 
-
+        /// <summary>
+        /// returns a list of reservations happening now (or cancelled but were set to happen now).
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public List<Reservation> getActiveReservations(DateTime date)
         {
             List<Reservation> reservations = new List<Reservation>();
@@ -70,7 +82,10 @@ namespace OpheliasOasis
             }
             return reservations;
         }
-
+        /// <summary>
+        /// adds a reservation to the database
+        /// </summary>
+        /// <param name="res"></param>
         public void addReservation(Reservation res) 
         {
             try
@@ -97,6 +112,10 @@ namespace OpheliasOasis
             XMLreader.AddOrChangeReservationinDB(res);
             idcount++;
         }
+        /// <summary>
+        /// special XMLReader function, doesn't assign new IDs when adding to the DB
+        /// </summary>
+        /// <param name="res"></param>
         public void addReservationReader(Reservation res)
         {
             try
@@ -125,7 +144,11 @@ namespace OpheliasOasis
             }
 
         }
-
+        /// <summary>
+        /// replaces one reservation with another, giving the new one the old one's ID
+        /// </summary>
+        /// <param name="oldRes"></param>
+        /// <param name="newRes"></param>
         public void replaceReservation(Reservation oldRes, Reservation newRes) 
         {
             if (newRes == null) { throw new ArgumentException("Second Argument Null"); }
@@ -149,7 +172,9 @@ namespace OpheliasOasis
         }
 
 
-
+        /// <summary>
+        /// When restoring from a backup, reads the ReservationByDate dictionary into the ReservationByName dictionary
+        /// </summary>
         public void reorganize()
         {
             if (reservationByDate != null) 
