@@ -30,36 +30,36 @@ namespace OpheliasOasis
         // Initialize menu options
         // Steps - tuples pairing an input-parsing function with the associated prompt - used in ProcessPages
         private readonly static Tuple<Func<String, String>, String> genDAR =
-            Tuple.Create<Func<String, String>, String>(gDAR, "generate Daily Arrivals Report? Y/N");
+            Tuple.Create<Func<String, String>, String>(gDAR, "Generate Daily Arrivals Report? Y/n");
         private readonly static Tuple<Func<String, String>, String> genDOR =
-            Tuple.Create<Func<String, String>, String>(gDOR, "generate Daily Occupancy Report? Y/N");
+            Tuple.Create<Func<String, String>, String>(gDOR, "Generate Daily Occupancy Report? Y/n");
         private readonly static Tuple<Func<String, String>, String> genEOR =
-            Tuple.Create<Func<String, String>, String>(gEOR, "generate Expected Occupancy Report? Y/N, Managers Only");
+            Tuple.Create<Func<String, String>, String>(gEOR, "Generate Expected Occupancy Report (managers only)? Y/n");
         private readonly static Tuple<Func<String, String>, String> genERIR =
-            Tuple.Create<Func<String, String>, String>(gERIR, "generate Expected Income Report? Y/N, Managers Only");
+            Tuple.Create<Func<String, String>, String>(gERIR, "Generate Expected Income Report (managers only)? Y/n");
         private readonly static Tuple<Func<String, String>, String> genIR =
-            Tuple.Create<Func<String, String>, String>(gIR, "generate Incentive Report? Y/N, Managers Only");
+            Tuple.Create<Func<String, String>, String>(gIR, "Generate Incentive Report (managers only)? Y/n");
         private readonly static Tuple<Func<String, String>, String> checkPassw =
-            Tuple.Create<Func<String, String>, String>(checkPass, "Input Manager Password (<Enter> to skip)");
+            Tuple.Create<Func<String, String>, String>(checkPass, "Input manager password (press <Enter> to skip)");
        
         private readonly static Tuple<Func<String, String>, String> emailConfirmation =
-            Tuple.Create<Func<String, String>, String>(generalCheck, "This process will send emails and cancel invalid reservations when complete (B to go back, <Enter to continue>)");
+            Tuple.Create<Func<String, String>, String>(generalCheck, "Send emails and cancel invalid reservations when complete (press <enter> to continue)");
 
         private readonly static Tuple<Func<String, String>, String> backupConfirmation =
-            Tuple.Create<Func<String, String>, String>(generalCheck, "This process will create a backup when complete (B to go back, <Enter to continue>)");
+            Tuple.Create<Func<String, String>, String>(generalCheck, "Create a backup (press <enter> to continue)");
 
         private readonly static Tuple<Func<String, String>, String> noShowConfirmation =
-            Tuple.Create<Func<String, String>, String>(generalCheck, "This process will charge no-show penalties and cancel reservations when complete (B to go back, <Enter to continue>)");
+            Tuple.Create<Func<String, String>, String>(generalCheck, "Charge no-show penalties and cancel reservations when complete (press <enter> to continue)");
 
         private readonly static Tuple<Func<String, String>, String> assignRoomsConfirmation =
-            Tuple.Create<Func<String, String>, String>(generalCheck, "This process will assign rooms to the day's guests (B to go back, <Enter to continue>)");
+            Tuple.Create<Func<String, String>, String>(generalCheck, "Assign rooms for the reservations starting today (press <enter> to continue)");
 
         private readonly static Tuple<Func<String, String>, String> checkP =
-            Tuple.Create<Func<String, String>, String>(checkPasschange, "Input Current Manager Password");
+            Tuple.Create<Func<String, String>, String>(checkPasschange, "Input the current manager password");
         private readonly static Tuple<Func<String, String>, String> pass1 =
-            Tuple.Create<Func<String, String>, String>(getNewPass, "Input New Manager Password (5 or more characters)");
+            Tuple.Create<Func<String, String>, String>(getNewPass, "Input the new manager password (5 or more characters)");
         private readonly static Tuple<Func<String, String>, String> pass2 =
-            Tuple.Create<Func<String, String>, String>(confirmNewPass, "Confirm Password");
+            Tuple.Create<Func<String, String>, String>(confirmNewPass, "Confirm password");
 
 
 
@@ -79,26 +79,26 @@ namespace OpheliasOasis
 
             // Initialize menu options
 
-            generateReports = new ProcessPage("Report Generation", "Choose reports to generate. Reports will be generated upon completing this page.",
+            generateReports = new ProcessPage("Generate Reports", "Generate the manager and employee reports",
                 new List<Tuple<Func<String, String>, String>> {
                     genDAR, genDOR, genEOR, genERIR, genIR, checkPassw
                 }, GenerateSelectedReports, null);
 
-            generateEmails = new ProcessPage("Handle 60-day Reservation Updates", "Send 60-day emails, cancel 60-day reservations with no credit cards within 30 days.", new List<Tuple<Func<String, String>, String>> { emailConfirmation }, GenEmails, null);
+            generateEmails = new ProcessPage("Update 60-Days Reservations", "Send emails to guests who need to privide their information, and cancel reservations for those who have not provided it in time", new List<Tuple<Func<String, String>, String>> { emailConfirmation }, GenEmails, null);
 
-            createBackups = new ProcessPage("Create Backups", "Creates a new backup, saving data for the next time the application is opened", new List<Tuple<Func<String, String>, String>> { backupConfirmation }, makeBackup, null);
+            createBackups = new ProcessPage("Create Backups", "Create a new backup of the data in the application", new List<Tuple<Func<String, String>, String>> { backupConfirmation }, makeBackup, null);
 
-            chargeNoShow = new ProcessPage("Charge No-Shows", "Charges No-Show penalties and cancels associated reservations", new List<Tuple<Func<String, String>, String>> { noShowConfirmation }, ChargeNoShows, null);
+            chargeNoShow = new ProcessPage("Charge No-Shows", "Cancel reservations for guests who did not arrive and charge them for the first day", new List<Tuple<Func<String, String>, String>> { noShowConfirmation }, ChargeNoShows, null);
 
-            roomAssign = new ProcessPage("Assign Rooms for Today's Arrivals", "Assigns a room to each guest arriving today", new List<Tuple<Func<String, String>, String>> { assignRoomsConfirmation }, assignRooms, null);
+            roomAssign = new ProcessPage("Assign Rooms", "Assign rooms to reservations starting today", new List<Tuple<Func<String, String>, String>> { assignRoomsConfirmation }, assignRooms, null);
 
-            changeMPass = new ProcessPage("Change Manager Password", "Choose manager password. Password will be changed upon completing this page.",
+            changeMPass = new ProcessPage("Change Manager Password", "Change the password for the manager",
                 new List<Tuple<Func<String, String>, String>> {
                     checkP, pass1, pass2
                 }, changePass, null);
 
             // Initialize menu
-            recordsMenu = new MenuPage("Records", "Records submenu (Generate Reports, Generate Emails && Cancel no-CCs, Create Backups, Charge No-Shows)", new List<Page> { roomAssign, generateReports, generateEmails, createBackups, chargeNoShow, changeMPass });
+            recordsMenu = new MenuPage("Records", "Generate reports, emails, and backups", new List<Page> { roomAssign, generateReports, generateEmails, createBackups, chargeNoShow, changeMPass });
         }
             
 
@@ -113,7 +113,7 @@ namespace OpheliasOasis
         {
             GenerateReportArray = new List<bool> { false, false, false, false, false};
         
-            if(input.ToUpper() == "Y") { GenerateReportArray[0] = true;
+            if(input.ToUpper() != "N") { GenerateReportArray[0] = true;
             }
             else { GenerateReportArray[0] = false; }
             return "";
@@ -121,7 +121,7 @@ namespace OpheliasOasis
         static String gDOR(String input)
         {
 
-            if (input.ToUpper() == "Y") { GenerateReportArray[1] = true; 
+            if (input.ToUpper() != "N") { GenerateReportArray[1] = true; 
             }
             else { GenerateReportArray[1] = false; }
             return "";
@@ -129,7 +129,7 @@ namespace OpheliasOasis
         static String gEOR(String input)
         {
 
-            if (input.ToUpper() == "Y") { GenerateReportArray[2] = true; 
+            if (input.ToUpper() != "N") { GenerateReportArray[2] = true; 
             }
             else { GenerateReportArray[2] = false; }
             return "";
@@ -137,7 +137,7 @@ namespace OpheliasOasis
         static String gERIR(String input)
         {
 
-            if (input.ToUpper() == "Y") { GenerateReportArray[3] = true; 
+            if (input.ToUpper() != "N") { GenerateReportArray[3] = true; 
             }
             else { GenerateReportArray[3] = false; }
             return "";
@@ -145,7 +145,7 @@ namespace OpheliasOasis
         static String gIR(String input)
         {
 
-            if (input.ToUpper() == "Y") { GenerateReportArray[4] = true; 
+            if (input.ToUpper() != "N") { GenerateReportArray[4] = true; 
             }
             else { GenerateReportArray[4] = false; }
             return "";
@@ -157,7 +157,7 @@ namespace OpheliasOasis
             {
                 if(input != manPass)
                 {
-                    return "Password incorrect.";
+                    return "Password incorrect";
                 }
             }
             return "";
@@ -215,7 +215,7 @@ namespace OpheliasOasis
                     }
                 }
             }
-            Console.WriteLine("cancelled " + c + " reservations and emailed " + e + " customers");
+            Console.WriteLine("Cancelled " + c + " reservations and emailed " + e + " customers");
             System.Threading.Thread.Sleep(2000);
             return "";
 
@@ -269,7 +269,7 @@ namespace OpheliasOasis
         {
                 if (input != manPass)
                 {
-                    return "Password incorrect.";
+                    return "Password incorrect";
                 }
             return "";
         }
@@ -279,7 +279,7 @@ namespace OpheliasOasis
         { 
             if(input.Length < 5) 
             {
-                return ("Must be 5 or more characters");
+                return ("Password must be 5 or more characters");
             }
             candidatePass = input;
             return ("");
@@ -289,7 +289,7 @@ namespace OpheliasOasis
         {
             if (input != candidatePass)
             {
-                return ("Must match Step 2 input");
+                return ("Passwords do not match");
             }
             return ("");
         }
@@ -314,7 +314,7 @@ namespace OpheliasOasis
                 if(curr.getReservationStatus() != ReservationStatus.Cancelled && curr.getRoomNumber() <= 0)
                 curr.setRoomNumber(ht.assignRoom());
             }
-            Console.Write("Rooms Assigned");
+            Console.Write("Rooms Assigned.");
             System.Threading.Thread.Sleep(2000);
             return "";
         }
