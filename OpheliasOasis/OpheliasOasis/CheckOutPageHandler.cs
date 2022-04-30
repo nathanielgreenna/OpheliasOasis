@@ -138,6 +138,10 @@ namespace OpheliasOasis
         /// <returns>A string containing the reason why the input is not valid, if applicable. Otherwise a success message.</returns>
         public static String CheckOutConfirm()
         {
+            if (referenceRes.getEndDate() != DateTime.Today)
+            {
+                return $"The checkout date for this reservation is {referenceRes.getEndDate().ToShortDateString()}. To proceed with checkout, please change the checkout date through the Reservation menu";
+            }
             if (referenceRes.getReservationType() == ReservationType.Conventional || referenceRes.getReservationType() == ReservationType.Incentive)
             {
                 CreditCardStub.WriteTransaction(referenceRes.getCustomerCreditCard(), referenceRes.getCustomerName(), "1234 1234 1234 1234", "Ophelia's Oasis", referenceRes.GetTotalPrice());
