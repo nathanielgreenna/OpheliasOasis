@@ -41,15 +41,15 @@ namespace OpheliasOasis
         // Initialize menu options
         // Steps - tuples pairing an input-parsing function with the associated prompt - used in ProcessPages
         private readonly static Tuple<Func<String, String>, String> genDAR =
-            Tuple.Create<Func<String, String>, String>(gDAR, "generate Daily Arrivals Report? Y/N");
+            Tuple.Create<Func<String, String>, String>(gDAR, "generate Daily Arrivals Report? Y/n");
         private readonly static Tuple<Func<String, String>, String> genDOR =
-            Tuple.Create<Func<String, String>, String>(gDOR, "generate Daily Occupancy Report? Y/N");
+            Tuple.Create<Func<String, String>, String>(gDOR, "generate Daily Occupancy Report? Y/n");
         private readonly static Tuple<Func<String, String>, String> genEOR =
-            Tuple.Create<Func<String, String>, String>(gEOR, "generate Expected Occupancy Report? Y/N, Managers Only");
+            Tuple.Create<Func<String, String>, String>(gEOR, "generate Expected Occupancy Report? Y/n, Managers Only");
         private readonly static Tuple<Func<String, String>, String> genERIR =
-            Tuple.Create<Func<String, String>, String>(gERIR, "generate Expected Income Report? Y/N, Managers Only");
+            Tuple.Create<Func<String, String>, String>(gERIR, "generate Expected Income Report? Y/n, Managers Only");
         private readonly static Tuple<Func<String, String>, String> genIR =
-            Tuple.Create<Func<String, String>, String>(gIR, "generate Incentive Report? Y/N, Managers Only");
+            Tuple.Create<Func<String, String>, String>(gIR, "generate Incentive Report? Y/n, Managers Only");
         private readonly static Tuple<Func<String, String>, String> checkPassw =
             Tuple.Create<Func<String, String>, String>(checkPass, "Input Manager Password (<Enter> to skip)");
        
@@ -285,7 +285,7 @@ namespace OpheliasOasis
                 {
                     if(res.getReservationType() == ReservationType.Conventional || res.getReservationType() == ReservationType.Incentive)
                     {
-                        CreditCardStub.WriteTransaction(res.getCustomerCreditCard(), res.getCustomerName(), "Ophelia's Oasis", "1234 1234 1234 1234", res.GetFirstDayPrice());
+                        CreditCardStub.WriteTransaction(res.getCustomerCreditCard(), res.getCustomerName(), "1234 1234 1234 1234", "Ophelia's Oasis", res.GetFirstDayPrice());
                     }
                     ht.clearRoom(res.getRoomNumber());
                     res.cancelReservation();

@@ -21,7 +21,7 @@ namespace OpheliasOasis
     public static class CreditCardStub
     {
         /// <summary>
-        /// "Charge" a credit card.
+        /// "Charge" a credit card. The inputs are credit card numbers, which admittedly would not be used in real life.
         /// </summary>
         /// <param name="srcAccountNumber">A string containing the paying account number.</param>
         /// <param name="srcAccountName">A string containing the name on the paying account.</param>
