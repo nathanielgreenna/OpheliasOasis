@@ -247,10 +247,7 @@ namespace OpheliasOasis
                     ht.clearRoom(res.getRoomNumber());
                     res.cancelReservation();
 
-                    for (DateTime d = res.getStartDate(); d < res.getEndDate(); d = d.AddDays(1))
-                    {
-                        cal.retrieveDate(d).decreaseOccupancy();
-                    }
+                    cal.decrementOverSpan(res.getStartDate(), res.getEndDate());
 
 
 

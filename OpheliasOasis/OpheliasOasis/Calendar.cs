@@ -56,7 +56,7 @@ namespace OpheliasOasis
             if(start > end) { throw new ArgumentException("Start is after beginning"); }
             DateTime day = start;
 
-            while(day != end.AddDays(1)) 
+            while(day != end) 
             {
                 retrieveDate(day).increaseOccupancy();
                 day = day.AddDays(1);
@@ -69,7 +69,7 @@ namespace OpheliasOasis
             if (start > end) { throw new ArgumentException("Start is after beginning"); }
             DateTime day = start;
 
-            while (day != end.AddDays(1))
+            while (day != end)
             {
                 retrieveDate(day).decreaseOccupancy();
                 day = day.AddDays(1);
