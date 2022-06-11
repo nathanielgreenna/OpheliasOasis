@@ -180,7 +180,7 @@ namespace OpheliasOasis
                     default:
                         if (DateTime.TryParse(inp, out t))
                         {
-                            if (File.Exists(@".\" + t.ToString("D")))
+                            if (File.Exists("C:\\OpheliasOasis\\Backups\\" + t.ToString("D")))
                             {
                                 g = XMLreader.XMLin(t);
                                 reservationDB = g.R;
